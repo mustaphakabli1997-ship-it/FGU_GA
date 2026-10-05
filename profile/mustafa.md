@@ -32,3 +32,9 @@
 ## Workflow
 - Videos uploaded to videos/ in this repo; Claude edits with FFmpeg and gives cut-by-cut plans for CapCut.
 - Source in videos/reelN.*, outputs as videos/reelN_vX.mp4.
+
+## Audience & offer (confirmed)
+- Audience: beginner online merchants.
+- Offer: Meta Ads + store creation for beginners.
+- Footage: Mustafa talks to camera (talking-head).
+- Language: mix (Darija + French) for speech and on-screen text.
