@@ -73,3 +73,7 @@
 - Generated assets live in `assets/_generated/` (git-ignored; rebuilt automatically or with `python3 tools/gen_assets.py`).
 - Mustafa's own files go in `assets/sparks/`, `assets/broll/`, `assets/icons/` (uploaded via GitHub on `main`); file name = tag name, and his files win over generated ones. Only use royalty-free sources (Pexels, Pixabay, Mixkit, CapCut library).
 - Example cue: `00:00:02,600 --> 00:00:05,500` / `MASHI MOSHKIL FL *META* 🔥 [flash]`
+
+## Content message (Mustafa, reel2 "work with your face")
+- In this era, to sell you must work with your FACE: videos of people holding the product in hand, talking about it and selling it, so people trust them.
+- Captions for reel2 are key phrases paraphrased from his summary (subs/reel2.srt), not word-for-word; whisper cannot transcribe Algerian Darija reliably, so Mustafa types the words (tools/transcribe.py only gives timings).
