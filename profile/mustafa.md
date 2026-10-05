@@ -77,3 +77,10 @@
 ## Content message (Mustafa, reel2 "work with your face")
 - In this era, to sell you must work with your FACE: videos of people holding the product in hand, talking about it and selling it, so people trust them.
 - Captions for reel2 are key phrases paraphrased from his summary (subs/reel2.srt), not word-for-word; whisper cannot transcribe Algerian Darija reliably, so Mustafa types the words (tools/transcribe.py only gives timings).
+
+## Editing upgrades (reel2 v3)
+- Captions cut to 1-3 words each (~1.5-2s), accent word green; splitting a phrase gives a faster rhythm.
+- Auto SFX: soft whoosh on every caption change, pop when an emoji/effect appears (`--no-sfx` to disable). Green progress bar on top (`--no-bar`).
+- End card tagline via `--tagline "BACH NAS DIR FIK ETHIQA"` (used when the trust line doesn't fit in the video).
+- Command: `python3 tools/edit_reel.py videos/reel2.mov --srt subs/reel2_v3.srt --tagline "..." --out videos/reel2_final_v3.mp4`
+- Next ideas: royalty-free background music under the voice, B-roll of products/stores, stronger hook in the first 2 seconds.

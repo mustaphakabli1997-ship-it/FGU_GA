@@ -106,7 +106,7 @@ def style_text(t):
     return POP + (base if arabic else "") + t
 
 
-def build_ass(events, total, with_endcard):
+def build_ass(events, total, with_endcard, tagline=""):
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -130,6 +130,8 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
             f"Dialogue: 0,{s},{e},CardBig,,0,0,0,,{{\\pos({W//2},{H//2-60})}}WhatsApp: {BRAND['whatsapp']}",
             f"Dialogue: 0,{s},{e},CardSmall,,0,0,0,,{{\\pos({W//2},{H//2+140})}}Instagram: {BRAND['handle']}",
         ]
+        if tagline:
+            lines.append(f"Dialogue: 0,{s},{e},CardBig,,0,0,0,,{{\\pos({W//2},{H//2-480})\\fs80\\c&H00FFFFFF&}}{tagline}")
     return head + "\n".join(lines) + "\n"
 
 
@@ -150,6 +152,22 @@ def find_asset(kind, name):
         if attempt == 0 and not os.path.isdir(os.path.join(ASSETS, "_generated")):
             run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_assets.py")])
     sys.exit(f"asset '{name}' not found in assets/ (tag [{kind}:{name}])")
+
+
+def make_sfx(tmp):
+    """Tiny synthetic sound effects (no downloads): whoosh (filtered noise sweep) and pop."""
+    out = {}
+    specs = {
+        "whoosh": ["-f", "lavfi", "-i", "anoisesrc=d=0.35:c=pink:a=0.8",
+                   "-af", "highpass=f=400,lowpass=f=3500,afade=t=in:d=0.12,afade=t=out:st=0.15:d=0.2,volume=0.9"],
+        "pop": ["-f", "lavfi", "-i", "sine=f=900:d=0.12",
+                "-af", "afade=t=out:st=0.02:d=0.1,volume=0.8"],
+    }
+    for name, args in specs.items():
+        path = os.path.join(tmp, name + ".wav")
+        run(["ffmpeg", "-v", "error", "-y", *args, "-ar", "48000", "-ac", "2", path])
+        out[name] = path
+    return out
 
 
 def render_emoji(ch, path, size=230):
@@ -188,6 +206,9 @@ def main():
     ap.add_argument("--no-silence-cut", action="store_true")
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
+    ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--no-bar", action="store_true")
+    ap.add_argument("--tagline", default="")
     ap.add_argument("--no-emoji", action="store_true")
     ap.add_argument("--grade", choices=["warm", "natural"], default="warm")
     ap.add_argument("--out")
@@ -204,7 +225,7 @@ def main():
             (remap(s, segs), remap(e, segs), t, em, tg) for s, e, t, em, tg in raw]
     tmp = tempfile.mkdtemp()
     ass = os.path.join(tmp, "s.ass")
-    open(ass, "w", encoding="utf-8").write(build_ass(events, total, not a.no_endcard))
+    open(ass, "w", encoding="utf-8").write(build_ass(events, total, not a.no_endcard, a.tagline))
 
     n = len(segs)
     parts = []
@@ -216,8 +237,10 @@ def main():
     zoom = ("" if a.no_zoom else
             f"scale=w='trunc({W}*{zoom_expr(events, segs, total)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total)}/2)*2':eval=frame,crop={W}:{H},")
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
-           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30[vm0];"
-           f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am];")
+           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
+           + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
+           + "[vm0];"
+           f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am0];")
 
     extra_inputs, cur, k, n_in = [], "vm0", 0, 1
 
@@ -254,6 +277,22 @@ def main():
                        f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
                 cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     fc += f"[{cur}]null[vm];"
+
+    # sound effects: whoosh on every caption change, pop when an emoji / effect tag appears
+    if a.no_sfx:
+        fc += "[am0]anull[am];"
+    else:
+        sfx = make_sfx(tmp)
+        mix, n_mix = ["[am0]"], 1
+        for i, (ea, eb, _t, ems, tags) in enumerate(events):
+            for kind in (["whoosh"] + (["pop"] if (ems or tags) else [])):
+                extra_inputs += ["-i", sfx[kind]]
+                ms = int(max(ea - 0.03, 0) * 1000)
+                vol = 0.30 if kind == "whoosh" else 0.45
+                fc += f"[{n_in}:a]adelay={ms}|{ms},volume={vol}[sf{n_in}];"
+                mix.append(f"[sf{n_in}]")
+                n_in += 1
+        fc += "".join(mix) + f"amix=inputs={len(mix)}:duration=first:normalize=0,alimiter=limit=0.95[am];"
     if a.no_endcard:
         fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"
     else:
