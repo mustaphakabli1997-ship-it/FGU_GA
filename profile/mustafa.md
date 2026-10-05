@@ -60,3 +60,10 @@
 - Colour grade: warm golden/orange, a bit more contrast + saturation, soft dark vignette (face lit, edges dark). Option `--grade natural` if the footage is already warm.
 - Extras seen in the reference (to add later when assets exist): light-leak/transition flashes on punchy moments, falling-money overlay for money topics, cutout face over blurred warm background.
 - Tool: `python3 tools/edit_reel.py videos/reelN.mov --srt subs.srt` — mark accent words with *stars* in the .srt (e.g. `SPONSOR MA YJIBLEK *TLABAT*`).
+
+## Style reference #2 (screen recording of a second reel, `videos/1005 (2).mov` on main, 18s, 640x480)
+- Same creator style: talking head in front of a **green screen / neon-green background**, subject centred, big caption in the lower-middle.
+- Captions: one or two words at a time (SALEM, ARWAH, NHOTEK, YBDA, 3ID RASSEK, SUIVI-MOI, 1 MIN), huge white bold with soft glow; emphasis words get an effect (red text, glowing green text, text sitting behind the hand/body).
+- B-roll inserts for 1-2 s to illustrate words: newspaper "DAILY MAIL" clip, red/city clip, small icons (speaker, mail) next to the word.
+- Punchy moments: close face zoom with orange spark/fire particles, flashes, quick zoom in/out every phrase.
+- Takeaway for Mustafa's reels: very short caption chunks (1-3 words), more B-roll/icons per sentence, a glow on captions, sparks/flash on the key claim.
