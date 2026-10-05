@@ -3,7 +3,7 @@
 ## Who
 - Mustafa, e-commerce content creator + digital services (Birkhadem, Algiers).
 - Instagram link: https://www.instagram.com/kabli_ms
-- Instagram handle as given by Mustafa: kabli.ms (the link uses kabli_ms — confirm which is correct before putting it on screen)
+- Instagram handle (confirmed by Mustafa, matches the link): @kabli_ms
 - Phone: 0799858948
 - WhatsApp: 0550205464
 - Services: Meta Ads, e-commerce store ops (Shopify, Foorweb, Builddz, YouCan), digital support.
