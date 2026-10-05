@@ -67,3 +67,9 @@
 - B-roll inserts for 1-2 s to illustrate words: newspaper "DAILY MAIL" clip, red/city clip, small icons (speaker, mail) next to the word.
 - Punchy moments: close face zoom with orange spark/fire particles, flashes, quick zoom in/out every phrase.
 - Takeaway for Mustafa's reels: very short caption chunks (1-3 words), more B-roll/icons per sentence, a glow on captions, sparks/flash on the key claim.
+
+## Effects toolkit (built by Claude, no downloads needed)
+- Tags go at the end of a cue in the .srt: `[sparks]` orange sparks, `[flash]` white flash, `[leak]` warm light leak, `[money]` falling dollars, `[broll:growth_chart]` full-frame b-roll clip for the cue, `[icon:NAME]` PNG icon from assets/icons.
+- Generated assets live in `assets/_generated/` (git-ignored; rebuilt automatically or with `python3 tools/gen_assets.py`).
+- Mustafa's own files go in `assets/sparks/`, `assets/broll/`, `assets/icons/` (uploaded via GitHub on `main`); file name = tag name, and his files win over generated ones. Only use royalty-free sources (Pexels, Pixabay, Mixkit, CapCut library).
+- Example cue: `00:00:02,600 --> 00:00:05,500` / `MASHI MOSHKIL FL *META* 🔥 [flash]`

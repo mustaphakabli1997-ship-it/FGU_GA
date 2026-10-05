@@ -51,6 +51,7 @@ def keep_segments(path, noise="-32dB", min_sil=0.35, pad=0.08):
     return segs or [(0, dur)], dur
 
 
+TAG_RE = re.compile(r"\[(sparks|flash|leak|money|broll|icon)(?::([^\]]+))?\]", re.I)
 EMOJI_RE = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27bf]")
 
 
@@ -66,9 +67,11 @@ def srt_to_events(srt_text, offset_map=None):
         a = g[0]*3600 + g[1]*60 + g[2] + g[3]/1000
         b = g[4]*3600 + g[5]*60 + g[6] + g[7]/1000
         text = " ".join(l for l in lines if "-->" not in l and not l.strip().isdigit())
+        tags = [(m.group(1).lower(), (m.group(2) or "").strip()) for m in TAG_RE.finditer(text)]
+        text = TAG_RE.sub("", text)
         emojis = EMOJI_RE.findall(text)  # libass can't draw colour emoji: strip from text, overlay as PNG instead
         text = re.sub(r"\s+", " ", EMOJI_RE.sub("", text).replace("\ufe0f", "")).strip()
-        ev.append((a, b, text, emojis))
+        ev.append((a, b, text, emojis, tags))
     return ev
 
 
@@ -119,7 +122,7 @@ Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,1
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
-    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t, _ in events if t]
+    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t, *_ in events if t]
     if with_endcard:
         s, e = ass_ts(total), ass_ts(total + ENDCARD_SECS)
         lines += [
@@ -128,6 +131,25 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
             f"Dialogue: 0,{s},{e},CardSmall,,0,0,0,,{{\\pos({W//2},{H//2+140})}}Instagram: {BRAND['handle']}",
         ]
     return head + "\n".join(lines) + "\n"
+
+
+ASSETS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
+ALIASES = {"sparks": "sparks_orange", "flash": "flash_white", "leak": "light_leak", "money": "money_rain"}
+
+
+def find_asset(kind, name):
+    """User files (assets/sparks|broll|icons) win over generated ones (assets/_generated)."""
+    name = ALIASES.get(name, name) if kind != "icon" else name
+    dirs = [os.path.join(ASSETS, d) for d in ("sparks", "broll", "icons", "_generated")]
+    for attempt in (0, 1):
+        for d in dirs:
+            if os.path.isdir(d):
+                for f in sorted(os.listdir(d)):
+                    if os.path.splitext(f)[0] == name:
+                        return os.path.join(d, f)
+        if attempt == 0 and not os.path.isdir(os.path.join(ASSETS, "_generated")):
+            run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_assets.py")])
+    sys.exit(f"asset '{name}' not found in assets/ (tag [{kind}:{name}])")
 
 
 def render_emoji(ch, path, size=230):
@@ -142,7 +164,7 @@ def render_emoji(ch, path, size=230):
 
 def zoom_expr(events, segs, total):
     """Alternating punch zoom-OUT (1.14 -> 1.0) and slow push-IN (1.0 -> 1.10), restarted at each caption / cut."""
-    pts = sorted({round(a, 2) for a, _, _, _ in events if a < total}
+    pts = sorted({round(a, 2) for a, *_ in events if a < total}
                  | {round(sum(b - x for x, b in segs[:i]), 2) for i in range(1, len(segs))})
     if not pts:
         pts = [round(i * 3.0, 2) for i in range(int(total // 3) + 1)]
@@ -179,7 +201,7 @@ def main():
     if a.srt:
         raw = srt_to_events(open(a.srt, encoding="utf-8").read())
         events = raw if a.srt_after_cut or a.no_silence_cut else [
-            (remap(s, segs), remap(e, segs), t, em) for s, e, t, em in raw]
+            (remap(s, segs), remap(e, segs), t, em, tg) for s, e, t, em, tg in raw]
     tmp = tempfile.mkdtemp()
     ass = os.path.join(tmp, "s.ass")
     open(ass, "w", encoding="utf-8").write(build_ass(events, total, not a.no_endcard))
@@ -197,23 +219,40 @@ def main():
            f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30[vm0];"
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am];")
 
+    extra_inputs, cur, k, n_in = [], "vm0", 0, 1
+
+    # effect tags from the .srt: sparks / flash / leak / money / broll:NAME / icon:NAME
+    for (ea, eb, _t, _em, tags) in events:
+        for kind, arg in tags:
+            if kind in ("sparks", "flash", "leak", "money", "broll"):
+                path = find_asset("broll" if kind == "broll" else kind, arg if kind == "broll" else kind)
+                extra_inputs += ["-i", path]
+                cut = f",trim=duration={max(eb - ea, 0.4):.2f}" if kind == "broll" else ""
+                fc += (f"[{n_in}:v]format=rgba,scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}{cut},"
+                       f"setpts=PTS-STARTPTS+{ea:.2f}/TB[fx{k}];"
+                       f"[{cur}][fx{k}]overlay=eof_action=pass:repeatlast=0[ov{k}];")
+            else:  # icon: PNG, placed like an emoji
+                path = find_asset("icon", arg)
+                extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", path]
+                fc += (f"[{n_in}:v]format=rgba,scale=230:-1,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[fx{k}];"
+                       f"[{cur}][fx{k}]overlay=x='(W-w)/2':y='{int(H * 0.09)}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+            cur, k, n_in = f"ov{k}", k + 1, n_in + 1
+
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
-    extra_inputs, cur, k = [], "vm0", 0
     if not a.no_emoji:
         cache = {}
-        for (ea, eb, _t, ems) in events:
+        for (ea, eb, _t, ems, _tg) in events:
             for j, ch in enumerate(ems[:2]):
                 if ch not in cache:
                     cache[ch] = os.path.join(tmp, f"e{len(cache)}.png")
                     render_emoji(ch, cache[ch])
-                idx = k + 1
                 extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", cache[ch]]
                 n_em = len(ems[:2])
                 x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*260"
                 y = f"{int(H * 0.09)}-50*(1-min(1,(t-{ea:.2f})/0.18))"
-                fc += (f"[{idx}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
+                fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
                        f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
-                cur, k = f"ov{k}", k + 1
+                cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     fc += f"[{cur}]null[vm];"
     if a.no_endcard:
         fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"
