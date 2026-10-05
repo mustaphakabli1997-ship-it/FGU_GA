@@ -44,3 +44,9 @@
 - All his content and Reels editing must keep the SAME consistent style (same tone, colors, subtitle look, end card, pacing) so the account feels recognisable.
 - He wants to keep improving himself: Claude should explain each editing choice in simple words, suggest one improvement per reel, and track what he learns.
 - Note: the old perfume unboxing video (reel1) was only a test, not his niche.
+
+## Niche & service (clarified by Mustafa)
+- Niche: advising online merchants (e-commerce) and running their sponsoring ("sponsor" / paid ads on Meta) for them.
+- His core service = sponsoring (Meta Ads management for merchants). In Algerian usage "sponsor/صبونصور" means paid ads.
+- Audience = online merchants (beginners). Content = tips on e-commerce + ads, with the sponsoring service as the call to action.
+- Use his word "sponsor / سبونسور" in on-screen text and CTAs, alongside "Meta Ads".
