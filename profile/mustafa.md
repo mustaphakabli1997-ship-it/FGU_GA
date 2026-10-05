@@ -55,7 +55,8 @@
 - Captions: huge bold condensed font (Anton), UPPERCASE for Latin/Arabizi Darija ("TKUN FL CLAN TA3I"), centered, lower-middle of the frame (~60-65% height), 2-3 short lines, max ~4 words per screen.
 - Key word of each phrase gets an accent colour (brand Growth Green #38A169) and is slightly bigger; pop-in animation (small scale-up, 0.1s).
 - Arabic captions: DejaVu Sans Bold, no letter spacing (spacing breaks Arabic joining), same position, accent word coloured.
-- Never use emoji inside burned subtitles (render as boxes).
+- Emoji: write them in the .srt (e.g. `... 🔥`); the tool strips them from the text and overlays them as colour PNGs near the top of the frame (clear of face and caption), max 2 per caption.
+- Zoom: alternating punch zoom-OUT (1.14x -> 1.0 in 0.6s) and slow push-IN (1.0 -> 1.10) restarted at every caption / jump cut. Disable with `--no-zoom`; emoji with `--no-emoji`.
 - Colour grade: warm golden/orange, a bit more contrast + saturation, soft dark vignette (face lit, edges dark). Option `--grade natural` if the footage is already warm.
 - Extras seen in the reference (to add later when assets exist): light-leak/transition flashes on punchy moments, falling-money overlay for money topics, cutout face over blurred warm background.
 - Tool: `python3 tools/edit_reel.py videos/reelN.mov --srt subs.srt` — mark accent words with *stars* in the .srt (e.g. `SPONSOR MA YJIBLEK *TLABAT*`).

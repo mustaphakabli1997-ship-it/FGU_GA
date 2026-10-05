@@ -51,6 +51,9 @@ def keep_segments(path, noise="-32dB", min_sil=0.35, pad=0.08):
     return segs or [(0, dur)], dur
 
 
+EMOJI_RE = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27bf]")
+
+
 def srt_to_events(srt_text, offset_map=None):
     ev = []
     for blk in re.split(r"\n\s*\n", srt_text.strip()):
@@ -63,8 +66,9 @@ def srt_to_events(srt_text, offset_map=None):
         a = g[0]*3600 + g[1]*60 + g[2] + g[3]/1000
         b = g[4]*3600 + g[5]*60 + g[6] + g[7]/1000
         text = " ".join(l for l in lines if "-->" not in l and not l.strip().isdigit())
-        text = re.sub(r"[\U00010000-\U0010ffff\u2600-\u27bf\ufe0f]", "", text).strip()  # emoji render as boxes
-        ev.append((a, b, text))
+        emojis = EMOJI_RE.findall(text)  # libass can't draw colour emoji: strip from text, overlay as PNG instead
+        text = re.sub(r"\s+", " ", EMOJI_RE.sub("", text).replace("\ufe0f", "")).strip()
+        ev.append((a, b, text, emojis))
     return ev
 
 
@@ -115,7 +119,7 @@ Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,1
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
-    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t in events]
+    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t, _ in events if t]
     if with_endcard:
         s, e = ass_ts(total), ass_ts(total + ENDCARD_SECS)
         lines += [
@@ -126,6 +130,34 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
     return head + "\n".join(lines) + "\n"
 
 
+def render_emoji(ch, path, size=230):
+    from PIL import Image, ImageDraw, ImageFont
+    f = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 109)
+    im = Image.new("RGBA", (136, 128), (0, 0, 0, 0))
+    ImageDraw.Draw(im).text((0, 0), ch, font=f, embedded_color=True)
+    im = im.crop(im.getbbox())
+    im = im.resize((size, int(size * im.height / im.width)), Image.LANCZOS)
+    im.save(path)
+
+
+def zoom_expr(events, segs, total):
+    """Alternating punch zoom-OUT (1.14 -> 1.0) and slow push-IN (1.0 -> 1.10), restarted at each caption / cut."""
+    pts = sorted({round(a, 2) for a, _, _, _ in events if a < total}
+                 | {round(sum(b - x for x, b in segs[:i]), 2) for i in range(1, len(segs))})
+    if not pts:
+        pts = [round(i * 3.0, 2) for i in range(int(total // 3) + 1)]
+    if pts[0] > 0.05:
+        pts.insert(0, 0.0)
+    terms = []
+    for i, t0 in enumerate(pts):
+        t1 = pts[i + 1] if i + 1 < len(pts) else total
+        if i % 2 == 0:   # punch out
+            terms.append(f"between(t\\,{t0}\\,{t1})*(1+0.14*max(0\\,1-(t-{t0})/0.6))")
+        else:            # push in
+            terms.append(f"between(t\\,{t0}\\,{t1})*(1+0.10*min(1\\,(t-{t0})/{max(t1 - t0, 0.3):.2f}))")
+    return "(" + "+".join(terms) + ")"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src")
@@ -133,6 +165,8 @@ def main():
     ap.add_argument("--srt-after-cut", action="store_true")
     ap.add_argument("--no-silence-cut", action="store_true")
     ap.add_argument("--no-endcard", action="store_true")
+    ap.add_argument("--no-zoom", action="store_true")
+    ap.add_argument("--no-emoji", action="store_true")
     ap.add_argument("--grade", choices=["warm", "natural"], default="warm")
     ap.add_argument("--out")
     a = ap.parse_args()
@@ -145,7 +179,7 @@ def main():
     if a.srt:
         raw = srt_to_events(open(a.srt, encoding="utf-8").read())
         events = raw if a.srt_after_cut or a.no_silence_cut else [
-            (remap(s, segs), remap(e, segs), t) for s, e, t in raw]
+            (remap(s, segs), remap(e, segs), t, em) for s, e, t, em in raw]
     tmp = tempfile.mkdtemp()
     ass = os.path.join(tmp, "s.ass")
     open(ass, "w", encoding="utf-8").write(build_ass(events, total, not a.no_endcard))
@@ -157,9 +191,30 @@ def main():
                      f"[0:a]atrim={x:.3f}:{y:.3f},asetpts=PTS-STARTPTS[a{i}]")
     cat = "".join(f"[v{i}][a{i}]" for i in range(n))
     fc = ";".join(parts) + f";{cat}concat=n={n}:v=1:a=1[vc][ac];"
-    fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
-           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30[vm];"
+    zoom = ("" if a.no_zoom else
+            f"scale=w='trunc({W}*{zoom_expr(events, segs, total)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total)}/2)*2':eval=frame,crop={W}:{H},")
+    fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
+           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30[vm0];"
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am];")
+
+    # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
+    extra_inputs, cur, k = [], "vm0", 0
+    if not a.no_emoji:
+        cache = {}
+        for (ea, eb, _t, ems) in events:
+            for j, ch in enumerate(ems[:2]):
+                if ch not in cache:
+                    cache[ch] = os.path.join(tmp, f"e{len(cache)}.png")
+                    render_emoji(ch, cache[ch])
+                idx = k + 1
+                extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", cache[ch]]
+                n_em = len(ems[:2])
+                x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*260"
+                y = f"{int(H * 0.09)}-50*(1-min(1,(t-{ea:.2f})/0.18))"
+                fc += (f"[{idx}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
+                       f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+                cur, k = f"ov{k}", k + 1
+    fc += f"[{cur}]null[vm];"
     if a.no_endcard:
         fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"
     else:
@@ -167,7 +222,7 @@ def main():
                f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
                f"[vm][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
                f"[vv]subtitles={ass}:fontsdir={FONTS_DIR}[vout]")
-    run(["ffmpeg", "-v", "error", "-y", "-i", a.src, "-filter_complex", fc,
+    run(["ffmpeg", "-v", "error", "-y", "-i", a.src, *extra_inputs, "-filter_complex", fc,
          "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", "21",
          "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
          "-movflags", "+faststart", out])

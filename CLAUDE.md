@@ -6,7 +6,7 @@ Start of every session:
 
 Editing a reel (Mustafa uploads to `videos/`, sometimes on `main` — check `git fetch origin main` and pull the file from there):
 1. `ffprobe` the file and look at a contact sheet of frames before deciding anything.
-2. Ask for / write the subtitle script as an `.srt` (mixed Darija + French, no emoji — they render as boxes).
+2. Ask for / write the subtitle script as an `.srt` (mixed Darija + French, emoji allowed: the tool overlays them as PNGs (needs `pip install pillow`)).
 3. Run: `python3 tools/edit_reel.py videos/reelN.mov --srt subs.srt`
    - cuts silences, 1080x1920, light grade, loudness -14 LUFS, big subtitles, navy end card with WhatsApp + @kabli_ms.
    - Flags: `--no-silence-cut`, `--no-endcard`, `--srt-after-cut`, `--out`.
