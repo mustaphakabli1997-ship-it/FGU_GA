@@ -38,3 +38,9 @@
 - Offer: Meta Ads + store creation for beginners.
 - Footage: Mustafa talks to camera (talking-head).
 - Language: mix (Darija + French) for speech and on-screen text.
+
+## Content identity (confirmed by Mustafa)
+- Mustafa talks about e-commerce and gives practical e-commerce tips (not only selling services).
+- All his content and Reels editing must keep the SAME consistent style (same tone, colors, subtitle look, end card, pacing) so the account feels recognisable.
+- He wants to keep improving himself: Claude should explain each editing choice in simple words, suggest one improvement per reel, and track what he learns.
+- Note: the old perfume unboxing video (reel1) was only a test, not his niche.
