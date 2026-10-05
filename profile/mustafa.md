@@ -2,7 +2,10 @@
 
 ## Who
 - Mustafa, e-commerce content creator + digital services (Birkhadem, Algiers).
-- Instagram: https://www.instagram.com/kabli_ms
+- Instagram link: https://www.instagram.com/kabli_ms
+- Instagram handle as given by Mustafa: kabli.ms (the link uses kabli_ms — confirm which is correct before putting it on screen)
+- Phone: 0799858948
+- WhatsApp: 0550205464
 - Services: Meta Ads, e-commerce store ops (Shopify, Foorweb, Builddz, YouCan), digital support.
 - Goal: grow his own brand and get better at editing Reels. Claude acts as his Reels editing + content copilot.
 
