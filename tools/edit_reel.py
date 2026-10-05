@@ -13,8 +13,15 @@ import argparse, os, re, subprocess, sys, tempfile
 BRAND = dict(navy="1A365D", blue="3182CE", green="38A169",
              whatsapp="0550 20 54 64", handle="@kabli_ms",
              cta="راسلني على واتساب")
-FONT = "DejaVu Sans"  # has Arabic glyphs; swap for Cairo/Tajawal if installed
+FONT = "Anton"  # bold condensed caption font (OFL), in tools/fonts; Arabic falls back to DejaVu Sans
+FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
+ACCENT = BRAND["green"]  # words wrapped as *word* in the .srt get this colour
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
+# warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
+GRADES = {
+    "warm": "eq=contrast=1.12:saturation=1.2:brightness=-0.02,colorbalance=rs=0.05:gs=0.01:bs=-0.07:rm=0.06:bm=-0.05:rh=0.04:bh=-0.04,vignette=PI/5",
+    "natural": "eq=contrast=1.06:saturation=1.1",
+}
 
 
 def run(cmd, **kw):
@@ -80,23 +87,35 @@ def bgr(hexrgb):  # ASS colour is BGR
     return f"&H00{hexrgb[4:6]}{hexrgb[2:4]}{hexrgb[0:2]}"
 
 
+POP = r"{\\fscx85\\fscy85\\t(0,110,\\fscx100\\fscy100)}"
+
+
+def style_text(t):
+    """UPPERCASE Latin, pop-in animation, *word* -> accent colour. Arabic gets a font with Arabic glyphs."""
+    arabic = bool(re.search(r"[\u0600-\u06ff]", t))
+    base = r"{\fnDejaVu Sans\b1\fs88\fsp0\c&H00FFFFFF&\fscx100\fscy100}" if arabic else r"{\r}"
+    t = t if arabic else (t.upper() if re.search(r"[A-Za-z]", t) else t)
+    t = re.sub(r"\*([^*]+)\*", lambda m: f"{{\\c{bgr(ACCENT)}&}}{m.group(1)}{base}", t)
+    return POP + (base if arabic else "") + t
+
+
 def build_ass(events, total, with_endcard):
     head = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
 PlayResY: {H}
-WrapStyle: 2
+WrapStyle: 0
 
 [V4+ Styles]
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
-Style: Sub,{FONT},72,&H00FFFFFF,&H00FFFFFF,{bgr(BRAND['navy'])},&H80000000,1,0,0,0,100,100,0,0,1,6,2,2,70,70,520,1
+Style: Sub,{FONT},104,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,2,0,1,5,3,2,80,80,640,1
 Style: CardBig,{FONT},70,{bgr(BRAND['green'])},&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
-    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{t}" for a, b, t in events]
+    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t in events]
     if with_endcard:
         s, e = ass_ts(total), ass_ts(total + ENDCARD_SECS)
         lines += [
@@ -114,6 +133,7 @@ def main():
     ap.add_argument("--srt-after-cut", action="store_true")
     ap.add_argument("--no-silence-cut", action="store_true")
     ap.add_argument("--no-endcard", action="store_true")
+    ap.add_argument("--grade", choices=["warm", "natural"], default="warm")
     ap.add_argument("--out")
     a = ap.parse_args()
 
@@ -138,15 +158,15 @@ def main():
     cat = "".join(f"[v{i}][a{i}]" for i in range(n))
     fc = ";".join(parts) + f";{cat}concat=n={n}:v=1:a=1[vc][ac];"
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
-           f"eq=contrast=1.06:saturation=1.1,unsharp=5:5:0.5,fps=30[vm];"
+           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30[vm];"
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am];")
     if a.no_endcard:
-        fc += f"[vm]subtitles={ass}[vout];[am]anull[aout]"
+        fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"
     else:
         fc += (f"color=c=0x{BRAND['navy']}:s={W}x{H}:d={ENDCARD_SECS}:r=30[card];"
                f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
                f"[vm][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
-               f"[vv]subtitles={ass}[vout]")
+               f"[vv]subtitles={ass}:fontsdir={FONTS_DIR}[vout]")
     run(["ffmpeg", "-v", "error", "-y", "-i", a.src, "-filter_complex", fc,
          "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", "21",
          "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",

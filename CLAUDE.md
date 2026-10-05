@@ -13,4 +13,4 @@ Editing a reel (Mustafa uploads to `videos/`, sometimes on `main` — check `git
 4. Check frames of the output (subtitle position/readability, end card) before delivering.
 5. Commit to the current branch with the output at `videos/reelN_vX.mp4`; tell him the branch + path and how to download it (GitHub app/website, raw file).
 
-Limits to remember: no audio listening / no speech-to-text installed, so subtitles come from his script; source quality is not improved by upscaling; no CapCut access.
+Limits to remember: no audio listening / no speech-to-text installed, so subtitles come from his script (style: see "Caption & color style" in profile); source quality is not improved by upscaling; no CapCut access.
