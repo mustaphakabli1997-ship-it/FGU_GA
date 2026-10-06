@@ -143,3 +143,7 @@
 - 3D: broll3d.py (box, coin, phone).
 - Mustafa's preferences (latest): whoosh at most ONCE per reel; camera shake only once, light (at the hook); French words he says (confiance, produit, commande...) are written in French (Latin letters) inside Arabic captions — the caption renderer handles mixed Arabic/French word order.
 - Captions: Mustafa wants ONLY the key words on screen (`--keywords-only`: only the *starred* words, big, drawn as images, Arabic and French alike). Test colour: yellow `--accent FFD60A` (`--text-color` for non-key words). Waiting for his final colour choice.
+
+## "After Effects" card style (reference: reel recorded on a laptop, "4 hours of editing for 20 seconds")
+- `--layout cards`: light grid-paper background with soft window-light shadows, the video in a big rounded card (800x1422) with drop shadow that slides up at the start, a small face card (auto face crop, white border, from the clean talking-head stream) sliding in from the left at 1 s, big "#" and a barcode as decorations. Captions/hook/emoji sit on top.
+- Example: `python3 tools/edit_reel.py videos/reel2.mov --srt subs/reel2_L.srt --layout cards --keywords-only --accent FFD60A --hook "..." --music beat`

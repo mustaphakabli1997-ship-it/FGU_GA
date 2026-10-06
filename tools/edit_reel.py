@@ -318,6 +318,49 @@ def render_notif_png(text, path):
     im.save(path)
 
 
+CARD_W, CARD_H, CARD_Y = 800, 1422, 250
+
+
+def render_card_assets(tmp):
+    """Light grid paper with soft window-light shadows, card mask, card shadow, pip mask."""
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+    bg = Image.new("RGB", (W, H), (240, 240, 236))
+    d = ImageDraw.Draw(bg)
+    for x in range(0, W, 72):
+        d.line([(x, 0), (x, H)], fill=(222, 222, 218), width=2)
+    for y in range(0, H, 72):
+        d.line([(0, y), (W, y)], fill=(222, 222, 218), width=2)
+    sh = Image.new("L", (W, H), 0)
+    sd = ImageDraw.Draw(sh)
+    for i in range(4):   # window frame bars falling diagonally
+        x0 = -300 + i * 330
+        sd.polygon([(x0, 0), (x0 + 60, 0), (x0 + 760, H), (x0 + 700, H)], fill=120)
+    sd.polygon([(-200, 520), (W + 200, 260), (W + 200, 320), (-200, 580)], fill=120)
+    sh = sh.filter(ImageFilter.GaussianBlur(28))
+    bg = Image.composite(Image.new("RGB", (W, H), (150, 150, 146)), bg, sh.point(lambda v: int(v * 0.85)))
+    d = ImageDraw.Draw(bg)
+    fa = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), 420)
+    d.text((40, H - 40), "#", font=fa, fill=(25, 25, 25), anchor="ls")
+    for i in range(42):    # barcode decoration
+        if (i * 7) % 5 < 3:
+            d.rectangle([W - 300 + i * 6, H - 150, W - 300 + i * 6 + (2 if i % 3 else 4), H - 70], fill=(30, 30, 30))
+    bgp = os.path.join(tmp, "cards_bg.png"); bg.save(bgp)
+
+    def rounded(w, h, r, path):
+        m = Image.new("L", (w, h), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, w - 1, h - 1], radius=r, fill=255); m.save(path)
+    mask = os.path.join(tmp, "card_mask.png"); rounded(CARD_W, CARD_H, 46, mask)
+    pipm = os.path.join(tmp, "pip_mask.png"); rounded(360, 480, 34, pipm)
+    pb = Image.new("RGBA", (384, 504), (0, 0, 0, 0))
+    ImageDraw.Draw(pb).rounded_rectangle([0, 0, 383, 503], radius=44, fill=(255, 255, 255, 255))
+    pbs = Image.new("RGBA", (444, 564), (0, 0, 0, 0)); ImageDraw.Draw(pbs).rounded_rectangle([30, 40, 414, 544], radius=44, fill=(0, 0, 0, 110))
+    pbs = pbs.filter(ImageFilter.GaussianBlur(16)); pbs.alpha_composite(pb, (30, 30))
+    pbs.save(os.path.join(tmp, "pip_border.png"))
+    shp = Image.new("RGBA", (CARD_W + 160, CARD_H + 160), (0, 0, 0, 0))
+    ImageDraw.Draw(shp).rounded_rectangle([80, 95, CARD_W + 80, CARD_H + 95], radius=46, fill=(0, 0, 0, 120))
+    shp = shp.filter(ImageFilter.GaussianBlur(30)); shadow = os.path.join(tmp, "card_shadow.png"); shp.save(shadow)
+    return bgp, mask, pipm, shadow
+
+
 def render_emoji(ch, path, size=230):
     from PIL import Image, ImageDraw, ImageFont
     f = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 109)
@@ -362,6 +405,7 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--layout", choices=["full", "cards"], default="full", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
     ap.add_argument("--accent", default="", help="hex colour for key words, e.g. FFD60A (yellow); default = brand orange")
     ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
@@ -427,6 +471,9 @@ def main():
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am0];")
 
     extra_inputs, cur, k, n_in = [], "vm0", 0, 1
+    if a.layout == "cards":
+        fc += "[vm0]split[vm0a][pipraw];"
+        cur = "vm0a"
 
     # effect tags from the .srt: sparks / flash / leak / money / broll:NAME / icon:NAME
     for (ea, eb, _t, _em, tags) in events:
@@ -472,6 +519,30 @@ def main():
                 fc += (f"[{n_in}:v]format=rgba,scale=230:-1,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[fx{k}];"
                        f"[{cur}][fx{k}]overlay=x='(W-w)/2':y='{int(H * 0.11)}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
+
+    # CARDS layout: shrink the finished content into a rounded card on the grid background, + a small face card
+    if a.layout == "cards":
+        bgp, maskp, pipm, shadowp = render_card_assets(tmp)
+        cx0 = (W - CARD_W) // 2
+        ent = f"(1-min(1,t/0.5))*(1-min(1,t/0.5))*(1-min(1,t/0.5))"     # ease-out entry
+        extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", bgp, "-loop", "1", "-t", f"{total:.2f}", "-i", maskp,
+                         "-loop", "1", "-t", f"{total:.2f}", "-i", shadowp, "-loop", "1", "-t", f"{total:.2f}", "-i", pipm,
+                         "-loop", "1", "-t", f"{total:.2f}", "-i", os.path.join(tmp, "pip_border.png")]
+        ib, im_, ish, ip, ipb = n_in, n_in + 1, n_in + 2, n_in + 3, n_in + 4
+        n_in += 5
+        face = find_face(a.src, unmap(1.2, segs)) or (W // 2, int(H * 0.40), 260)
+        fx, fy, fr = face
+        cw_, ch_ = 600, 800
+        x0c = min(max(fx - cw_ // 2, 0), W - cw_); y0c = min(max(fy - int(ch_ * 0.42), 0), H - ch_)
+        fc += (f"[{cur}]null[cardsrc];[pipraw]null[pipsrc];"
+               f"[cardsrc]scale={CARD_W}:{CARD_H},format=rgba[cs];[{im_}:v]format=gray,scale={CARD_W}:{CARD_H}[cm];[cs][cm]alphamerge[card];"
+               f"[pipsrc]crop={cw_}:{ch_}:{x0c}:{y0c},scale=360:480,format=rgba[ps];[{ip}:v]format=gray[pm];[ps][pm]alphamerge[pipc];"
+               f"[{ib}:v]format=rgba[bgc];"
+               f"[bgc][{ish}:v]overlay=x={cx0 - 80}:y='{CARD_Y - 80}+{H}*{ent}'[bgs];"
+               f"[bgs][card]overlay=x={cx0}:y='{CARD_Y}+{H}*{ent}'[withcard];"
+               f"[withcard][{ipb}:v]overlay=x='40-30-500*(1-min(1,(t-1.0)/0.35))':y={CARD_Y + CARD_H - 520 - 42}:enable='gte(t,1.0)'[wpb];"
+               f"[wpb][pipc]overlay=x='40-500*(1-min(1,(t-1.0)/0.35))':y={CARD_Y + CARD_H - 520}:enable='gte(t,1.0)'[cardsout];")
+        cur = "cardsout"
 
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
     if not a.no_emoji:
