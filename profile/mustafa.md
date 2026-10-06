@@ -9,6 +9,19 @@
 - Services: Meta Ads, e-commerce store ops (Shopify, Foorweb, Builddz, YouCan), digital support.
 - Goal: grow his own brand and get better at editing Reels. Claude acts as his Reels editing + content copilot.
 
+## CURRENT DEFAULT RECIPE (latest preferences — these win over older notes below)
+- Upload: always the original .mov/.mp4 via GitHub (`main`); the chat turns videos into stills/GIFs (no sound) — never edit from those.
+- Captions: KEY WORDS ONLY (`--keywords-only`), big, yellow `--accent FFD60A` with black outline, drawn as images (Lalezar). Star whole short phrases (`*البيع ما كاش*`) so small words are never dropped. French words he says are written in French (confiance, créative, cliente, messages).
+- Words come from his real speech: `tools/transcribe.py` (Whisper large-v3 on cleaned audio) gives timings + a draft; pick only clearly heard key words, ask him when unsure.
+- Colours: keep his filter (`--grade none`) unless he asks; `pro` if the face lighting is bad. Never `cinema` (skin too pink).
+- Motion: ONE zoom-out at the start only (`--zoom-mode intro`, default); ONE light shake (at the hook only); whoosh max ONCE per reel; click only on key words.
+- Hook: `--hook` card in the top safe zone for the first 2.6 s, built from his own message (no invented numbers or promises).
+- B-roll: 3D clips (`[broll:product3d]`, `[broll:trust3d]`, `[broll:chat3d]`), `[circle]` on his face, emoji; real filmed b-roll from him is better when available.
+- Music: `--music beat --bpm 100` (generated, royalty-free) under the voice.
+- Output: 1080x1920 (9:16). If > 30 MB, also make a `_send.mp4` copy (crf 25) to send in the chat.
+- Optional styles: `--layout cards` (After-Effects style rounded card on grid background); brand palette B (navy #0F172A + orange #FF6B2C) for end card, b-roll, identity pack.
+- Example: `python3 tools/edit_reel.py videos/reel3.mov --srt subs/reel3.srt --grade none --keywords-only --accent FFD60A --hook "عندك *créative* مليحة وما تبيعش؟" --music beat --bpm 100 --out videos/reel3_v1.mp4`
+
 ## Language
 - User writes in Algerian Darija (Arabic script). Reply in Darija, short and practical.
 - On-screen text language for reels: to confirm per reel (Darija / French / mix).
@@ -102,11 +115,11 @@
 - Script table format for a new reel: seconds | on-screen text hook | voiceover | visuals/B-roll/transitions | SFX. Typical length 30-45 s.
 - B-roll ideas: screen recordings of Meta Ads Manager, Foorweb / Builddz dashboards, zoom-in on key buttons.
 
-## Open points to confirm with Mustafa
-- Handle: confirmed link is @kabli_ms, but his latest brief wrote "kabli.ms" — keep @kabli_ms unless he says otherwise.
-- Palette: brief suggested Royal Blue / Emerald / Charcoal / White (more modern); current tool uses Midnight Blue #1A365D / Electric Blue #3182CE / Growth Green #38A169. Waiting for his choice.
-- Fonts: brief suggests Cairo/Tajawal for Arabic, Montserrat/Inter for Latin; current captions use Anton (Latin) and DejaVu Sans Bold (Arabic).
-- Logo idea: geometric K+M monogram with a rising arrow (not made yet).
+## Decisions taken (were open points)
+- Handle: @kabli_ms (confirmed; "kabli.ms" in a brief was a typo).
+- Palette: B chosen (navy #0F172A + orange #FF6B2C). Caption key words: yellow FFD60A (his latest choice in videos).
+- Fonts: Arabic captions Lalezar (images), identity Tajawal, Latin Anton / Montserrat.
+- Logo: K+M monogram with rising orange arrow made (assets/brand/), Canva variant saved in his account.
 
 ## Logo (made by Claude, `python3 tools/make_logo.py` -> assets/brand/)
 - Geometric K+M monogram, green rising arrow as the K's upper arm, on Midnight Blue. Files: logo_mark_navy (profile pic), logo_mark_transparent_dark / _white (overlays), logo_horizontal_navy (banner), SVG sources.
