@@ -84,3 +84,9 @@
 - End card tagline via `--tagline "BACH NAS DIR FIK ETHIQA"` (used when the trust line doesn't fit in the video).
 - Command: `python3 tools/edit_reel.py videos/reel2.mov --srt subs/reel2_v3.srt --tagline "..." --out videos/reel2_final_v3.mp4`
 - Next ideas: royalty-free background music under the voice, B-roll of products/stores, stronger hook in the first 2 seconds.
+
+## Meta Ads campaign snapshot (Mustafa's own results, 2026-10-06, usable as proof content)
+- Ad set "Publication Instagram: حاب تزيد مبيعاتك وتجيب..." (objective: conversations by message), all-time: 411 conversations, 0.27 USD per conversation, 112.76 USD spent, daily budget 5 USD, reach 46,785, impressions 94,623 (~2 views per person).
+- Conversations are not sales: always track conversations -> orders -> delivered, and quote the real cost per order.
+- Budget advice given: raise ~20% every 2-3 days (not +50% at once), don't edit audience/creative of a winning ad, add a second ad with a new hook instead, answer messages within 5 minutes, switch creative if frequency > 3, merge similar ad sets.
+- Reel idea (reel3): hook "411 زبون بـ 112$ 👀", screen recording of the results with 0.27$ circled in green, 3 points (audience, creative, small budget), CTA to WhatsApp for sponsoring. Never show client names, payment details or ad account IDs.
