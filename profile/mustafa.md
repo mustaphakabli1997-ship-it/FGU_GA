@@ -90,3 +90,18 @@
 - Conversations are not sales: always track conversations -> orders -> delivered, and quote the real cost per order.
 - Budget advice given: raise ~20% every 2-3 days (not +50% at once), don't edit audience/creative of a winning ad, add a second ad with a new hook instead, answer messages within 5 minutes, switch creative if frequency > 3, merge similar ad sets.
 - Reel idea (reel3): hook "411 زبون بـ 112$ 👀", screen recording of the results with 0.27$ circled in green, 3 points (audience, creative, small budget), CTA to WhatsApp for sponsoring. Never show client names, payment details or ad account IDs.
+
+## Hook library (from Mustafa's brief; use in the first 2-3 seconds, Darija/French mix)
+- Problem & solution: "تحرق البادجت في السبونسور بلا مبيعات؟ هذا هو الحل" / "راك تخسر في Facebook Ads؟ شوف هذه الطريقة".
+- Shock / myth-busting: "تخدم متجرين في نفس الوقت = غلط يضيع أرباحك" / "كل ما تعرفه على الـ Pixel غلط".
+- Numbers / proof: "411 زبون بـ 112$" / "من 0 لأول 100 طلبية في أسبوع" (only with real numbers).
+- Curiosity gap: "السر لي يخلي الكليان يكمل الشراء" / "3 أخطاء تدمر متجرك على Foorweb أو Builddz".
+- Niche call-out: "إذا راك تخدم E-commerce في الجزائر، الفيديو هذا ليك" / "لكل صاحب صفحة ودروبشيبر، اسمع مليح".
+- Script table format for a new reel: seconds | on-screen text hook | voiceover | visuals/B-roll/transitions | SFX. Typical length 30-45 s.
+- B-roll ideas: screen recordings of Meta Ads Manager, Foorweb / Builddz dashboards, zoom-in on key buttons.
+
+## Open points to confirm with Mustafa
+- Handle: confirmed link is @kabli_ms, but his latest brief wrote "kabli.ms" — keep @kabli_ms unless he says otherwise.
+- Palette: brief suggested Royal Blue / Emerald / Charcoal / White (more modern); current tool uses Midnight Blue #1A365D / Electric Blue #3182CE / Growth Green #38A169. Waiting for his choice.
+- Fonts: brief suggests Cairo/Tajawal for Arabic, Montserrat/Inter for Latin; current captions use Anton (Latin) and DejaVu Sans Bold (Arabic).
+- Logo idea: geometric K+M monogram with a rising arrow (not made yet).
