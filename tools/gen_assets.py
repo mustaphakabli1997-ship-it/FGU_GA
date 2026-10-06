@@ -111,7 +111,7 @@ def money_rain(n_secs=2.0):
 
 def growth_chart(n_secs=2.6):
     d = tempfile.mkdtemp()
-    navy, blue, green = (26, 54, 93), (49, 130, 206), (56, 161, 105)
+    navy, blue, green = (15, 23, 42), (27, 42, 74), (255, 107, 44)
     font = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 62)
     big = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 110)
     pts = [0.05, .12, .1, .22, .3, .28, .45, .6, .58, .8, .95]

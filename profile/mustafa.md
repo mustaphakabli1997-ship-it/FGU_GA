@@ -19,10 +19,12 @@
 - Avoid: exaggeration/hype, unexplained jargon, stiffness.
 - Terms to keep consistent: Meta Ads, ROAS, Foorweb, Builddz, Shopify, Landing Pages.
 
-## Brand colors (use for text overlays, lower-thirds, end cards)
-- Midnight Blue #1A365D — trust
-- Electric Blue #3182CE — tech/activity
-- Growth Green #38A169 — results/profits
+## Brand colors — PALETTE B (chosen by Mustafa 2026-10-06; replaces the old blue/green palette)
+- Deep Navy #0F172A — backgrounds, trust
+- Slate Blue #1B2A4A — cards, depth
+- Signal Orange #FF6B2C — the ONE accent word per phrase, arrows, chips, CTA numbers
+- White #FFFFFF — text; Ink #080D1C — shadows
+- In code the accent is BRAND["green"] (kept for compatibility) = orange. Older notes below that say "green accent" mean this orange now.
 
 ## Reel structure (default)
 - 0-3s hook (number / problem / result), 3-10s problem or story, 10-22s solution in 3 points with on-screen text, last 5-8s CTA.

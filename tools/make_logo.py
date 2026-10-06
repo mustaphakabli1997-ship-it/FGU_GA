@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "brand")
-NAVY, BLUE, GREEN, WHITE = "#1A365D", "#3182CE", "#38A169", "#FFFFFF"
+NAVY, BLUE, GREEN, WHITE = "#0F172A", "#1B2A4A", "#FF6B2C", "#FFFFFF"  # palette B (GREEN = orange accent)
 
 def mark(bg=True, fg=WHITE):
     sq = f'<rect width="512" height="512" rx="112" fill="{NAVY}"/>' if bg else ""
@@ -38,7 +38,7 @@ def main():
     small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 46)
     d.text((640, 150), "KABLI_MS", font=big, fill=WHITE)
     d.rectangle([646, 392, 646 + 110, 402], fill=GREEN)
-    d.text((646, 430), "E-COMMERCE  •  SPONSOR  •  META ADS", font=small, fill="#A9C4E8")
+    d.text((646, 430), "E-COMMERCE  •  SPONSOR  •  META ADS", font=small, fill="#9FB3D1")
     im.save(os.path.join(OUT, "logo_horizontal_navy.png"))
     print("done:", sorted(os.listdir(OUT)))
 

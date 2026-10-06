@@ -14,7 +14,7 @@ def F(n, s):
 ANTON = lambda s: F("Anton-Regular.ttf", s)
 TAJ = lambda s: F("Tajawal-ExtraBold.ttf", s)
 TAJR = lambda s: F("Tajawal-Bold.ttf", s)
-NAVY, BLUE, GREEN, WHITE, INK, SOFT = (26, 54, 93), (49, 130, 206), (56, 161, 105), (255, 255, 255), (11, 25, 46), (169, 196, 232)
+NAVY, BLUE, GREEN, WHITE, INK, SOFT = (15, 23, 42), (27, 42, 74), (255, 107, 44), (255, 255, 255), (8, 13, 28), (159, 179, 209)  # palette B: GREEN = signal orange
 MARK = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_transparent_white.png")).convert("RGBA")
 MARKNAVY = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_navy.png")).convert("RGBA")
 
@@ -80,8 +80,8 @@ def brand_board():
     text_c(d, (380, 900), ar("نصائح التجارة الإلكترونية"), TAJ(52), WHITE)
     text_c(d, (380, 970), ar("نتائج حقيقية، بلا تضخيم"), TAJR(34), SOFT)
     d.text((840, 90), "PALETTE", font=F("Montserrat-Bold.ttf", 30), fill=NAVY)
-    sw = [("Midnight Blue", "#1A365D", NAVY, "الثقة · الخلفية"), ("Electric Blue", "#3182CE", BLUE, "التقنية · الروابط"),
-          ("Growth Green", "#38A169", GREEN, "النتائج · المهمة"), ("White", "#FFFFFF", WHITE, "النص"), ("Ink", "#0B192E", INK, "الظلال")]
+    sw = [("Deep Navy", "#0F172A", NAVY, "الثقة · الخلفية"), ("Slate Blue", "#1B2A4A", BLUE, "البطاقات · العمق"),
+          ("Signal Orange", "#FF6B2C", GREEN, "الكلمة المهمة"), ("White", "#FFFFFF", WHITE, "النص"), ("Ink", "#080D1C", INK, "الظلال")]
     for i, (n, h, c, use) in enumerate(sw):
         x = 840 + i * 205
         d.rounded_rectangle([x, 150, x + 185, 400], radius=26, fill=c, outline=(210, 220, 235), width=2)
@@ -92,7 +92,7 @@ def brand_board():
     d.text((840, 640), "ANTON — HEADLINES & CAPTIONS", font=ANTON(64), fill=NAVY)
     d.text((840, 740), "Montserrat Bold — labels, numbers", font=F("Montserrat-Bold.ttf", 38), fill=NAVY)
     d.text((840, 810), ar("Tajawal — العناوين بالعربية"), font=TAJ(54), fill=NAVY)
-    d.text((840, 920), "RULE: ONE accent word per phrase in Growth Green.", font=F("Montserrat-Bold.ttf", 26), fill=GREEN)
+    d.text((840, 920), "RULE: ONE accent word per phrase in Signal Orange.", font=F("Montserrat-Bold.ttf", 26), fill=GREEN)
     d.text((840, 975), "Caption max 3 words · Hook in 2 seconds · CTA = WhatsApp", font=F("Montserrat-Bold.ttf", 26), fill=(100, 116, 139))
     im.save(os.path.join(OUT, "brand_board.png"))
 

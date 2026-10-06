@@ -10,7 +10,7 @@ video unless --srt-after-cut is passed). Brand colors / contacts live in BRAND b
 """
 import argparse, os, re, subprocess, sys, tempfile
 
-BRAND = dict(navy="1A365D", blue="3182CE", green="38A169",
+BRAND = dict(navy="0F172A", blue="1B2A4A", green="FF6B2C",  # palette B: navy + signal orange (key "green" = accent colour)
              whatsapp="0550 20 54 64", handle="@kabli_ms",
              cta="راسلني على واتساب")
 FONT = "Anton"  # bold condensed caption font (OFL), in tools/fonts; Arabic falls back to DejaVu Sans
