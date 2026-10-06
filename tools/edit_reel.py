@@ -151,8 +151,9 @@ def find_asset(kind, name):
                 for f in sorted(os.listdir(d)):
                     if os.path.splitext(f)[0] == name:
                         return os.path.join(d, f)
-        if attempt == 0 and not os.path.isdir(os.path.join(ASSETS, "_generated")):
-            run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen_assets.py")])
+        if attempt == 0:
+            tools_dir = os.path.dirname(os.path.abspath(__file__))
+            run([sys.executable, os.path.join(tools_dir, "broll3d.py" if name.endswith("3d") else "gen_assets.py")])
     sys.exit(f"asset '{name}' not found in assets/ (tag [{kind}:{name}])")
 
 
