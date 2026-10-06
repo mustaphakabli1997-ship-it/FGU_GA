@@ -209,7 +209,8 @@ def render_caption_png(text, path, font_file, size=106, maxw=860):
         y = 20 + li * lh + lh / 2
         for w, acc, ww in ws:
             d.text((x, y), w, font=f, fill=accent if acc else "#FFFFFF", anchor="rm",
-                   stroke_width=max(4, size // 16), stroke_fill="#000000", direction="rtl")
+                   stroke_width=max(4, size // 16), stroke_fill="#000000",
+                   direction="rtl" if ARABIC_RE.search(w) else "ltr")
             x -= ww + space
     im.save(path)
     return W2, H2
@@ -405,9 +406,9 @@ def main():
             f"scale=w='trunc({W}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':eval=frame,crop={W}:{H},")
     shakes = [ea for (ea, eb, _t, _em, tg) in events for kd, _ in tg if kd == "shake"] + ([0.0] if a.hook else [])
     if shakes:
-        sx = "+".join(f"between(t,{t0:.2f},{t0 + 0.35:.2f})*26*sin(75*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.35)" for t0 in shakes)
-        sy = "+".join(f"between(t,{t0:.2f},{t0 + 0.35:.2f})*18*cos(63*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.35)" for t0 in shakes)
-        zoom += f"scale={int(W * 1.05) // 2 * 2}:{int(H * 1.05) // 2 * 2},crop={W}:{H}:x='(iw-{W})/2+{sx}':y='(ih-{H})/2+{sy}',"
+        sx = "+".join(f"between(t,{t0:.2f},{t0 + 0.25:.2f})*12*sin(75*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.25)" for t0 in shakes)
+        sy = "+".join(f"between(t,{t0:.2f},{t0 + 0.25:.2f})*8*cos(63*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.25)" for t0 in shakes)
+        zoom += f"scale={int(W * 1.03) // 2 * 2}:{int(H * 1.03) // 2 * 2},crop={W}:{H}:x='(iw-{W})/2+{sx}':y='(ih-{H})/2+{sy}',"
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
            f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
            + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
@@ -507,11 +508,13 @@ def main():
     else:
         sfx = make_sfx(tmp)
         mix, n_mix = ["[am0]"], 1
-        VOL = {"click": 0.35, "whoosh": 0.32, "pop": 0.42, "ding": 0.30, "boom": 0.9}
+        VOL = {"click": 0.22, "whoosh": 0.25, "pop": 0.38, "ding": 0.28, "boom": 0.8}
+        whoosh_used = False   # Mustafa: whoosh must not repeat -> once per reel
         for i, (ea, eb, _t, ems, tags) in enumerate(events):
             kinds = {kd for kd, _ in tags}
-            plan = ["click"]
-            if kinds & {"broll"}: plan.append("whoosh")
+            plan = ["click"] if "*" in _t else []
+            if kinds & {"broll"} and not whoosh_used:
+                plan.append("whoosh"); whoosh_used = True
             if ems or kinds & {"sparks", "icon", "circle", "arrow", "notif", "leak"}: plan.append("pop")
             if kinds & {"ding", "flash", "money"}: plan.append("ding")
             if "shake" in kinds: plan.append("boom")
