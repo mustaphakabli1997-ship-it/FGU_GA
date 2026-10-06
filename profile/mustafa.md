@@ -147,3 +147,8 @@
 ## "After Effects" card style (reference: reel recorded on a laptop, "4 hours of editing for 20 seconds")
 - `--layout cards`: light grid-paper background with soft window-light shadows, the video in a big rounded card (800x1422) with drop shadow that slides up at the start, a small face card (auto face crop, white border, from the clean talking-head stream) sliding in from the left at 1 s, big "#" and a barcode as decorations. Captions/hook/emoji sit on top.
 - Example: `python3 tools/edit_reel.py videos/reel2.mov --srt subs/reel2_L.srt --layout cards --keywords-only --accent FFD60A --hook "..." --music beat`
+
+## reel3 (car, black t-shirt, 63 s) — "créative مليحة وما تبيعش؟"
+- Source: `1006 (1)(2).mov` uploaded to main (the chat converts videos to GIF — always upload the .mov via GitHub). Saved as videos/reel3.mov.
+- Story heard (Whisper large-v3, cleaned audio): a client had a good créative and messages were coming, but the problem was in selling; the fix = "اعرف وين تشري" (know where to buy / sourcing).
+- Mustafa asked to keep his filter: `--grade none`. Keywords-only yellow captions; star whole short phrases (e.g. `*البيع ما كاش*`) so small words like "ما" are never dropped.

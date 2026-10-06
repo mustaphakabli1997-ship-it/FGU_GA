@@ -21,6 +21,7 @@ W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
     "warm": "eq=contrast=1.12:saturation=1.2:brightness=-0.02,colorbalance=rs=0.05:gs=0.01:bs=-0.07:rm=0.06:bm=-0.05:rh=0.04:bh=-0.04,vignette=PI/5",
+    "none": "null",   # keep his original colours/filter untouched
     "natural": "eq=contrast=1.06:saturation=1.1",
     # skin-friendly: light denoise, highlights rolled off (bright sunroof light on the face), less red in skin, soft vignette
     "pro": "hqdn3d=2:1:3:3,curves=master='0/0 0.25/0.22 0.6/0.6 0.85/0.81 1/0.94',colorbalance=rm=-0.04:bm=0.02:rh=-0.05:bh=0.03,eq=contrast=1.1:saturation=1.08,vignette=PI/6",
@@ -418,7 +419,7 @@ def main():
     ap.add_argument("--no-bar", action="store_true")
     ap.add_argument("--tagline", default="")
     ap.add_argument("--no-emoji", action="store_true")
-    ap.add_argument("--grade", choices=["warm", "natural", "cinema", "bright", "pro"], default="pro")
+    ap.add_argument("--grade", choices=["warm", "natural", "cinema", "bright", "pro", "none"], default="pro")
     ap.add_argument("--out")
     a = ap.parse_args()
 
@@ -465,7 +466,7 @@ def main():
         sy = "+".join(f"between(t,{t0:.2f},{t0 + 0.25:.2f})*8*cos(63*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.25)" for t0 in shakes)
         zoom += f"scale={int(W * 1.03) // 2 * 2}:{int(H * 1.03) // 2 * 2},crop={W}:{H}:x='(iw-{W})/2+{sx}':y='(ih-{H})/2+{sy}',"
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
-           f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
+           f"{GRADES[a.grade]},unsharp=5:5:0.4,fps=30"
            + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
            + "[vm0];"
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am0];")
