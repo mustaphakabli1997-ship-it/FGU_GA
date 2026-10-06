@@ -124,7 +124,7 @@ Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,1
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 """
-    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t, *_ in events if t]
+    lines = [f"Dialogue: 0,{ass_ts(a)},{ass_ts(b)},Sub,,0,0,0,,{style_text(t)}" for a, b, t, *_ in events if t and not ARABIC_RE.search(t)]
     if with_endcard:
         s, e = ass_ts(total), ass_ts(total + ENDCARD_SECS)
         lines += [
@@ -172,6 +172,40 @@ def make_sfx(tmp):
     return out
 
 
+ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
+
+
+def render_caption_png(text, path, font_file, size=118, maxw=940):
+    """Arabic caption as an image (Pillow+raqm shapes Arabic correctly with any font). *word* = accent colour."""
+    from PIL import Image, ImageDraw, ImageFont
+    f = ImageFont.truetype(os.path.join(FONTS_DIR, font_file), size)
+    words = [(w.strip("*"), w.startswith("*") or w.endswith("*")) for w in re.sub(r"\*([^*]+)\*", lambda m: "*" + m.group(1).replace(" ", "*\u00a0*") + "*", text).split()]
+    words = [(w.replace("*", "").replace("\u00a0", " "), acc) for w, acc in words]
+    tmp = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+    space = tmp.textlength(" ", font=f)
+    lines, cur, curw = [], [], 0
+    for w, acc in words:
+        ww = tmp.textlength(w, font=f)
+        if cur and curw + space + ww > maxw:
+            lines.append((cur, curw)); cur, curw = [], 0
+        cur.append((w, acc, ww)); curw += (space if len(cur) > 1 else 0) + ww
+    if cur: lines.append((cur, curw))
+    lh = int(size * 1.35)
+    W2, H2 = maxw + 80, lh * len(lines) + 40
+    im = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    accent = "#" + ACCENT
+    for li, (ws, lw) in enumerate(lines):
+        x = W2 / 2 + lw / 2          # right edge: Arabic reads right -> left
+        y = 20 + li * lh + lh / 2
+        for w, acc, ww in ws:
+            d.text((x, y), w, font=f, fill=accent if acc else "#FFFFFF", anchor="rm",
+                   stroke_width=max(4, size // 16), stroke_fill="#000000", direction="rtl")
+            x -= ww + space
+    im.save(path)
+    return W2, H2
+
+
 def render_emoji(ch, path, size=230):
     from PIL import Image, ImageDraw, ImageFont
     f = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 109)
@@ -182,7 +216,7 @@ def render_emoji(ch, path, size=230):
     im.save(path)
 
 
-def zoom_expr(events, segs, total):
+def zoom_expr(events, segs, total, k=0.45):
     """Alternating punch zoom-OUT (1.14 -> 1.0) and slow push-IN (1.0 -> 1.10), restarted at each caption / cut."""
     pts = sorted({round(a, 2) for a, *_ in events if a < total}
                  | {round(sum(b - x for x, b in segs[:i]), 2) for i in range(1, len(segs))})
@@ -194,9 +228,9 @@ def zoom_expr(events, segs, total):
     for i, t0 in enumerate(pts):
         t1 = pts[i + 1] if i + 1 < len(pts) else total
         if i % 2 == 0:   # punch out
-            terms.append(f"between(t\\,{t0}\\,{t1})*(1+0.14*max(0\\,1-(t-{t0})/0.6))")
+            terms.append(f"between(t\\,{t0}\\,{t1})*(1+{0.14*k:.3f}*max(0\\,1-(t-{t0})/0.6))")
         else:            # push in
-            terms.append(f"between(t\\,{t0}\\,{t1})*(1+0.10*min(1\\,(t-{t0})/{max(t1 - t0, 0.3):.2f}))")
+            terms.append(f"between(t\\,{t0}\\,{t1})*(1+{0.10*k:.3f}*min(1\\,(t-{t0})/{max(t1 - t0, 0.3):.2f}))")
     return "(" + "+".join(terms) + ")"
 
 
@@ -209,6 +243,8 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--zoom", type=float, default=0.45, help="zoom strength: 1 = strong punch, 0.45 = soft (default), 0 = none")
+    ap.add_argument("--ar-font", default="Lalezar-Regular.ttf", help="Arabic caption font file in tools/fonts (drawn as images, any font works)")
     ap.add_argument("--no-bar", action="store_true")
     ap.add_argument("--tagline", default="")
     ap.add_argument("--no-emoji", action="store_true")
@@ -237,7 +273,7 @@ def main():
     cat = "".join(f"[v{i}][a{i}]" for i in range(n))
     fc = ";".join(parts) + f";{cat}concat=n={n}:v=1:a=1[vc][ac];"
     zoom = ("" if a.no_zoom else
-            f"scale=w='trunc({W}*{zoom_expr(events, segs, total)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total)}/2)*2':eval=frame,crop={W}:{H},")
+            f"scale=w='trunc({W}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':eval=frame,crop={W}:{H},")
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
            f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
            + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
@@ -278,6 +314,16 @@ def main():
                 fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
                        f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
                 cur, k, n_in = f"ov{k}", k + 1, n_in + 1
+    # Arabic captions as images, on top of everything, slide-up + fade-in
+    for (ea, eb, t, _em, _tg) in events:
+        if t and ARABIC_RE.search(t):
+            png = os.path.join(tmp, f"cap{k}.png")
+            cw, chh = render_caption_png(t, png, a.ar_font)
+            extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
+            y = f"{int(H * 0.645) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
+            fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
+                   f"[{cur}][cp{k}]overlay=x=(W-w)/2:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+            cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     fc += f"[{cur}]null[vm];"
 
     # sound effects: whoosh on every caption change, pop when an emoji / effect tag appears

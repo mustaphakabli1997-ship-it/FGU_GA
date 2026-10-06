@@ -144,10 +144,87 @@ def growth_chart(n_secs=2.6):
     return d
 
 
+def _emoji(ch, size):
+    f = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 109)
+    im = Image.new("RGBA", (140, 130), (0, 0, 0, 0))
+    ImageDraw.Draw(im).text((0, 0), ch, font=f, embedded_color=True)
+    im = im.crop(im.getbbox())
+    return im.resize((size, int(size * im.height / im.width)), Image.LANCZOS)
+
+
+NAVY_B, SLATE_B, ORANGE_B, SOFT_B = (15, 23, 42), (27, 42, 74), (255, 107, 44), (159, 179, 209)
+LALEZAR = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Lalezar-Regular.ttf"), s)
+
+
+def _card_bg():
+    im = Image.new("RGB", (SW, SH), NAVY_B)
+    glow = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
+    ImageDraw.Draw(glow).ellipse([SW * .1, SH * .15, SW * .9, SH * .6], fill=ORANGE_B + (60,))
+    glow = glow.filter(ImageFilter.GaussianBlur(90))
+    im.paste(glow, (0, 0), glow)
+    return im
+
+
+def _ease(t):
+    return 1 - (1 - min(max(t, 0), 1)) ** 3
+
+
+def broll_icon(emoji, big, small, n_secs=1.6):
+    """Emoji pops in, big Latin word + Arabic line slide up."""
+    d = tempfile.mkdtemp()
+    base = _emoji(emoji, 300)
+    fb = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 110)
+    for f in range(int(n_secs * FPS)):
+        t = f / FPS
+        im = _card_bg()
+        dr = ImageDraw.Draw(im)
+        k = _ease(t / 0.35)
+        sc = 0.6 + 0.4 * k + 0.04 * math.sin(t * 6)
+        e = base.resize((int(base.width * sc), int(base.height * sc)), Image.LANCZOS)
+        im.paste(e, (int(SW / 2 - e.width / 2), int(SH * .24 - e.height / 2)), e)
+        k2 = _ease((t - 0.2) / 0.35)
+        dr.text((SW / 2, SH * .43 + 40 * (1 - k2)), big, font=fb, fill=(255, 255, 255), anchor="mm")
+        k3 = _ease((t - 0.35) / 0.35)
+        dr.text((SW / 2, SH * .52 + 40 * (1 - k3)), small, font=LALEZAR(64), fill=ORANGE_B, anchor="mm", direction="rtl")
+        im.save(f"{d}/{f+1:04d}.png")
+    return d
+
+
+def broll_chat(n_secs=1.8):
+    """Customer messages pop in like WhatsApp: people talking to you = trust."""
+    d = tempfile.mkdtemp()
+    msgs = [("السلام، المنتوج متوفر؟", 0.0, False), ("إيه خويا، متوفر", 0.45, True), ("نحب نكوموندي واحد", 0.9, False)]
+    font = LALEZAR(34)
+    for f in range(int(n_secs * FPS)):
+        t = f / FPS
+        im = _card_bg()
+        dr = ImageDraw.Draw(im)
+        dr.rounded_rectangle([50, 90, SW - 50, SH * .56], radius=40, fill=(11, 20, 26), outline=SLATE_B, width=4)
+        dr.text((SW / 2, 140), "WhatsApp", font=ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Montserrat-Bold.ttf"), 34), fill=(255, 255, 255), anchor="mm")
+        y = 200
+        for text, start, mine in msgs:
+            k = _ease((t - start) / 0.25)
+            if k <= 0:
+                continue
+            w = dr.textlength(text, font=font, direction="rtl") + 60
+            x0 = max(70, SW - 80 - w) if not mine else 80
+            fill = (32, 44, 51) if not mine else (0, 92, 75)
+            yy = y + 30 * (1 - k)
+            dr.rounded_rectangle([x0, yy, x0 + w, yy + 70], radius=24, fill=fill)
+            dr.text((x0 + w - 30, yy + 35), text, font=font, fill=(255, 255, 255), anchor="rm", direction="rtl")
+            y += 100
+        im.save(f"{d}/{f+1:04d}.png")
+    return d
+
+
 def main():
     jobs = [("assets/_generated/sparks_orange.mov", sparks, True), ("assets/_generated/flash_white.mov", flash, True),
             ("assets/_generated/light_leak.mov", light_leak, True), ("assets/_generated/money_rain.mov", money_rain, True),
-            ("assets/_generated/growth_chart.mp4", growth_chart, False)]
+            ("assets/_generated/growth_chart.mp4", growth_chart, False),
+            ("assets/_generated/trust.mp4", lambda: broll_icon("🤝", "CONFIANCE", "الثقة تاع البنادم"), False),
+            ("assets/_generated/product.mp4", lambda: broll_icon("📦", "PRODUIT", "المنتوج في يدك"), False),
+            ("assets/_generated/face.mp4", lambda: broll_icon("🎥", "B WJHEK", "اخدم بوجهك"), False),
+            ("assets/_generated/chat.mp4", broll_chat, False)]
     for rel, fn, alpha in jobs:
         d = fn()
         encode(d, os.path.join(ROOT, rel), alpha)

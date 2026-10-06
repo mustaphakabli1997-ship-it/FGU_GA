@@ -117,3 +117,8 @@
 - Fonts in tools/fonts: Anton (Latin headlines/captions), Montserrat Bold (labels), Tajawal ExtraBold/Bold (Arabic). Pillow+raqm shapes Arabic itself: do NOT use arabic-reshaper/bidi.
 - Rules: one green accent word per phrase, caption max 3 words, hook in 2 seconds, CTA = WhatsApp 0550 20 54 64, handle @kabli_ms, K+M mark bottom-left.
 - Canva: 4 tip-post candidates generated (not saved yet): _rXdS_rJ-gyblqT, hYZZQ2jVaOQ9_nl, OZ25760xbuiCkT9, t0aEF9vkqn9Y43U (canva.com/d/...).
+
+## Caption font & motion update (reel2 F)
+- Arabic captions are drawn as images (Pillow+raqm) because this ffmpeg/libass cannot shape Arabic with Google fonts; default font Lalezar (bold display), `--ar-font` to change (any .ttf in tools/fonts). Latin captions stay Anton via libass.
+- Zoom is soft by default (`--zoom 0.45`; 1 = old strong punch, 0 = off) — Mustafa asked for less zoom-out.
+- Generated B-roll cutaways (palette B, text in the upper half so captions stay readable): `[broll:trust]` handshake/CONFIANCE, `[broll:chat]` WhatsApp customer messages, `[broll:product]` box/PRODUIT, `[broll:face]` camera/B WJHEK, `[broll:growth_chart]`. Don't cover his face when he says "قدامك"/"أنا هاني".
