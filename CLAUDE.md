@@ -13,7 +13,9 @@ Editing a reel (Mustafa uploads to `videos/`, sometimes on `main` — check `git
 4. Check frames of the output (subtitle position/readability, end card) before delivering.
 5. Commit to the current branch with the output at `videos/reelN_vX.mp4`; tell him the branch + path and how to download it (GitHub app/website, raw file).
 
-Auto captions: Mustafa types (or dictates) what he says in a text file, then `python3 tools/auto_subs.py videos/reelN.mov script.txt > subs/reelN.srt` spreads the words over the speech (approx timing, check it), then run edit_reel.py with that .srt. Mark key words with *stars*.
+Best pipeline (real timing): 1) `python3 tools/transcribe.py videos/reelN.mov` (Whisper large-v3, ~1 min) writes subs/reelN.draft.txt (Arabic-script DRAFT, partly wrong) + subs/reelN.words.json (reliable word timings). 2) Send him the draft; he corrects/rewrites it as script lines (one phrase per line, Latin Darija ok, *stars* on key words). 3) `python3 tools/auto_subs.py videos/reelN.mov script.txt 2 > subs/reelN.srt` — uses the real word timings when words.json exists (3rd arg = max words per caption). 4) edit_reel.py (`--grade warm|natural|cinema|bright`).
+
+Auto captions (without words.json): Mustafa types (or dictates) what he says in a text file, then `python3 tools/auto_subs.py videos/reelN.mov script.txt > subs/reelN.srt` spreads the words over the speech (approx timing, check it), then run edit_reel.py with that .srt. Mark key words with *stars*.
 
 Limits to remember: whisper (tools/transcribe.py) cannot transcribe Algerian Darija reliably, so words come from his script (style: see "Caption & color style" in profile); source quality is not improved by upscaling; no CapCut access.
 
