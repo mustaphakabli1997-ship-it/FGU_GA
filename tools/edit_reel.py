@@ -284,6 +284,7 @@ def main():
     ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
     ap.add_argument("--music", default="", help="'beat' = generated royalty-free beat, or a path to your own audio file")
     ap.add_argument("--bpm", type=float, default=100)
+    ap.add_argument("--zoom-mode", choices=["intro", "all"], default="intro", help="intro = ONE zoom-out at the start only (Mustafa's choice); all = a zoom on every caption")
     ap.add_argument("--zoom", type=float, default=0.45, help="zoom strength: 1 = strong punch, 0.45 = soft (default), 0 = none")
     ap.add_argument("--ar-font", default="Lalezar-Regular.ttf", help="Arabic caption font file in tools/fonts (drawn as images, any font works)")
     ap.add_argument("--no-bar", action="store_true")
@@ -317,7 +318,11 @@ def main():
     HOOK = bool(a.hook)
     if a.music:
         BEATS = [i * 60 / a.bpm for i in range(int(total * a.bpm / 60) + 2)]
-    zoom = ("" if a.no_zoom else
+    if a.zoom_mode == "intro" and not a.no_zoom:
+        zexpr = "(1+0.16*max(0\\,1-t/0.8))"   # single zoom-out over the first 0.8 s, then static
+        zoom = f"scale=w='trunc({W}*{zexpr}/2)*2':h='trunc({H}*{zexpr}/2)*2':eval=frame,crop={W}:{H},"
+    else:
+      zoom = ("" if a.no_zoom else
             f"scale=w='trunc({W}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':eval=frame,crop={W}:{H},")
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
            f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
