@@ -15,7 +15,8 @@ BRAND = dict(navy="0F172A", blue="1B2A4A", green="FF6B2C",  # palette B: navy + 
              cta="راسلني على واتساب")
 FONT = "Anton"  # bold condensed caption font (OFL), in tools/fonts; Arabic falls back to DejaVu Sans
 FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
-ACCENT = BRAND["green"]  # words wrapped as *word* in the .srt get this colour
+ACCENT = BRAND["green"]
+TEXT_COLOR = "FFFFFF"  # words wrapped as *word* in the .srt get this colour
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
@@ -208,7 +209,7 @@ def render_caption_png(text, path, font_file, size=106, maxw=860):
         x = W2 / 2 + lw / 2          # right edge: Arabic reads right -> left
         y = 20 + li * lh + lh / 2
         for w, acc, ww in ws:
-            d.text((x, y), w, font=f, fill=accent if acc else "#FFFFFF", anchor="rm",
+            d.text((x, y), w, font=f, fill=accent if acc else "#" + TEXT_COLOR, anchor="rm",
                    stroke_width=max(4, size // 16), stroke_fill="#000000",
                    direction="rtl" if ARABIC_RE.search(w) else "ltr")
             x -= ww + space
@@ -361,6 +362,9 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
+    ap.add_argument("--accent", default="", help="hex colour for key words, e.g. FFD60A (yellow); default = brand orange")
+    ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
     ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
     ap.add_argument("--music", default="", help="'beat' = generated royalty-free beat, or a path to your own audio file")
     ap.add_argument("--bpm", type=float, default=100)
@@ -383,9 +387,16 @@ def main():
         raw = srt_to_events(open(a.srt, encoding="utf-8").read())
         events = raw if a.srt_after_cut or a.no_silence_cut else [
             (remap(s, segs), remap(e, segs), t, em, tg) for s, e, t, em, tg in raw]
+    global ACCENT, TEXT_COLOR
+    if a.accent:
+        ACCENT = a.accent.lstrip("#").upper()
+    TEXT_COLOR = a.text_color.lstrip("#").upper()
+    if a.keywords_only:   # keep only the *key words* of each cue (cue with none -> no caption)
+        events = [(ea, eb, " ".join(f"*{m}*" for m in re.findall(r"\*([^*]+)\*", t)), em, tg) for ea, eb, t, em, tg in events]
     tmp = tempfile.mkdtemp()
     ass = os.path.join(tmp, "s.ass")
-    open(ass, "w", encoding="utf-8").write(build_ass(events, total, not a.no_endcard, a.tagline))
+    ass_events = [(ea, eb, "", em, tg) for ea, eb, t, em, tg in events] if a.keywords_only else events  # keywords: all drawn as images
+    open(ass, "w", encoding="utf-8").write(build_ass(ass_events, total, not a.no_endcard, a.tagline))
 
     n = len(segs)
     parts = []
@@ -492,9 +503,9 @@ def main():
 
     # Arabic captions as images, on top of everything, slide-up + fade-in
     for (ea, eb, t, _em, _tg) in events:
-        if t and ARABIC_RE.search(t):
+        if t and (ARABIC_RE.search(t) or a.keywords_only):
             png = os.path.join(tmp, f"cap{k}.png")
-            cw, chh = render_caption_png(t, png, a.ar_font)
+            cw, chh = render_caption_png(t, png, a.ar_font, size=150 if a.keywords_only else 106)
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
             y = f"{int(H * 0.60) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"

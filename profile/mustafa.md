@@ -142,3 +142,4 @@
 - SFX: click on every caption, whoosh on b-roll, pop on emoji/overlays, ding on `[ding]`/`[flash]`/`[money]`, boom on `[shake]`/hook; generated beat under the voice.
 - 3D: broll3d.py (box, coin, phone).
 - Mustafa's preferences (latest): whoosh at most ONCE per reel; camera shake only once, light (at the hook); French words he says (confiance, produit, commande...) are written in French (Latin letters) inside Arabic captions — the caption renderer handles mixed Arabic/French word order.
+- Captions: Mustafa wants ONLY the key words on screen (`--keywords-only`: only the *starred* words, big, drawn as images, Arabic and French alike). Test colour: yellow `--accent FFD60A` (`--text-color` for non-key words). Waiting for his final colour choice.
