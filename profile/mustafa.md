@@ -109,3 +109,9 @@
 ## Logo (made by Claude, `python3 tools/make_logo.py` -> assets/brand/)
 - Geometric K+M monogram, green rising arrow as the K's upper arm, on Midnight Blue. Files: logo_mark_navy (profile pic), logo_mark_transparent_dark / _white (overlays), logo_horizontal_navy (banner), SVG sources.
 - Canva logo candidate 1 saved to his account (design DAHXMVIM1B8, edit: https://www.canva.com/d/Oao8dSbZ2n4UWh2), exported as assets/brand/logo_canva_v1.png. Reads "MK" with some merged-letter artifacts; 3 other candidates not saved yet.
+
+## Visual identity pack for e-commerce tips (tools/make_identity.py -> assets/brand/identity/)
+- brand_board.png (palette, fonts, rules), reel_cover_template.png (1080x1920), tip_post_template.png (1080x1350), highlight_{tips,ads,store,results}.png (IG highlight covers).
+- Fonts in tools/fonts: Anton (Latin headlines/captions), Montserrat Bold (labels), Tajawal ExtraBold/Bold (Arabic). Pillow+raqm shapes Arabic itself: do NOT use arabic-reshaper/bidi.
+- Rules: one green accent word per phrase, caption max 3 words, hook in 2 seconds, CTA = WhatsApp 0550 20 54 64, handle @kabli_ms, K+M mark bottom-left.
+- Canva: 4 tip-post candidates generated (not saved yet): _rXdS_rJ-gyblqT, hYZZQ2jVaOQ9_nl, OZ25760xbuiCkT9, t0aEF9vkqn9Y43U (canva.com/d/...).
