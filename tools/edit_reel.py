@@ -21,6 +21,8 @@ W, H, ENDCARD_SECS = 1080, 1920, 3.0
 GRADES = {
     "warm": "eq=contrast=1.12:saturation=1.2:brightness=-0.02,colorbalance=rs=0.05:gs=0.01:bs=-0.07:rm=0.06:bm=-0.05:rh=0.04:bh=-0.04,vignette=PI/5",
     "natural": "eq=contrast=1.06:saturation=1.1",
+    # skin-friendly: light denoise, highlights rolled off (bright sunroof light on the face), less red in skin, soft vignette
+    "pro": "hqdn3d=2:1:3:3,curves=master='0/0 0.25/0.22 0.6/0.6 0.85/0.81 1/0.94',colorbalance=rm=-0.04:bm=0.02:rh=-0.05:bh=0.03,eq=contrast=1.1:saturation=1.08,vignette=PI/6",
     "cinema": "eq=contrast=1.15:saturation=1.05:brightness=-0.03,colorbalance=rs=-0.06:gs=0.0:bs=0.07:rh=0.07:gh=0.01:bh=-0.06,vignette=PI/4.5",   # teal shadows / orange highlights
     "bright": "eq=contrast=1.04:saturation=1.25:brightness=0.04,colorbalance=rm=0.02:bm=-0.02",   # clean, fresh, social look
 }
@@ -287,7 +289,7 @@ def main():
     ap.add_argument("--no-bar", action="store_true")
     ap.add_argument("--tagline", default="")
     ap.add_argument("--no-emoji", action="store_true")
-    ap.add_argument("--grade", choices=["warm", "natural", "cinema", "bright"], default="warm")
+    ap.add_argument("--grade", choices=["warm", "natural", "cinema", "bright", "pro"], default="pro")
     ap.add_argument("--out")
     a = ap.parse_args()
 

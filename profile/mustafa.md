@@ -132,3 +132,4 @@
 ## 3D B-roll (reel2 H)
 - tools/broll3d.py = own tiny 3D renderer (perspective, flat shading, extruded text, floor grid): `[broll:product3d]` spinning cardboard box, `[broll:trust3d]` gold coin flipping with the handshake + CONFIANCE, `[broll:chat3d]` phone swinging in perspective with WhatsApp messages popping. Animations finish in ~0.7 s because cues are ~1 s.
 - Generated on demand into assets/_generated (git-ignored). Real filmed b-roll from Mustafa still beats generated b-roll for trust.
+- Colour: default grade is now `pro` (Mustafa found the face lighting/colours off): light denoise, highlights rolled off (sunroof light on his forehead), less red in skin, normal contrast. `cinema` made his skin too pink.
