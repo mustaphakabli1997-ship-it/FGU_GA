@@ -108,4 +108,4 @@
 
 ## Logo (made by Claude, `python3 tools/make_logo.py` -> assets/brand/)
 - Geometric K+M monogram, green rising arrow as the K's upper arm, on Midnight Blue. Files: logo_mark_navy (profile pic), logo_mark_transparent_dark / _white (overlays), logo_horizontal_navy (banner), SVG sources.
-- 4 Canva logo candidates were generated on 2026-10-06 (not yet saved to his account) — waiting for his pick.
+- Canva logo candidate 1 saved to his account (design DAHXMVIM1B8, edit: https://www.canva.com/d/Oao8dSbZ2n4UWh2), exported as assets/brand/logo_canva_v1.png. Reads "MK" with some merged-letter artifacts; 3 other candidates not saved yet.
