@@ -57,11 +57,11 @@ def ts(t):
 def main():
     video, script = sys.argv[1], open(sys.argv[2], encoding="utf-8").read()
     maxw = int(sys.argv[3]) if len(sys.argv) > 3 else 3   # optional 3rd arg: max words per caption (1 = word-by-word)
-    words = tokens(script)
+    lines = [l for l in script.splitlines() if l.strip()]   # each line of the script is its own phrase: captions never cross a line break
     spans = speech_spans(video)
     total_speech = sum(b - a for a, b in spans)
     weight = lambda w: max(len(re.sub(r"[*]|\[[^\]]+\]", "", w)), 2) + 1.5
-    cs = chunks(words, maxw)
+    cs = [c for l in lines for c in chunks(tokens(l), maxw)]
     wt = [sum(weight(w) for w in c) for c in cs]
     per_sec = sum(wt) / total_speech
     # walk through speech spans consuming chunk durations
