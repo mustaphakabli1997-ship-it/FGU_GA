@@ -102,7 +102,7 @@ POP = r"{\\fscx85\\fscy85\\t(0,110,\\fscx100\\fscy100)}"
 def style_text(t):
     """UPPERCASE Latin, pop-in animation, *word* -> accent colour. Arabic gets a font with Arabic glyphs."""
     arabic = bool(re.search(r"[\u0600-\u06ff]", t))
-    base = r"{\fnDejaVu Sans\b1\fs88\fsp0\c&H00FFFFFF&\fscx100\fscy100}" if arabic else r"{\r}"
+    base = r"{\fnDejaVu Sans\b1\fs104\fsp0\c&H00FFFFFF&\fscx100\fscy100}" if arabic else r"{\r}"
     t = t if arabic else (t.upper() if re.search(r"[A-Za-z]", t) else t)
     t = re.sub(r"\*([^*]+)\*", lambda m: f"{{\\c{bgr(ACCENT)}&}}{m.group(1)}{base}", t)
     return POP + (base if arabic else "") + t
