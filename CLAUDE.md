@@ -13,6 +13,8 @@ Editing a reel (Mustafa uploads to `videos/`, sometimes on `main` — check `git
 4. Check frames of the output (subtitle position/readability, end card) before delivering.
 5. Commit to the current branch with the output at `videos/reelN_vX.mp4`; tell him the branch + path and how to download it (GitHub app/website, raw file).
 
-Limits to remember: no audio listening / no speech-to-text installed, so subtitles come from his script (style: see "Caption & color style" in profile); source quality is not improved by upscaling; no CapCut access.
+Auto captions: Mustafa types (or dictates) what he says in a text file, then `python3 tools/auto_subs.py videos/reelN.mov script.txt > subs/reelN.srt` spreads the words over the speech (approx timing, check it), then run edit_reel.py with that .srt. Mark key words with *stars*.
+
+Limits to remember: whisper (tools/transcribe.py) cannot transcribe Algerian Darija reliably, so words come from his script (style: see "Caption & color style" in profile); source quality is not improved by upscaling; no CapCut access.
 
 Effects: see "Effects toolkit" in profile/mustafa.md. Add tags like `[sparks]`, `[flash]`, `[leak]`, `[money]`, `[broll:name]`, `[icon:name]` to cues in the .srt; emoji and *accent words* work too. Assets are auto-generated into assets/_generated (git-ignored) by tools/gen_assets.py; Mustafa's uploads in assets/{sparks,broll,icons} take priority.
