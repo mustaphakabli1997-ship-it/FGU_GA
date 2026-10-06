@@ -117,7 +117,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
-Style: Sub,{FONT},138,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,2,0,1,5,3,2,80,80,640,1
+Style: Sub,{FONT},128,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,2,0,1,5,3,2,80,200,700,1
 Style: CardBig,{FONT},70,{bgr(BRAND['green'])},&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 
@@ -175,7 +175,7 @@ def make_sfx(tmp):
 ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
 
 
-def render_caption_png(text, path, font_file, size=118, maxw=940):
+def render_caption_png(text, path, font_file, size=106, maxw=860):
     """Arabic caption as an image (Pillow+raqm shapes Arabic correctly with any font). *word* = accent colour."""
     from PIL import Image, ImageDraw, ImageFont
     f = ImageFont.truetype(os.path.join(FONTS_DIR, font_file), size)
@@ -206,6 +206,34 @@ def render_caption_png(text, path, font_file, size=118, maxw=940):
     return W2, H2
 
 
+def render_hook_png(text, path, font_file):
+    """Hook card: huge text, accent words orange, on a rounded navy plate."""
+    from PIL import Image, ImageDraw
+    cap = os.path.join(os.path.dirname(path), "hook_txt.png")
+    if ARABIC_RE.search(text):
+        cw, ch = render_caption_png(text, cap, font_file, size=104, maxw=800)
+    else:
+        from PIL import ImageFont
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), 150)
+        parts = re.split(r"(\*[^*]+\*)", text.upper())
+        d0 = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+        tw = sum(d0.textlength(p.strip("*"), font=f) for p in parts)
+        cw, ch = int(tw) + 80, 230
+        im0 = Image.new("RGBA", (cw, ch), (0, 0, 0, 0)); d = ImageDraw.Draw(im0); x = 40
+        for p in parts:
+            acc = p.startswith("*"); p = p.strip("*")
+            d.text((x, ch / 2), p, font=f, fill="#" + ACCENT if acc else "#FFFFFF", anchor="lm", stroke_width=6, stroke_fill="#000000")
+            x += d.textlength(p, font=f)
+        im0.save(cap)
+    txt = Image.open(cap)
+    pad = 14
+    im = Image.new("RGBA", (txt.width + pad * 2, txt.height + pad * 2), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=48, fill=(15, 23, 42, 215), outline=(255, 107, 44, 255), width=6)
+    im.alpha_composite(txt, (pad, pad))
+    im.save(path)
+    return im.size
+
+
 def render_emoji(ch, path, size=230):
     from PIL import Image, ImageDraw, ImageFont
     f = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 109)
@@ -216,19 +244,26 @@ def render_emoji(ch, path, size=230):
     im.save(path)
 
 
+BEATS = []
+HOOK = False
+
+
 def zoom_expr(events, segs, total, k=0.45):
     """Alternating punch zoom-OUT (1.14 -> 1.0) and slow push-IN (1.0 -> 1.10), restarted at each caption / cut."""
     pts = sorted({round(a, 2) for a, *_ in events if a < total}
                  | {round(sum(b - x for x, b in segs[:i]), 2) for i in range(1, len(segs))})
     if not pts:
         pts = [round(i * 3.0, 2) for i in range(int(total // 3) + 1)]
+    if BEATS:  # snap each punch to the nearest music beat when it is close (beat sync)
+        pts = sorted({min(BEATS, key=lambda b: abs(b - p)) if min(abs(b - p) for b in BEATS) < 0.15 else p for p in pts})
     if pts[0] > 0.05:
         pts.insert(0, 0.0)
     terms = []
     for i, t0 in enumerate(pts):
         t1 = pts[i + 1] if i + 1 < len(pts) else total
-        if i % 2 == 0:   # punch out
-            terms.append(f"between(t\\,{t0}\\,{t1})*(1+{0.14*k:.3f}*max(0\\,1-(t-{t0})/0.6))")
+        if i % 2 == 0:   # punch out (the very first one is strong: hook)
+            kk = max(k, 1.3) if i == 0 and HOOK else k
+            terms.append(f"between(t\\,{t0}\\,{t1})*(1+{0.14*kk:.3f}*max(0\\,1-(t-{t0})/0.6))")
         else:            # push in
             terms.append(f"between(t\\,{t0}\\,{t1})*(1+{0.10*k:.3f}*min(1\\,(t-{t0})/{max(t1 - t0, 0.3):.2f}))")
     return "(" + "+".join(terms) + ")"
@@ -243,6 +278,9 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
+    ap.add_argument("--music", default="", help="'beat' = generated royalty-free beat, or a path to your own audio file")
+    ap.add_argument("--bpm", type=float, default=100)
     ap.add_argument("--zoom", type=float, default=0.45, help="zoom strength: 1 = strong punch, 0.45 = soft (default), 0 = none")
     ap.add_argument("--ar-font", default="Lalezar-Regular.ttf", help="Arabic caption font file in tools/fonts (drawn as images, any font works)")
     ap.add_argument("--no-bar", action="store_true")
@@ -272,6 +310,10 @@ def main():
                      f"[0:a]atrim={x:.3f}:{y:.3f},asetpts=PTS-STARTPTS[a{i}]")
     cat = "".join(f"[v{i}][a{i}]" for i in range(n))
     fc = ";".join(parts) + f";{cat}concat=n={n}:v=1:a=1[vc][ac];"
+    global BEATS, HOOK
+    HOOK = bool(a.hook)
+    if a.music:
+        BEATS = [i * 60 / a.bpm for i in range(int(total * a.bpm / 60) + 2)]
     zoom = ("" if a.no_zoom else
             f"scale=w='trunc({W}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':eval=frame,crop={W}:{H},")
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
@@ -296,7 +338,7 @@ def main():
                 path = find_asset("icon", arg)
                 extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", path]
                 fc += (f"[{n_in}:v]format=rgba,scale=230:-1,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[fx{k}];"
-                       f"[{cur}][fx{k}]overlay=x='(W-w)/2':y='{int(H * 0.09)}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+                       f"[{cur}][fx{k}]overlay=x='(W-w)/2':y='{int(H * 0.11)}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
 
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
@@ -310,19 +352,32 @@ def main():
                 extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", cache[ch]]
                 n_em = len(ems[:2])
                 x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*260"
-                y = f"{int(H * 0.09)}-50*(1-min(1,(t-{ea:.2f})/0.18))"
+                y = f"{int(H * 0.11)}-50*(1-min(1,(t-{ea:.2f})/0.18))"
                 fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
                        f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
                 cur, k, n_in = f"ov{k}", k + 1, n_in + 1
+    # HOOK: big text card in the top safe zone for the first 2.6 s, flash at 0
+    if a.hook:
+        hp = os.path.join(tmp, "hook.png")
+        hw, hh = render_hook_png(a.hook, hp, a.ar_font)
+        extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", hp]
+        y = f"{int(H * 0.075)}-60*(1-min(1,t/0.2))"
+        fc += (f"[{n_in}:v]format=rgba,fade=t=out:st=2.4:d=0.25:alpha=1[hk];"
+               f"[{cur}][hk]overlay=x=(W-w)/2-30:y='{y}':enable='between(t,0,2.65)'[ovhk];")
+        cur, n_in = "ovhk", n_in + 1
+        extra_inputs += ["-i", find_asset("flash", "flash")]
+        fc += (f"[{n_in}:v]format=rgba,scale={W}:{H}[hfl];[{cur}][hfl]overlay=eof_action=pass:repeatlast=0[ovhf];")
+        cur, n_in = "ovhf", n_in + 1
+
     # Arabic captions as images, on top of everything, slide-up + fade-in
     for (ea, eb, t, _em, _tg) in events:
         if t and ARABIC_RE.search(t):
             png = os.path.join(tmp, f"cap{k}.png")
             cw, chh = render_caption_png(t, png, a.ar_font)
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
-            y = f"{int(H * 0.645) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
+            y = f"{int(H * 0.60) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
-                   f"[{cur}][cp{k}]overlay=x=(W-w)/2:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+                   f"[{cur}][cp{k}]overlay=x=(W-w)/2-60:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     fc += f"[{cur}]null[vm];"
 
@@ -340,6 +395,20 @@ def main():
                 fc += f"[{n_in}:a]adelay={ms}|{ms},volume={vol}[sf{n_in}];"
                 mix.append(f"[sf{n_in}]")
                 n_in += 1
+        if a.hook:
+            boom = os.path.join(tmp, "boom.wav")
+            run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=55:d=0.7", "-af",
+                 "vibrato=f=6:d=0.3,afade=t=out:st=0.05:d=0.65,volume=1.6", "-ar", "48000", "-ac", "2", boom])
+            extra_inputs += ["-i", boom]
+            fc += f"[{n_in}:a]anull[sfboom];"; mix.append("[sfboom]"); n_in += 1
+        if a.music:
+            mpath = a.music
+            if a.music == "beat":
+                mpath = os.path.join(tmp, "beat.wav")
+                run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "make_beat.py"), mpath, f"{total + 0.5:.2f}", str(a.bpm)])
+            extra_inputs += ["-i", mpath]
+            fc += f"[{n_in}:a]atrim=0:{total:.2f},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=stereo,volume=0.16,afade=t=out:st={max(total - 0.6, 0):.2f}:d=0.6[mus];"
+            mix.append("[mus]"); n_in += 1
         fc += "".join(mix) + f"amix=inputs={len(mix)}:duration=first:normalize=0,alimiter=limit=0.95[am];"
     if a.no_endcard:
         fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"

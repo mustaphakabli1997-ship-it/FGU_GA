@@ -181,11 +181,11 @@ def broll_icon(emoji, big, small, n_secs=1.6):
         k = _ease(t / 0.35)
         sc = 0.6 + 0.4 * k + 0.04 * math.sin(t * 6)
         e = base.resize((int(base.width * sc), int(base.height * sc)), Image.LANCZOS)
-        im.paste(e, (int(SW / 2 - e.width / 2), int(SH * .24 - e.height / 2)), e)
+        im.paste(e, (int(SW / 2 - e.width / 2), int(SH * .21 - e.height / 2)), e)
         k2 = _ease((t - 0.2) / 0.35)
-        dr.text((SW / 2, SH * .43 + 40 * (1 - k2)), big, font=fb, fill=(255, 255, 255), anchor="mm")
+        dr.text((SW / 2, SH * .39 + 40 * (1 - k2)), big, font=fb, fill=(255, 255, 255), anchor="mm")
         k3 = _ease((t - 0.35) / 0.35)
-        dr.text((SW / 2, SH * .52 + 40 * (1 - k3)), small, font=LALEZAR(64), fill=ORANGE_B, anchor="mm", direction="rtl")
+        dr.text((SW / 2, SH * .47 + 40 * (1 - k3)), small, font=LALEZAR(64), fill=ORANGE_B, anchor="mm", direction="rtl")
         im.save(f"{d}/{f+1:04d}.png")
     return d
 
