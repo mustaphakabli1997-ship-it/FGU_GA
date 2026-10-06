@@ -40,7 +40,9 @@ def chunks(words, max_words=3):
     for w in words:
         plain = re.sub(r"[*\[\]]|\s.*", "", w)
         cur.append(w)
-        if len(cur) >= max_words or (len(cur) >= 2 and len(plain) >= 5) or re.search(r"[.!?؟،,]$", plain):
+        if max_words == 1 and len(plain) <= 2:   # tiny words (FL, EL, F, W...) ride with the next word
+            continue
+        if len(cur) >= max_words or (max_words > 1 and len(cur) >= 2 and len(plain) >= 5) or re.search(r"[.!?؟،,]$", plain):
             res.append(cur); cur = []
     if cur:
         if res and len(cur) == 1 and len(re.sub(r"[*]", "", cur[0])) <= 3:
@@ -54,11 +56,12 @@ def ts(t):
 
 def main():
     video, script = sys.argv[1], open(sys.argv[2], encoding="utf-8").read()
+    maxw = int(sys.argv[3]) if len(sys.argv) > 3 else 3   # optional 3rd arg: max words per caption (1 = word-by-word)
     words = tokens(script)
     spans = speech_spans(video)
     total_speech = sum(b - a for a, b in spans)
     weight = lambda w: max(len(re.sub(r"[*]|\[[^\]]+\]", "", w)), 2) + 1.5
-    cs = chunks(words)
+    cs = chunks(words, maxw)
     wt = [sum(weight(w) for w in c) for c in cs]
     per_sec = sum(wt) / total_speech
     # walk through speech spans consuming chunk durations
