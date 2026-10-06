@@ -134,3 +134,10 @@
 - Generated on demand into assets/_generated (git-ignored). Real filmed b-roll from Mustafa still beats generated b-roll for trust.
 - Colour: default grade is now `pro` (Mustafa found the face lighting/colours off): light denoise, highlights rolled off (sunroof light on his forehead), less red in skin, normal contrast. `cinema` made his skin too pink.
 - Zoom: Mustafa wants ONE zoom-out at the very start only (`--zoom-mode intro`, now the default: 1.16x -> 1.0 over 0.8 s, then static). `--zoom-mode all` brings back a zoom on every caption.
+
+## Pro-editing checklist (from Mustafa's brief) — all available as .srt tags
+- Dynamic captions word-by-word or phrase-by-phrase (auto_subs.py 3rd arg), white + orange accent, black outline.
+- Animated emoji (slide in, top), `[circle]` red ring drawn around his FACE (auto face detection, opencv<5) or `[circle:x,y]`, `[arrow:x,y]` bouncing red arrow, `[notif:TEXT]` WhatsApp notification banner sliding from the top (use real wording; don't fake orders/results).
+- Camera: one intro zoom-out (default), `[shake]` impact shake (+boom), hook shake automatic; b-roll enters with a fast whip-in from the right.
+- SFX: click on every caption, whoosh on b-roll, pop on emoji/overlays, ding on `[ding]`/`[flash]`/`[money]`, boom on `[shake]`/hook; generated beat under the voice.
+- 3D: broll3d.py (box, coin, phone).

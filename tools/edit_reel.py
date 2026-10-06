@@ -55,7 +55,7 @@ def keep_segments(path, noise="-32dB", min_sil=0.35, pad=0.08):
     return segs or [(0, dur)], dur
 
 
-TAG_RE = re.compile(r"\[(sparks|flash|leak|money|broll|icon)(?::([^\]]+))?\]", re.I)
+TAG_RE = re.compile(r"\[(sparks|flash|leak|money|broll|icon|shake|ding|circle|arrow|notif)(?::([^\]]+))?\]", re.I)
 EMOJI_RE = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27bf]")
 
 
@@ -167,6 +167,12 @@ def make_sfx(tmp):
                    "-af", "highpass=f=400,lowpass=f=3500,afade=t=in:d=0.12,afade=t=out:st=0.15:d=0.2,volume=0.9"],
         "pop": ["-f", "lavfi", "-i", "sine=f=900:d=0.12",
                 "-af", "afade=t=out:st=0.02:d=0.1,volume=0.8"],
+        "click": ["-f", "lavfi", "-i", "anoisesrc=d=0.04:c=white:a=0.6",
+                  "-af", "highpass=f=2500,afade=t=out:st=0.005:d=0.035,volume=0.7"],
+        "ding": ["-f", "lavfi", "-i", "sine=f=1318:d=0.6", "-f", "lavfi", "-i", "sine=f=1975:d=0.6",
+                 "-filter_complex", "[0][1]amix=inputs=2,afade=t=out:st=0.01:d=0.58,volume=0.9"],
+        "boom": ["-f", "lavfi", "-i", "sine=f=55:d=0.7",
+                 "-af", "vibrato=f=6:d=0.3,afade=t=out:st=0.05:d=0.65,volume=1.6"],
     }
     for name, args in specs.items():
         path = os.path.join(tmp, name + ".wav")
@@ -235,6 +241,79 @@ def render_hook_png(text, path, font_file):
     im.alpha_composite(txt, (pad, pad))
     im.save(path)
     return im.size
+
+
+def unmap(t, segs):
+    """Cut timeline -> source timeline."""
+    acc = 0.0
+    for a, b in segs:
+        if t <= acc + (b - a):
+            return a + (t - acc)
+        acc += b - a
+    return segs[-1][1]
+
+
+def find_face(src, t_src):
+    """Face centre and radius (in the 1080x1920 output frame) at source time t_src, or None. Needs opencv."""
+    try:
+        import cv2
+        cv2.CascadeClassifier
+    except (ImportError, AttributeError):   # pip install "opencv-python-headless<5"
+        return None
+    png = tempfile.mktemp(suffix=".png")
+    run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t_src:.2f}", "-i", src, "-frames:v", "1", "-vf",
+         f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}", png])
+    img = cv2.imread(png, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        return None
+    casc = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    faces = casc.detectMultiScale(img, 1.1, 6, minSize=(160, 160))
+    if len(faces) == 0:
+        return None
+    x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
+    return int(x + w / 2), int(y + h / 2), int(max(w, h) * 0.75)
+
+
+def render_circle_mov(path, r=230, n=14):
+    """Hand-drawn style ring that draws itself in ~0.45 s (alpha .mov)."""
+    from PIL import Image, ImageDraw
+    d = os.path.join(os.path.dirname(path), "circ_frames"); os.makedirs(d, exist_ok=True)
+    S = 2 * r + 40
+    for i in range(n):
+        im = Image.new("RGBA", (S, S), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+        end = -100 + 380 * min(1, (i + 1) / (n - 3))
+        dr.arc([20, 20, S - 20, S - 20], start=-100, end=end, fill="#000000", width=20)
+        dr.arc([20, 20, S - 20, S - 20], start=-100, end=end, fill="#FF2D2D", width=13)
+        im.save(f"{d}/{i:03d}.png")
+    run(["ffmpeg", "-v", "error", "-y", "-framerate", "30", "-i", f"{d}/%03d.png", "-c:v", "qtrle", "-pix_fmt", "argb", path])
+    return S
+
+
+def render_arrow_png(path):
+    """Thick red arrow pointing up-left (its tip is the image's top-left corner)."""
+    from PIL import Image, ImageDraw
+    im = Image.new("RGBA", (260, 260), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    pts = [(8, 8), (120, 30), (88, 62), (240, 214), (214, 240), (62, 88), (30, 120)]
+    d.polygon(pts, fill="#FF2D2D", outline="#000000", width=6)
+    im.save(path)
+
+
+def render_notif_png(text, path):
+    """WhatsApp-like push notification banner."""
+    from PIL import Image, ImageDraw, ImageFont
+    w, h = 900, 170
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.rounded_rectangle([0, 0, w - 1, h - 1], radius=40, fill=(245, 245, 247, 245))
+    d.rounded_rectangle([28, 35, 128, 135], radius=24, fill=(37, 211, 102))
+    d.ellipse([52, 59, 104, 111], outline=(255, 255, 255), width=7)
+    fl = ImageFont.truetype(os.path.join(FONTS_DIR, "Montserrat-Bold.ttf"), 30)
+    try: fl.set_variation_by_name("Bold")
+    except Exception: pass
+    d.text((150, 52), "WhatsApp", font=fl, fill=(60, 60, 67), anchor="lm")
+    d.text((w - 30, 52), "now", font=fl, fill=(140, 140, 150), anchor="rm")
+    fa = ImageFont.truetype(os.path.join(FONTS_DIR, "Lalezar-Regular.ttf"), 44)
+    d.text((w - 30, 115), text, font=fa, fill=(20, 20, 25), anchor="rm", direction="rtl" if ARABIC_RE.search(text) else None)
+    im.save(path)
 
 
 def render_emoji(ch, path, size=230):
@@ -324,6 +403,11 @@ def main():
     else:
       zoom = ("" if a.no_zoom else
             f"scale=w='trunc({W}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':h='trunc({H}*{zoom_expr(events, segs, total, a.zoom)}/2)*2':eval=frame,crop={W}:{H},")
+    shakes = [ea for (ea, eb, _t, _em, tg) in events for kd, _ in tg if kd == "shake"] + ([0.0] if a.hook else [])
+    if shakes:
+        sx = "+".join(f"between(t,{t0:.2f},{t0 + 0.35:.2f})*26*sin(75*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.35)" for t0 in shakes)
+        sy = "+".join(f"between(t,{t0:.2f},{t0 + 0.35:.2f})*18*cos(63*(t-{t0:.2f}))*(1-(t-{t0:.2f})/0.35)" for t0 in shakes)
+        zoom += f"scale={int(W * 1.05) // 2 * 2}:{int(H * 1.05) // 2 * 2},crop={W}:{H}:x='(iw-{W})/2+{sx}':y='(ih-{H})/2+{sy}',"
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
            f"{GRADES[a.grade]},unsharp=5:5:0.5,fps=30"
            + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
@@ -335,13 +419,41 @@ def main():
     # effect tags from the .srt: sparks / flash / leak / money / broll:NAME / icon:NAME
     for (ea, eb, _t, _em, tags) in events:
         for kind, arg in tags:
-            if kind in ("sparks", "flash", "leak", "money", "broll"):
+            if kind in ("shake", "ding"):
+                continue   # handled by the camera / sound passes
+            if kind == "circle":
+                r0 = 230
+                if arg:
+                    cx, cy = (int(v) for v in arg.split(","))
+                else:   # follow the face: detect it at the moment the circle appears
+                    face = find_face(a.src, unmap(ea + 0.15, segs))
+                    cx, cy, r0 = face if face else (W // 2 - 20, int(H * 0.43), 230)
+                mov = os.path.join(tmp, f"circle{k}.mov"); S0 = render_circle_mov(mov, r=r0)
+                extra_inputs += ["-i", mov]
+                fc += (f"[{n_in}:v]format=rgba,setpts=PTS-STARTPTS+{ea:.2f}/TB[fx{k}];"
+                       f"[{cur}][fx{k}]overlay=x={cx - S0 // 2}:y={cy - S0 // 2}:eof_action=repeat:enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+            elif kind == "arrow":
+                cx, cy = (int(v) for v in arg.split(",")) if arg else (W // 2 + 120, int(H * 0.40))
+                png = os.path.join(tmp, f"arrow{k}.png"); render_arrow_png(png)
+                extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
+                bob = f"18*abs(sin(8*(t-{ea:.2f})))"
+                fc += (f"[{n_in}:v]format=rgba[fx{k}];"
+                       f"[{cur}][fx{k}]overlay=x='{cx}+{bob}':y='{cy}+{bob}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+            elif kind == "notif":
+                png = os.path.join(tmp, f"notif{k}.png"); render_notif_png(arg or "رسالة جديدة", png)
+                extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
+                y = f"{int(H * 0.06)}-260*(1-min(1,(t-{ea:.2f})/0.22))"
+                fc += (f"[{n_in}:v]format=rgba[fx{k}];"
+                       f"[{cur}][fx{k}]overlay=x=(W-w)/2:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+            elif kind in ("sparks", "flash", "leak", "money", "broll"):
                 path = find_asset("broll" if kind == "broll" else kind, arg if kind == "broll" else kind)
                 extra_inputs += ["-i", path]
                 cut = f",trim=duration={max(eb - ea, 0.4):.2f}" if kind == "broll" else ""
+                # b-roll enters with a fast whip (slides in from the right in 0.12 s)
+                xpos = f"x='W*max(0,1-(t-{ea:.2f})/0.12)':" if kind == "broll" else ""
                 fc += (f"[{n_in}:v]format=rgba,scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}{cut},"
                        f"setpts=PTS-STARTPTS+{ea:.2f}/TB[fx{k}];"
-                       f"[{cur}][fx{k}]overlay=eof_action=pass:repeatlast=0[ov{k}];")
+                       f"[{cur}][fx{k}]overlay={xpos}eof_action=pass:repeatlast=0[ov{k}];")
             else:  # icon: PNG, placed like an emoji
                 path = find_asset("icon", arg)
                 extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", path]
@@ -395,11 +507,18 @@ def main():
     else:
         sfx = make_sfx(tmp)
         mix, n_mix = ["[am0]"], 1
+        VOL = {"click": 0.35, "whoosh": 0.32, "pop": 0.42, "ding": 0.30, "boom": 0.9}
         for i, (ea, eb, _t, ems, tags) in enumerate(events):
-            for kind in (["whoosh"] + (["pop"] if (ems or tags) else [])):
+            kinds = {kd for kd, _ in tags}
+            plan = ["click"]
+            if kinds & {"broll"}: plan.append("whoosh")
+            if ems or kinds & {"sparks", "icon", "circle", "arrow", "notif", "leak"}: plan.append("pop")
+            if kinds & {"ding", "flash", "money"}: plan.append("ding")
+            if "shake" in kinds: plan.append("boom")
+            for kind in plan:
                 extra_inputs += ["-i", sfx[kind]]
                 ms = int(max(ea - 0.03, 0) * 1000)
-                vol = 0.30 if kind == "whoosh" else 0.45
+                vol = VOL[kind]
                 fc += f"[{n_in}:a]adelay={ms}|{ms},volume={vol}[sf{n_in}];"
                 mix.append(f"[sf{n_in}]")
                 n_in += 1
