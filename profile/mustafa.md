@@ -19,7 +19,7 @@
 - B-roll: 3D clips (`[broll:product3d]`, `[broll:trust3d]`, `[broll:chat3d]`), `[circle]` on his face, emoji; real filmed b-roll from him is better when available.
 - Music: `--music beat --bpm 100` (generated, royalty-free) under the voice.
 - Output: 1080x1920 (9:16). If > 30 MB, also make a `_send.mp4` copy (crf 25) to send in the chat.
-- Optional styles: `--layout cards` (After-Effects style rounded card on grid background); brand palette B (navy #0F172A + orange #FF6B2C) for end card, b-roll, identity pack.
+- Layout: Mustafa CHOSE the Motion / After-Effects card style (`--layout cards`, now the tool default); `--layout full` only if he asks. Brand palette B (navy #0F172A + orange #FF6B2C) for end card, b-roll, identity pack.
 - Example: `python3 tools/edit_reel.py videos/reel3.mov --srt subs/reel3.srt --grade none --keywords-only --accent FFD60A --hook "عندك *créative* مليحة وما تبيعش؟" --music beat --bpm 100 --out videos/reel3_v1.mp4`
 
 ## Language

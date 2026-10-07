@@ -406,7 +406,7 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
-    ap.add_argument("--layout", choices=["full", "cards"], default="full", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
+    ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
     ap.add_argument("--accent", default="", help="hex colour for key words, e.g. FFD60A (yellow); default = brand orange")
     ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
