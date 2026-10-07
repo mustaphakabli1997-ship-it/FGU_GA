@@ -58,7 +58,7 @@ def keep_segments(path, noise="-32dB", min_sil=0.35, pad=0.08):
     return segs or [(0, dur)], dur
 
 
-TAG_RE = re.compile(r"\[(sparks|flash|leak|money|broll|icon|shake|ding|circle|arrow|notif)(?::([^\]]+))?\]", re.I)
+TAG_RE = re.compile(r"\[(sparks|flash|leak|money|broll|icon|shake|ding|circle|arrow|notif|doc)(?::([^\]]+))?\]", re.I)
 EMOJI_RE = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27bf]")
 
 
@@ -146,6 +146,26 @@ ASSETS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))
 ALIASES = {"sparks": "sparks_orange", "flash": "flash_white", "leak": "light_leak", "money": "money_rain"}
 
 
+REMOTION = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "remotion")
+TITLED = {"rm_cube", "rm_funnel"}   # Remotion b-roll whose title = the caption words
+REMOTION_COMPS = {"rm_cube": "Cube3D", "rm_funnel": "Funnel", "rm_phone": "Phone3D", "rm_doc": "DocCard"}
+
+
+def remotion_render(comp, out, props=None):
+    """Render a Remotion composition (remotion/src) to an mp4 with the preinstalled headless Chromium."""
+    import json, glob
+    if not os.path.isdir(os.path.join(REMOTION, "node_modules")):
+        run(["npm", "install", "--no-audit", "--no-fund"], cwd=REMOTION)
+    chrome = (glob.glob("/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell") or [None])[0]
+    cmd = ["npx", "remotion", "render", "src/index.ts", comp, os.path.abspath(out), "--log=error"]
+    if chrome:
+        cmd.append(f"--browser-executable={chrome}")
+    if props:
+        cmd.append("--props=" + json.dumps(props, ensure_ascii=False))
+    run(cmd, cwd=REMOTION)
+    return out
+
+
 def find_asset(kind, name):
     """User files (assets/sparks|broll|icons) win over generated ones (assets/_generated)."""
     name = ALIASES.get(name, name) if kind != "icon" else name
@@ -156,6 +176,10 @@ def find_asset(kind, name):
                 for f in sorted(os.listdir(d)):
                     if os.path.splitext(f)[0] == name:
                         return os.path.join(d, f)
+        if attempt == 0 and name in REMOTION_COMPS:
+            os.makedirs(os.path.join(ASSETS, "_generated"), exist_ok=True)
+            remotion_render(REMOTION_COMPS[name], os.path.join(ASSETS, "_generated", name + ".mp4"))
+            continue
         if attempt == 0:
             tools_dir = os.path.dirname(os.path.abspath(__file__))
             run([sys.executable, os.path.join(tools_dir, "broll3d.py" if name.endswith("3d") else "gen_assets.py")])
@@ -325,8 +349,8 @@ def caption_y(a, segs, ea, chh, tags):
     Face found with opencv at the cue's start; b-roll cues (face hidden) and no-face frames use the default spot."""
     cards = a.layout == "cards"
     default = int(H * (0.52 if cards else 0.60)) - chh // 2
-    if any(kd == "broll" for kd, _ in tags):   # b-roll text sits in the upper half: put the caption low
-        return int(H * (0.62 if cards else 0.66)) - chh // 2
+    if any(kd in ("broll", "doc") for kd, _ in tags):   # b-roll text sits in the upper half: caption just above the face card
+        return (CARD_Y + CARD_H - 520 - 30 - chh) if cards else int(H * 0.66) - chh // 2
     face = find_face(a.src, unmap(ea + 0.1, segs))
     if not face:
         return default
@@ -830,8 +854,24 @@ def main():
                 y = f"{int(H * 0.06)}-260*(1-min(1,(t-{ea:.2f})/0.22))"
                 fc += (f"[{n_in}:v]format=rgba[fx{k}];"
                        f"[{cur}][fx{k}]overlay=x=(W-w)/2:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
-            elif kind in ("sparks", "flash", "leak", "money", "broll"):
-                path = find_asset("broll" if kind == "broll" else kind, arg if kind == "broll" else kind)
+            elif kind in ("sparks", "flash", "leak", "money", "broll", "doc"):
+                if kind == "broll" and arg in TITLED and _t:
+                    import hashlib
+                    title = re.sub(r"\*", "", _t).strip()
+                    path = os.path.join(ASSETS, "_generated", f"{arg}_" + hashlib.md5(title.encode()).hexdigest()[:8] + ".mp4")
+                    if not os.path.exists(path):
+                        os.makedirs(os.path.dirname(path), exist_ok=True)
+                        props = {"title": title} if arg == "rm_funnel" else {"title": title, "sub": ""}
+                        remotion_render(REMOTION_COMPS[arg], path, props)
+                elif kind == "doc":   # documentary paper card with highlighter, rendered by Remotion
+                    import hashlib
+                    path = os.path.join(ASSETS, "_generated", "doc_" + hashlib.md5(arg.encode()).hexdigest()[:8] + ".mp4")
+                    if not os.path.exists(path):
+                        os.makedirs(os.path.dirname(path), exist_ok=True)
+                        remotion_render("DocCard", path, {"text": arg, "kicker": "E-COMMERCE • DZ"})
+                    kind = "broll"
+                elif not (kind == "broll" and arg in TITLED and _t):
+                    path = find_asset("broll" if kind == "broll" else kind, arg if kind == "broll" else kind)
                 extra_inputs += ["-i", path]
                 cut = f",trim=duration={max(eb - ea, 0.4):.2f}" if kind == "broll" else ""
                 # b-roll enters with a fast whip (slides in from the right in 0.12 s)
@@ -874,14 +914,20 @@ def main():
     caps = {}
     for i_ev, (ea, eb, t, _em, _tg) in enumerate(events):
         if t and (ARABIC_RE.search(t) or a.keywords_only):
+            on_broll = any(kd in ("broll", "doc") for kd, _ in _tg)
+            if any(kd == "doc" and re.sub(r"\*", "", t).strip() == (ar_ or "").strip() for kd, ar_ in _tg) \
+                    or any(kd == "broll" and ar_ in TITLED for kd, ar_ in _tg):
+                continue   # the graphic already shows these exact words as its title
             png = os.path.join(tmp, f"capimg{i_ev}.png")
-            cw, chh = render_caption_png(t, png, a.ar_font, size=150 if a.keywords_only else 106)
+            cw, chh = render_caption_png(t, png, a.ar_font, size=(105 if on_broll else 150) if a.keywords_only else 106)
             caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg))
 
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
     if not a.no_emoji:
         cache = {}
         for i_ev, (ea, eb, _t, ems, _tg) in enumerate(events):
+            if any(kd == "doc" or (kd == "broll" and ar_ in TITLED) for kd, ar_ in _tg):
+                continue   # full-frame graphic with its own title: no icon on top of it
             for j, ch in enumerate(ems[:2]):
                 if ch not in cache:
                     mov = os.path.join(tmp, f"e{len(cache)}.mov")
@@ -936,7 +982,7 @@ def main():
         for i, (ea, eb, _t, ems, tags) in enumerate(events):
             kinds = {kd for kd, _ in tags}
             plan = ["click"] if "*" in _t else []
-            if kinds & {"broll"} and not whoosh_used:
+            if kinds & {"broll", "doc"} and not whoosh_used:
                 plan.append("whoosh"); whoosh_used = True
             if ems or kinds & {"sparks", "icon", "circle", "arrow", "notif", "leak"}: plan.append("pop")
             if kinds & {"ding", "flash", "money"}: plan.append("ding")
