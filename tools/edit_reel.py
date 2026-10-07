@@ -22,7 +22,6 @@ ACCENT_NEON = "38BDF8"   # neon blue = middle of the neon caption gradient
 VIOLET, BLUE, NIGHT = (139, 92, 246), (56, 189, 248), (20, 11, 52)
 # neon caption (chosen variant B): ice-blue top -> neon blue -> violet bottom, ice halo, violet wide glow + blue tight glow
 CAP_TOP, CAP_DEEP, CAP_HALO, CAP_GLOW_WIDE, CAP_GLOW_TIGHT = (186, 230, 253), VIOLET, (224, 242, 254), VIOLET, BLUE
-SCRIPT_DY_AR = 0.76   # vertical offset (x bold size) of the Arabic script word under the bold line
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
@@ -260,7 +259,7 @@ ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
 def render_caption_png(text, path, font_file, size=118, maxw=860):
     """NEON + SCRIPT caption (Mustafa's reference "Personal Branding"), brand colours (palette C):
     first word(s) in a big bold sans (Readex Pro / Sora) with a violet + neon-blue glow, the last word in white
-    handwriting script overlapping its bottom-right with a soft white glow. One word -> bold neon only.
+    handwriting script on its own row just below (never overlapping) with a soft white glow. One word -> bold neon only.
     Works for Arabic and French."""
     from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
     clean = re.sub(r"\*", "", text).strip()
@@ -287,10 +286,13 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     tw = tmpd.textlength(top, font=bf)
     sw = tmpd.textlength(bottom, font=sf) if bottom else 0
     pad = 60
+    bb = tmpd.textbbox((0, 0), top, font=bf, anchor="mm")
+    sb = tmpd.textbbox((0, 0), bottom, font=sf, anchor="mm") if bottom else (0, 0, 0, 0)
     W2 = int(max(tw, sw) + pad * 2 + 40)
-    H2 = int(bs * 1.25 + (ss * 0.95 if bottom else 0) + pad * 2)
     cx = W2 / 2
-    ty = pad + bs * 0.62
+    ty = pad - bb[1]
+    sy = ty + bb[3] + bs * 0.10 - sb[1]       # script line on its OWN row under the bold line (no text over text)
+    H2 = int((sy + sb[3] if bottom else ty + bb[3]) + pad)
     accent = tuple(int(ACCENT_NEON[i:i + 2], 16) for i in (0, 2, 4))
     lay = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
     def draw(img, xy, t, f, fill, stroke=0, sfill=None):
@@ -319,9 +321,8 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     shine = Image.new("RGBA", (W2, H2), (255, 255, 255, 0))
     shine.putalpha(ImageChops.multiply(m, top_half))                       # glossy top half, inside the letters only
     lay.alpha_composite(shine)
-    if bottom:   # white script overlapping the bold line, shifted toward the reading end
-        sx = cx + (tw - sw) / 2 * (-0.6 if ar else 0.6)
-        sy = ty + bs * (SCRIPT_DY_AR if ar else 0.55)   # Readex Pro has deep dots below: drop the Arabic script word a bit more
+    if bottom:   # white script on the next row, centred (Mustafa 2026-10-07: never text over text)
+        sx = cx
         wg = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(wg, (sx, sy), bottom, sf, (255, 255, 255, 255))
         lay.alpha_composite(wg.filter(ImageFilter.GaussianBlur(ss * 0.12)))
         draw(lay, (sx, sy), bottom, sf, (255, 255, 255, 255), stroke=2, sfill=(30, 30, 30, 180))
@@ -417,7 +418,8 @@ def caption_y(a, segs, ea, chh, tags, vis=None, eb=None):
     else:
         f_top = min(fy - fr for _, fy, fr in faces)
         f_bot = max(fy + fr for _, fy, fr in faces)
-        top_lim, bot_lim = int(H * 0.12), int(H * 0.80)              # IG top bar / bottom caption area
+        top_lim = 110 + 245 if not a.no_badge else int(H * 0.12)      # below the top-left @kabli_ms badge (y 110..345)
+        bot_lim = H - 440 if getattr(a, "wa_badge", False) else int(H * 0.80)   # above the WhatsApp badge
     gap = 25
     below = int(f_bot + gap - vt)          # visible top just under his chin
     if below + vb <= bot_lim:
@@ -833,6 +835,8 @@ def main():
         raw = srt_to_events(open(a.srt, encoding="utf-8").read())
         events = raw if a.srt_after_cut or a.no_silence_cut else [
             (remap(s, segs), remap(e, segs), t, em, tg) for s, e, t, em, tg in raw]
+    if a.hook:   # nothing is written over the hook card: captions/icons start once it is gone (2.65 s)
+        events = [(max(ea, 2.7), eb, t, em, tg) for ea, eb, t, em, tg in events if eb > 3.0]
     global ACCENT, TEXT_COLOR
     if a.accent:
         ACCENT = a.accent.lstrip("#").upper()
@@ -971,10 +975,12 @@ def main():
                     or any(kd == "broll" and ar_ in TITLED for kd, ar_ in _tg):
                 continue   # the graphic already shows these exact words as its title
             png = os.path.join(tmp, f"capimg{i_ev}.png")
-            cw, chh = render_caption_png(t, png, a.ar_font, size=(105 if on_broll else 150) if a.keywords_only else 106)
+            has_icon = bool(_em) and not a.no_emoji   # leave room on the right for the icon: text and icon never overlap
+            cw, chh = render_caption_png(t, png, a.ar_font, size=(105 if on_broll else 150) if a.keywords_only else 106,
+                                         maxw=640 if has_icon else 860)
             from PIL import Image
             vis = Image.open(png).split()[3].point(lambda v: 255 if v > 40 else 0).getbbox() or (0, 0, cw, chh)
-            caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg, vis=(vis[1], vis[3]), eb=eb))
+            caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg, vis=(vis[1], vis[3]), eb=eb), vis)
 
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
     if not a.no_emoji:
@@ -991,10 +997,10 @@ def main():
                 extra_inputs += ["-i", mov]
                 n_em = len(ems[:2])
                 if i_ev in caps:   # right next to the caption (its image is centred at W/2-60), never on the face
-                    _p, cw, chh, yc = caps[i_ev]
-                    right = (W - cw) // 2 - 60 + cw - 40
+                    _p, cw, chh, yc, vis = caps[i_ev]
+                    right = max(10, min(W - cw - 10, (W - cw) // 2 - 60)) + vis[2] + 10   # just after the visible end of the text (same x as the caption overlay)
                     x = f"{min(right + j * (iw_ - 40), W - iw_ + 30)}"
-                    y = f"{yc + chh // 2 - ih_ // 2}"
+                    y = f"{yc + (vis[1] + vis[3]) // 2 - ih_ // 2}"
                 else:
                     x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*{iw_}"
                     y = f"{int(H * 0.11)}"
@@ -1042,7 +1048,7 @@ def main():
     # Arabic captions as images, on top of everything, slide-up + fade-in
     for i_ev, (ea, eb, t, _em, _tg) in enumerate(events):
         if i_ev in caps:
-            png, cw, chh, yc = caps[i_ev]   # above or below his face, wherever there is room
+            png, cw, chh, yc, _vis = caps[i_ev]   # above or below his face, wherever there is room
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
             y = f"{yc}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
