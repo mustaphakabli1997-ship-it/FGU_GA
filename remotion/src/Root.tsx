@@ -6,6 +6,7 @@ import {Cube3D} from './Cube3D';
 import {Phone3D} from './Phone3D';
 import {BrandBadge} from './BrandBadge';
 import {EndCard} from './EndCard';
+import {TipReel} from './TipReel';
 
 // B-roll clips: 540x960 (upscaled to 1080x1920 by edit_reel.py), 30 fps. End card: full 1080x1920. Brand palette C.
 export const Root: React.FC = () => (
@@ -21,5 +22,8 @@ export const Root: React.FC = () => (
       defaultProps={{handle: '@kabli_ms', tag: 'E-COMMERCE • SPONSOR'}} />
     <Composition id="EndCard" component={EndCard} durationInFrames={90} fps={30} width={1080} height={1920}
       defaultProps={{handle: '@kabli_ms', whatsapp: '0550 20 54 64', cta: 'راسلني على واتساب', tag: 'E-COMMERCE • SPONSOR • META ADS'}} />
+    <Composition id="TipReel" component={TipReel} durationInFrames={765} fps={30} width={1080} height={1920}
+      calculateMetadata={({props}) => ({durationInFrames: props.scenes.reduce((a: number, s: {d: number}) => a + s.d, 0)})}
+      defaultProps={{scenes: [{d: 90, title: 'TEST', sub: 'test'}]}} />
   </>
 );
