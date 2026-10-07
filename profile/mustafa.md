@@ -100,16 +100,14 @@
 - Command: `python3 tools/edit_reel.py videos/reel2.mov --srt subs/reel2_v3.srt --tagline "..." --out videos/reel2_final_v3.mp4`
 - Next ideas: royalty-free background music under the voice, B-roll of products/stores, stronger hook in the first 2 seconds.
 
-## Meta Ads campaign snapshot (Mustafa's own results, 2026-10-06, usable as proof content)
-- Ad set "Publication Instagram: حاب تزيد مبيعاتك وتجيب..." (objective: conversations by message), all-time: 411 conversations, 0.27 USD per conversation, 112.76 USD spent, daily budget 5 USD, reach 46,785, impressions 94,623 (~2 views per person).
+## Meta Ads tips (general; Mustafa asked to remove his campaign results — do not mention or reuse them)
 - Conversations are not sales: always track conversations -> orders -> delivered, and quote the real cost per order.
-- Budget advice given: raise ~20% every 2-3 days (not +50% at once), don't edit audience/creative of a winning ad, add a second ad with a new hook instead, answer messages within 5 minutes, switch creative if frequency > 3, merge similar ad sets.
-- Reel idea (reel3): hook "411 زبون بـ 112$ 👀", screen recording of the results with 0.27$ circled in green, 3 points (audience, creative, small budget), CTA to WhatsApp for sponsoring. Never show client names, payment details or ad account IDs.
+- Budget: raise ~20% every 2-3 days (not +50% at once), don't edit audience/creative of a winning ad, add a second ad with a new hook instead, answer messages within 5 minutes, switch creative if frequency > 3, merge similar ad sets.
 
 ## Hook library (from Mustafa's brief; use in the first 2-3 seconds, Darija/French mix)
 - Problem & solution: "تحرق البادجت في السبونسور بلا مبيعات؟ هذا هو الحل" / "راك تخسر في Facebook Ads؟ شوف هذه الطريقة".
 - Shock / myth-busting: "تخدم متجرين في نفس الوقت = غلط يضيع أرباحك" / "كل ما تعرفه على الـ Pixel غلط".
-- Numbers / proof: "411 زبون بـ 112$" / "من 0 لأول 100 طلبية في أسبوع" (only with real numbers).
+- Numbers / proof: only with real numbers Mustafa gives for that reel (none stored here).
 - Curiosity gap: "السر لي يخلي الكليان يكمل الشراء" / "3 أخطاء تدمر متجرك على Foorweb أو Builddz".
 - Niche call-out: "إذا راك تخدم E-commerce في الجزائر، الفيديو هذا ليك" / "لكل صاحب صفحة ودروبشيبر، اسمع مليح".
 - Script table format for a new reel: seconds | on-screen text hook | voiceover | visuals/B-roll/transitions | SFX. Typical length 30-45 s.
