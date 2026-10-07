@@ -11,7 +11,7 @@ OUT="${4:-${SRC%.*}_final.mp4}"
 cd "$(dirname "$0")/.."
 python3 tools/edit_reel.py "$SRC" --srt "$SRT" \
   --layout full --grade none --keywords-only --accent 38BDF8 \
-  --zoom-mode intro --music beat --bpm 100 \
+  --zoom-mode intro --text-sfx-only \
   ${HOOK:+--hook "$HOOK"} --out "$OUT"
 ffmpeg -v error -y -i "$OUT" -c:v libx264 -crf 25 -preset slow -pix_fmt yuv420p \
   -c:a aac -b:a 128k -movflags +faststart "${OUT%.mp4}_send.mp4"

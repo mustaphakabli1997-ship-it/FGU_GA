@@ -233,8 +233,9 @@ def make_sfx(tmp):
                    "-af", "highpass=f=400,lowpass=f=3500,afade=t=in:d=0.12,afade=t=out:st=0.15:d=0.2,volume=0.9"],
         "pop": ["-f", "lavfi", "-i", "sine=f=900:d=0.12",
                 "-af", "afade=t=out:st=0.02:d=0.1,volume=0.8"],
-        "click": ["-f", "lavfi", "-i", "anoisesrc=d=0.04:c=white:a=0.6",
-                  "-af", "highpass=f=2500,afade=t=out:st=0.005:d=0.035,volume=0.7"],
+        # caption sound: soft rising "bubble pop" (sine sweep 600 -> 1400 Hz, fast decay) instead of a noise click
+        "click": ["-f", "lavfi", "-i", "aevalsrc='0.9*sin(2*PI*(600*t+4500*t*t))*exp(-t*38)':d=0.11:s=48000",
+                  "-af", "afade=t=in:d=0.004,volume=0.9"],
         "ding": ["-f", "lavfi", "-i", "sine=f=1318:d=0.6", "-f", "lavfi", "-i", "sine=f=1975:d=0.6",
                  "-filter_complex", "[0][1]amix=inputs=2,afade=t=out:st=0.01:d=0.58,volume=0.9"],
         "boom": ["-f", "lavfi", "-i", "sine=f=55:d=0.7",
@@ -760,6 +761,7 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--text-sfx-only", action="store_true", help="only the caption sounds (pop when a key word / icon appears): no whoosh, ding or boom (Mustafa 2026-10-07)")
     ap.add_argument("--no-badge", action="store_true", help="hide the top-left @kabli_ms badge with the spinning 3D K+M coin")
     ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
@@ -1003,16 +1005,16 @@ def main():
     else:
         sfx = make_sfx(tmp)
         mix, n_mix = ["[am0]"], 1
-        VOL = {"click": 0.22, "whoosh": 0.25, "pop": 0.38, "ding": 0.28, "boom": 0.8}
+        VOL = {"click": 0.35, "whoosh": 0.25, "pop": 0.38, "ding": 0.28, "boom": 0.8}
         whoosh_used = False   # Mustafa: whoosh must not repeat -> once per reel
         for i, (ea, eb, _t, ems, tags) in enumerate(events):
             kinds = {kd for kd, _ in tags}
             plan = ["click"] if "*" in _t else []
-            if kinds & {"broll", "doc"} and not whoosh_used:
+            if kinds & {"broll", "doc"} and not whoosh_used and not a.text_sfx_only:
                 plan.append("whoosh"); whoosh_used = True
             if ems or kinds & {"sparks", "icon", "circle", "arrow", "notif", "leak"}: plan.append("pop")
-            if kinds & {"ding", "flash", "money"}: plan.append("ding")
-            if "shake" in kinds: plan.append("boom")
+            if kinds & {"ding", "flash", "money"} and not a.text_sfx_only: plan.append("ding")
+            if "shake" in kinds and not a.text_sfx_only: plan.append("boom")
             for kind in plan:
                 extra_inputs += ["-i", sfx[kind]]
                 ms = int(max(ea - 0.03, 0) * 1000)
@@ -1020,7 +1022,7 @@ def main():
                 fc += f"[{n_in}:a]adelay={ms}|{ms},volume={vol}[sf{n_in}];"
                 mix.append(f"[sf{n_in}]")
                 n_in += 1
-        if a.hook:
+        if a.hook and not a.text_sfx_only:
             boom = os.path.join(tmp, "boom.wav")
             run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=55:d=0.7", "-af",
                  "vibrato=f=6:d=0.3,afade=t=out:st=0.05:d=0.65,volume=1.6", "-ar", "48000", "-ac", "2", boom])

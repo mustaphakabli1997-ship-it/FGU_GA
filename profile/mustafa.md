@@ -188,3 +188,4 @@
 - Mustafa asked to keep his filter: `--grade none`. Keywords-only neon captions (palette C); star whole short phrases (e.g. `*البيع ما كاش*`) so small words like "ما" are never dropped.
 
 - 2026-10-07: Mustafa asked to REMOVE the white grid background of the cards layout -> saved style now uses `--layout full` (video fills the screen; badge, captions, icons, b-roll, end card unchanged). reel3_v11 = this look.
+- 2026-10-07: NO music; sound effects = ONLY the caption sound (soft "bubble pop" when a key word / icon appears), no whoosh / ding / boom -> preset uses `--text-sfx-only`, no `--music`. reel3_v12 = this sound.
