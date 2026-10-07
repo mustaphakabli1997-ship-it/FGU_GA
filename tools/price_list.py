@@ -71,7 +71,7 @@ def landscape(path):
     d = ImageDraw.Draw(im)
     logo = M.ICON.resize((96, 96), Image.LANCZOS); im.alpha_composite(logo, (60, 40))
     d.text((176, 88), "SPONSORING  •  META ADS", font=M.SORA(40), fill="white", anchor="lm")
-    d.text((W - 60, 88), "عروض الإعلانات الممولة", font=M.READ(40), fill=M.ICE, anchor="rm")
+    M.grad_text(im, (W - 60, 90), "عروض الإعلانات الممولة", M.READ(64), anchor="rm")   # big title, brand gradient
     cw, gap, top = 330, 30, 175
     x = (W - (5 * cw + 4 * gap)) // 2
     for p in PLANS:
@@ -86,15 +86,22 @@ def landscape(path):
     hx -= d.textlength("@kabli_ms  •  Kabli Mustapha", font=M.SORAS(30)) + 24
     for kind in ("fb", "ig"):
         S = 58; x0, y0 = int(hx - S), H - 50 - S // 2
-        tm = Image.new("L", im.size, 0); ImageDraw.Draw(tm).rounded_rectangle([x0, y0, x0 + S, y0 + S], radius=16, fill=255)
-        g = Image.new("RGBA", im.size); g.paste(M.hgrad(im.width, im.height).convert("RGBA")); im.paste(g, (0, 0), tm)
         dd = ImageDraw.Draw(im)
-        if kind == "ig":   # camera: rounded square outline, lens, dot
+        if kind == "ig":   # official Instagram colours: yellow -> orange -> pink -> purple -> blue gradient squircle
+            stops = [(254, 218, 117), (250, 126, 30), (214, 41, 118), (150, 47, 191), (79, 91, 213)]
+            gimg = Image.new("RGBA", (S, S)); gd = ImageDraw.Draw(gimg)
+            for i in range(2 * S):
+                k = i / (2 * S - 1) * (len(stops) - 1); j = min(int(k), len(stops) - 2); u = k - j
+                col = tuple(int(stops[j][c] + (stops[j + 1][c] - stops[j][c]) * u) for c in range(3))
+                gd.line([(0, S - 1 - i), (i, S - 1)], fill=col + (255,), width=2)   # bottom-left yellow -> top-right blue
+            mk = Image.new("L", (S, S), 0); ImageDraw.Draw(mk).rounded_rectangle([0, 0, S - 1, S - 1], radius=16, fill=255)
+            im.paste(gimg, (x0, y0), mk)
             dd.rounded_rectangle([x0 + 12, y0 + 12, x0 + S - 12, y0 + S - 12], radius=10, outline="white", width=4)
             dd.ellipse([x0 + 21, y0 + 21, x0 + S - 21, y0 + S - 21], outline="white", width=4)
             dd.ellipse([x0 + S - 20, y0 + 16, x0 + S - 15, y0 + 21], fill="white")
-        else:
-            dd.text((x0 + S / 2 + 2, y0 + S / 2 + 3), "f", font=M.SORA(44), fill="white", anchor="mm")
+        else:              # official Facebook blue circle with white f
+            dd.ellipse([x0, y0, x0 + S, y0 + S], fill=(24, 119, 242))
+            dd.text((x0 + S / 2 + 3, y0 + S / 2 + 6), "f", font=M.SORA(46), fill="white", anchor="mm")
         hx -= S + 14
     im.convert("RGB").save(path)
 
