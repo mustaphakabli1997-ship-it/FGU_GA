@@ -10,6 +10,7 @@
 - Goal: grow his own brand and get better at editing Reels. Claude acts as his Reels editing + content copilot.
 
 ## CURRENT DEFAULT RECIPE (latest preferences — these win over older notes below)
+- SAVED STYLE = reel3_v2_motion (Mustafa: "احفظ آخر تعديل وخدم بهذاك الأسلوب"). Run `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook"`; .srt template = subs/reel3.srt (key phrases starred, tags like [broll:chat3d], [broll:product3d], [circle], emoji).
 - Upload: always the original .mov/.mp4 via GitHub (`main`); the chat turns videos into stills/GIFs (no sound) — never edit from those.
 - Captions: KEY WORDS ONLY (`--keywords-only`), big, yellow `--accent FFD60A` with black outline, drawn as images (Lalezar). Star whole short phrases (`*البيع ما كاش*`) so small words are never dropped. French words he says are written in French (confiance, créative, cliente, messages).
 - Words come from his real speech: `tools/transcribe.py` (Whisper large-v3 on cleaned audio) gives timings + a draft; pick only clearly heard key words, ask him when unsure.

@@ -1,5 +1,10 @@
 # Instructions for Claude (Mustafa's reels workspace)
 
+SAVED STYLE (Mustafa's choice, = videos/reel3_v2_motion.mp4): every new reel uses
+`tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook with *key* word"` — Motion cards layout, his own colours,
+yellow key words only, hook, one intro zoom, one light shake, whoosh once, beat, 3D b-roll/circle/emoji from .srt tags,
+plus a _send.mp4 copy for the chat. Only change it when he asks. Template .srt: subs/reel3.srt.
+
 Start of every session:
 1. Read `profile/mustafa.md` (who he is, tone, brand colors, contacts, audience, offer).
 2. Reply in Algerian Darija (Arabic script), short and practical. Mustafa is a beginner in video editing: explain what you did in simple words.
