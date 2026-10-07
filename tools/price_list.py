@@ -51,18 +51,18 @@ def card(im, box, plan):
     d.text((cx + (pw + 54) / 2 - 50, y + 62), "DZD", font=M.SORAS(22), fill=M.ICE, anchor="lm")
     d.text((cx, y + 112), reach, font=M.SORA(34), fill="white", anchor="mm")
     d.text((cx, y + 140), "REACH", font=M.SORAS(18), fill=M.LAV, anchor="mm")
-    y += 196
+    y += 186
     d.text((cx, y), "LEVELS", font=M.SORA(30), fill="white", anchor="mm"); y += 30
     for lp, lr in levels:
-        lb = [x0 + 26, y, x1 - 26, y + 92]
+        lb = [x0 + 26, y, x1 - 26, y + 86]
         lm = Image.new("L", im.size, 0); ImageDraw.Draw(lm).rounded_rectangle(lb, radius=20, fill=255)
         ov = Image.new("RGBA", im.size, (0, 0, 0, 0)); ov.paste((255, 255, 255, 22), (0, 0), lm); im.alpha_composite(ov)
         ImageDraw.Draw(im).rounded_rectangle(lb, radius=20, outline=(139, 92, 246, 140), width=2)
         f = M.SORA(40); lw = d.textlength(lp, font=f)
-        d.text((cx - 22, y + 32), lp, font=f, fill="white", anchor="mm")
-        d.text((cx - 22 + lw / 2 + 8, y + 38), "DZD", font=M.SORAS(17), fill=M.ICE, anchor="lm")
-        d.text((cx, y + 70), f"({lr})", font=M.SORAS(24), fill=M.LAV, anchor="mm")
-        y += 112
+        d.text((cx - 22, y + 30), lp, font=f, fill="white", anchor="mm")
+        d.text((cx - 22 + lw / 2 + 8, y + 36), "DZD", font=M.SORAS(17), fill=M.ICE, anchor="lm")
+        d.text((cx, y + 65), f"({lr})", font=M.SORAS(24), fill=M.LAV, anchor="mm")
+        y += 96
 
 
 def landscape(path):
@@ -75,11 +75,27 @@ def landscape(path):
     cw, gap, top = 330, 30, 175
     x = (W - (5 * cw + 4 * gap)) // 2
     for p in PLANS:
-        card(im, [x, top, x + cw, top + 790], p); x += cw + gap
-    # footer
+        card(im, [x, top, x + cw, top + 735], p); x += cw + gap
+    # call to action
+    M.grad_text(im, (W // 2, 962), "إذا راك واجد، ابعث ونبداو نخدمو", M.READ(46), anchor="mm")
+    # footer: WhatsApp left, Instagram + Facebook + handle right
     wa = neon_icons.tile("chat", 60); im.alpha_composite(wa, (70, H - 95))
-    d.text((70 + wa.width - 12, H - 52), "WhatsApp: 0550 20 54 64", font=M.SORA(36), fill="white", anchor="lm")
-    d.text((W - 60, H - 52), "@kabli_ms  •  Kabli Mustapha", font=M.SORAS(30), fill=M.LAV, anchor="rm")
+    d.text((70 + wa.width - 12, H - 50), "WhatsApp: 0550 20 54 64", font=M.SORA(36), fill="white", anchor="lm")
+    hx = W - 60
+    d.text((hx, H - 50), "@kabli_ms  •  Kabli Mustapha", font=M.SORAS(30), fill=M.LAV, anchor="rm")
+    hx -= d.textlength("@kabli_ms  •  Kabli Mustapha", font=M.SORAS(30)) + 24
+    for kind in ("fb", "ig"):
+        S = 58; x0, y0 = int(hx - S), H - 50 - S // 2
+        tm = Image.new("L", im.size, 0); ImageDraw.Draw(tm).rounded_rectangle([x0, y0, x0 + S, y0 + S], radius=16, fill=255)
+        g = Image.new("RGBA", im.size); g.paste(M.hgrad(im.width, im.height).convert("RGBA")); im.paste(g, (0, 0), tm)
+        dd = ImageDraw.Draw(im)
+        if kind == "ig":   # camera: rounded square outline, lens, dot
+            dd.rounded_rectangle([x0 + 12, y0 + 12, x0 + S - 12, y0 + S - 12], radius=10, outline="white", width=4)
+            dd.ellipse([x0 + 21, y0 + 21, x0 + S - 21, y0 + S - 21], outline="white", width=4)
+            dd.ellipse([x0 + S - 20, y0 + 16, x0 + S - 15, y0 + 21], fill="white")
+        else:
+            dd.text((x0 + S / 2 + 2, y0 + S / 2 + 3), "f", font=M.SORA(44), fill="white", anchor="mm")
+        hx -= S + 14
     im.convert("RGB").save(path)
 
 
