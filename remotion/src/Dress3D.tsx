@@ -3,7 +3,7 @@ import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from
 import {C, Fonts, NavyBg, arFont, neon} from './brand';
 
 // Product b-roll for a clothing "model": a dress on a hanger swings in (3D sway), violet -> blue satin gradient,
-// shine sweep, sparkles, title = the caption words. Starts at y 160 so it stays clear of the top-left @kabli_ms badge.
+// shine sweep, sparkles, title = the caption words.
 export const Dress3D: React.FC<{title: string; sub: string}> = ({title, sub}) => {
   const f = useCurrentFrame(); const {fps} = useVideoConfig();
   const k = spring({frame: f, fps, config: {damping: 12, stiffness: 90}});
@@ -14,9 +14,9 @@ export const Dress3D: React.FC<{title: string; sub: string}> = ({title, sub}) =>
   return (
     <AbsoluteFill>
       <Fonts /><NavyBg />
-      <div style={{position: 'absolute', left: 270 - 130, top: 530, width: 260, height: 30, borderRadius: '50%',
+      <div style={{position: 'absolute', left: 270 - 130, top: 410, width: 260, height: 30, borderRadius: '50%',
         background: 'radial-gradient(#000c, #0000 70%)', transform: `scale(${k})`}} />
-      <div style={{position: 'absolute', left: 270 - 140, top: 160, width: 280, height: 380, perspective: 900}}>
+      <div style={{position: 'absolute', left: 270 - 140, top: 40, width: 280, height: 380, perspective: 900}}>
         <div style={{width: 280, height: 380, transformOrigin: '50% 0%', transform: `translateY(${(1 - k) * -250}px) rotate(${sway}deg) rotateY(${ry}deg)`,
           filter: `drop-shadow(0 0 18px ${C.violet}aa)`}}>
           <svg width="280" height="380" viewBox="0 0 280 380">
@@ -47,13 +47,13 @@ export const Dress3D: React.FC<{title: string; sub: string}> = ({title, sub}) =>
       </div>
       {[0, 1, 2, 3].map((i) => {
         const p = ((f + i * 12) % 48) / 48;
-        const x = 270 + Math.cos(i * 1.7) * (150 + 20 * p); const y = 240 + i * 70 - p * 30;
+        const x = 270 + Math.cos(i * 1.7) * (150 + 20 * p); const y = 120 + i * 70 - p * 30;
         return <div key={i} style={{position: 'absolute', left: x, top: y, width: 12, height: 12, borderRadius: 6,
           background: C.ice, boxShadow: neon(C.blue), opacity: Math.sin(p * Math.PI) * k}} />;
       })}
-      <div style={{position: 'absolute', top: 590, width: '100%', textAlign: 'center', fontFamily: arFont(title), fontSize: title.length > 12 ? 58 : 72,
+      <div style={{position: 'absolute', top: 470, width: '100%', textAlign: 'center', fontFamily: arFont(title), fontSize: title.length > 12 ? 58 : 72,
         direction: 'rtl', color: C.cream, textShadow: neon(C.violet), opacity: kt, transform: `translateY(${(1 - kt) * 40}px)`}}>{title}</div>
-      {sub && <div style={{position: 'absolute', top: 680, width: '100%', textAlign: 'center', fontFamily: 'Ruqaa', fontSize: 50, color: C.white,
+      {sub && <div style={{position: 'absolute', top: 560, width: '100%', textAlign: 'center', fontFamily: 'Ruqaa', fontSize: 50, color: C.white,
         direction: 'rtl', opacity: kt}}>{sub}</div>}
     </AbsoluteFill>
   );
