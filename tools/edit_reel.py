@@ -679,65 +679,21 @@ def _neon_glyph_mask(ch, S):
 
 
 def render_icon3d_mov(ch, path, secs=2.0, size=210):
-    """Modern neon app-icon (style chosen by Mustafa from his references), in his brand colours:
-    dark night-violet glass squircle, glowing violet->neon-blue gradient rim, inner violet glow, diagonal light sheen,
-    clean white pictogram with a neon-blue glow, small sparkle. Pops in, sways in 3D, floats; glow pulses. Alpha .mov."""
-    from PIL import Image, ImageDraw, ImageFilter, ImageChops
+    """Neon glass app-icon from Mustafa's references (palette C, drawn by tools/neon_icons.py): dark violet glass
+    squircle, neon-blue -> violet rim with glow, soft lavender 3D pictogram (Material Icons), light beam, sparkle.
+    Pops in, sways in 3D, floats; glow pulses. An emoji without a matching pictogram goes inside the tile as is.
+    Alpha .mov."""
+    from PIL import Image
     import math
-    T = size * 2; rad = int(T * .27); pad = int(T * .22); C = T + 2 * pad
-    NAVY_T, NAVY_B, ORA, AMB = (46, 30, 102), (12, 7, 32), VIOLET, BLUE   # body top/bottom, rim start/end (palette C)
-    sq = Image.new("L", (T, T), 0); ImageDraw.Draw(sq).rounded_rectangle([0, 0, T - 1, T - 1], radius=rad, fill=255)
-    # body: vertical navy gradient, slightly see-through
-    body = Image.new("RGBA", (T, T))
-    bd = ImageDraw.Draw(body)
-    for y in range(T):
-        k = y / T
-        bd.line([(0, y), (T, y)], fill=tuple(int(NAVY_T[j] * (1 - k) + NAVY_B[j] * k) for j in range(3)) + (238,))
-    glow_in = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-    ImageDraw.Draw(glow_in).ellipse([T * .05, -T * .2, T * .95, T * .7], fill=ORA + (70,))
-    body.alpha_composite(glow_in.filter(ImageFilter.GaussianBlur(T * .12)))
-    sheen = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-    ImageDraw.Draw(sheen).polygon([(T * .45, 0), (T, 0), (T, T * .55)], fill=(255, 255, 255, 34))
-    body.alpha_composite(sheen.filter(ImageFilter.GaussianBlur(T * .03)))
-    body.putalpha(ImageChops.multiply(body.split()[3], sq))
-    # gradient rim (violet top-left -> neon blue bottom-right)
-    ring = Image.new("L", (T, T), 0)
-    ImageDraw.Draw(ring).rounded_rectangle([3, 3, T - 4, T - 4], radius=rad, outline=255, width=int(T * .022))
-    gradc = Image.new("RGBA", (T, T)); gc = ImageDraw.Draw(gradc)
-    for i in range(2 * T):
-        k = min(1, i / (2 * T))
-        gc.line([(i, 0), (0, i)], fill=tuple(int(ORA[j] * (1 - k) + AMB[j] * k) for j in range(3)) + (255,))
-    rim = Image.new("RGBA", (T, T), (0, 0, 0, 0)); rim.paste(gradc, (0, 0), ring)
-    # pictogram
-    gm = _neon_glyph_mask(ch, int(T * .58))
-    glyph = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-    if gm is not None:
-        gx = (T - gm.width) // 2
-        glyph.paste((248, 246, 255, 255), (gx, gx), gm)
-    else:
-        em = Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
-        em = em.resize((int(T * .56), int(T * .56 * em.height / em.width)), Image.LANCZOS)
-        glyph.alpha_composite(em, ((T - em.width) // 2, (T - em.height) // 2))
-    # assemble on a canvas with room for glow / shadow
-    def frame_static(pulse):
-        cv = Image.new("RGBA", (C, C), (0, 0, 0, 0))
-        sh = Image.new("RGBA", (C, C), (0, 0, 0, 0))
-        ImageDraw.Draw(sh).rounded_rectangle([pad + T * .06, pad + T * .14, pad + T * .94, pad + T * 1.06], radius=rad, fill=(0, 0, 0, 150))
-        cv.alpha_composite(sh.filter(ImageFilter.GaussianBlur(T * .07)))
-        og = Image.new("RGBA", (C, C), (0, 0, 0, 0)); og.alpha_composite(rim, (pad, pad))
-        cv.alpha_composite(og.filter(ImageFilter.GaussianBlur(T * .045 * pulse)))     # outer neon glow
-        cv.alpha_composite(body, (pad, pad))
-        gg = Image.new("RGBA", (C, C), (0, 0, 0, 0)); gg.alpha_composite(glyph, (pad, pad))
-        tinted = Image.new("RGBA", (C, C), AMB + (0,)); tinted.putalpha(gg.split()[3])
-        cv.alpha_composite(tinted.filter(ImageFilter.GaussianBlur(T * .03 * pulse)))  # glyph glow
-        cv.alpha_composite(gg)
-        cv.alpha_composite(rim, (pad, pad))
-        sp = ImageDraw.Draw(cv); sx, sy, r0 = pad + T * .8, pad + T * .18, T * .055   # sparkle
-        sp.polygon([(sx, sy - r0), (sx + r0 * .25, sy - r0 * .25), (sx + r0, sy), (sx + r0 * .25, sy + r0 * .25),
-                    (sx, sy + r0), (sx - r0 * .25, sy + r0 * .25), (sx - r0, sy), (sx - r0 * .25, sy - r0 * .25)], fill=(224, 242, 254, 230))
-        return cv.resize((C // 2, C // 2), Image.LANCZOS)
-    statics = {p: frame_static(p) for p in (0.8, 1.0, 1.2)}
-    OW, OH = C // 2 + 40, C // 2 + 40
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import neon_icons
+    name = neon_icons.EMOJI_ICON.get(ch) or neon_icons.EMOJI_ICON.get(ch.replace("\ufe0f", ""))
+    emoji = None if name else Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
+    statics = {}
+    for p in (0.8, 1.0, 1.2):   # drawn at 2x, glow strength pulses between these
+        cv = neon_icons.tile(name, size * 2, p, emoji_img=emoji)
+        statics[p] = cv.resize((cv.width // 2, cv.height // 2), Image.LANCZOS)
+    OW = OH = statics[1.0].width + 40
     d = os.path.join(os.path.dirname(path), os.path.basename(path) + "_f"); os.makedirs(d, exist_ok=True)
     for f in range(int(secs * 30)):
         t = f / 30

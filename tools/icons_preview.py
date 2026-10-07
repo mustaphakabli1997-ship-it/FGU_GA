@@ -9,7 +9,7 @@ import edit_reel as E
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "brand")
-ICONS = ["✅", "❌", "💸", "🚨", "🔥", "👇", "💬", "🛒", "📦"]
+ICONS = ["✅", "❌", "💸", "🚨", "🔥", "💬", "🛒", "📦", "📈", "💡", "📣", "🏪", "👤", "🏠", "🤝", "👇"]
 
 
 def frames(ch, tmp):
@@ -22,7 +22,7 @@ def frames(ch, tmp):
 
 def main():
     tmp = tempfile.mkdtemp()
-    S, G = 370, 3
+    S, G = 370, 4
     sheet = Image.new("RGB", (S * G, S * G))
     dr = ImageDraw.Draw(sheet)
     for y in range(S * G):   # night-violet gradient like the brand background

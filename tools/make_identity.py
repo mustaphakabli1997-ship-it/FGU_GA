@@ -206,16 +206,22 @@ def icon(kind, d, cx, cy, s, col, acc=BLUE):
 
 
 def highlights():
-    items = [("tips", "NASA2E7"), ("ads", "SPONSOR"), ("store", "MATJER"), ("results", "NATA2IJ")]
-    for kind, label in items:
-        im = bg(1080, 1080)
-        ring = Image.new("L", im.size, 0); ImageDraw.Draw(ring).ellipse([40, 40, 1040, 1040], outline=255, width=16)
-        glow = Image.new("RGBA", im.size, (0, 0, 0, 0)); glow.paste(VIOLET + (255,), (0, 0), ring)
-        glow = glow.filter(ImageFilter.GaussianBlur(18)); im.paste(glow, (0, 0), glow)
-        paste_grad(im, ring)
-        d = ImageDraw.Draw(im)
-        icon(kind, d, 540, 470, 420, WHITE)
-        d.text((540, 830), label, font=fit(d, label, SORA, 104, 640), fill=WHITE, anchor="mm")
+    """Instagram highlight covers in Mustafa's neon glass icon style (his reference images): night-violet background
+    with a corner glow, one glass app-icon in the centre (fits the round crop), no text (IG shows the title)."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import neon_icons
+    items = [("tips", "lightbulb"), ("ads", "campaign"), ("store", "storefront"), ("results", "trending_up"),
+             ("me", "person"), ("contact", "chat")]
+    for kind, icon in items:
+        S = 1080
+        im = Image.new("RGB", (S, S)); d = ImageDraw.Draw(im)
+        for y in range(S):
+            d.line([(0, y), (S, y)], fill=lerp((26, 15, 62), (10, 6, 28), y / S))
+        g = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        ImageDraw.Draw(g).ellipse([S * .55, -S * .45, S * 1.45, S * .45], fill=(120, 60, 170, 90))
+        g = g.filter(ImageFilter.GaussianBlur(160)); im.paste(g, (0, 0), g)
+        t = neon_icons.tile(icon, 600)
+        im.paste(t, ((S - t.width) // 2, (S - t.height) // 2 + 10), t)
         im.save(os.path.join(OUT, f"highlight_{kind}.png"))
 
 
