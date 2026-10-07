@@ -193,3 +193,6 @@
 - 2026-10-07: faceless motion-graphics reels (when he has no footage): `python3 tools/motion_reel.py subs/<name>.json videos/<name>.mp4` (Remotion TipReel scenes: kicker/title/sub/icon, neon text, glass icons ic_* in remotion/public, sfx_pro sounds, end card). First one: videos/reel_motion1.mp4 (3 errors that burn the sponsor budget).
 - 2026-10-07: sponsoring PRICE LIST in identity C: `python3 tools/price_list.py` -> assets/brand/identity/price_list.png (1920x1080). Prices/reach copied from HIS own price image (5/7/10/15 days, 1 mois premium + 2 levels each) — edit PLANS in the script when he changes them; never invent prices.
 - 2026-10-07: WhatsApp badge (green logo + 0550 20 54 64 pill) bottom-left for the whole reel (`--wa-badge`), and NO end card (`--no-endcard`) — both in the preset. New b-roll `[broll:rm_dress]` (Remotion Dress3D: dress on hanger) for clothing products. reel4_v3 = this.
+
+## Series « E-COM TIP » (his idea 2026-10-07)
+- One small useful e-commerce tip per Reel, numbered (#01, #02…), fixed format + same cover each time. Plan, 20 episode ideas and script #01: profile/series_ecom_tip.md.
