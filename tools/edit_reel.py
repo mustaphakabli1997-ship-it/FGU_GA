@@ -225,6 +225,12 @@ def find_asset(kind, name):
     sys.exit(f"asset '{name}' not found in assets/ (tag [{kind}:{name}])")
 
 
+def sfx_pro_chime(tmp):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import sfx_pro
+    p = os.path.join(tmp, "pro_chime_end.wav"); sfx_pro.write(p, sfx_pro.chime()); return p
+
+
 def make_sfx(tmp):
     """Tiny synthetic sound effects (no downloads): whoosh (filtered noise sweep) and pop."""
     out = {}
@@ -761,6 +767,7 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--sfx-style", choices=["basic", "pro"], default="basic", help="pro = designed sounds (tools/sfx_pro.py): pop on captions, sparkle on icons, one swoosh on the first b-roll, soft hit on the hook, chime on the end card")
     ap.add_argument("--text-sfx-only", action="store_true", help="only the caption sounds (pop when a key word / icon appears): no whoosh, ding or boom (Mustafa 2026-10-07)")
     ap.add_argument("--no-badge", action="store_true", help="hide the top-left @kabli_ms badge with the spinning 3D K+M coin")
     ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
@@ -1004,8 +1011,16 @@ def main():
         fc += "[am0]anull[am];"
     else:
         sfx = make_sfx(tmp)
+        VOLP = {}
+        if a.sfx_style == "pro":   # designed sounds replace the basic ones
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import sfx_pro
+            pro = sfx_pro.make_all(tmp)
+            sfx.update({"click": pro["pop"], "pop": pro["sparkle"], "whoosh": pro["swoosh"], "boom": pro["hit"], "ding": pro["sparkle"]})
+            VOLP = {"click": 0.30, "pop": 0.30, "whoosh": 0.30, "ding": 0.30, "boom": 0.45}
         mix, n_mix = ["[am0]"], 1
         VOL = {"click": 0.35, "whoosh": 0.25, "pop": 0.38, "ding": 0.28, "boom": 0.8}
+        VOL.update(VOLP)
         whoosh_used = False   # Mustafa: whoosh must not repeat -> once per reel
         for i, (ea, eb, _t, ems, tags) in enumerate(events):
             kinds = {kd for kd, _ in tags}
@@ -1024,10 +1039,13 @@ def main():
                 n_in += 1
         if a.hook and not a.text_sfx_only:
             boom = os.path.join(tmp, "boom.wav")
-            run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=55:d=0.7", "-af",
-                 "vibrato=f=6:d=0.3,afade=t=out:st=0.05:d=0.65,volume=1.6", "-ar", "48000", "-ac", "2", boom])
+            if a.sfx_style == "pro":
+                boom = sfx["boom"]
+            else:
+                run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "sine=f=55:d=0.7", "-af",
+                     "vibrato=f=6:d=0.3,afade=t=out:st=0.05:d=0.65,volume=1.6", "-ar", "48000", "-ac", "2", boom])
             extra_inputs += ["-i", boom]
-            fc += f"[{n_in}:a]anull[sfboom];"; mix.append("[sfboom]"); n_in += 1
+            fc += f"[{n_in}:a]volume={VOL['boom'] if a.sfx_style == 'pro' else 1}[sfboom];"; mix.append("[sfboom]"); n_in += 1
         if a.music:
             mpath = a.music
             if a.music == "beat":
@@ -1047,8 +1065,13 @@ def main():
             n_in += 1
         else:
             fc += f"color=c=0x{BRAND['navy']}:s={W}x{H}:d={ENDCARD_SECS}:r=30,format=yuv420p,setsar=1[card];"
-        fc += (f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
-               f"[vm]format=yuv420p,setsar=1[vms];[vms][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
+        if a.sfx_style == "pro" and not a.no_sfx:   # chime under the end card instead of silence
+            extra_inputs += ["-i", sfx_pro_chime(tmp)]
+            fc += (f"[{n_in}:a]aformat=sample_rates=48000:channel_layouts=stereo,volume=0.35,apad,atrim=0:{ENDCARD_SECS}[csil];")
+            n_in += 1
+        else:
+            fc += f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
+        fc += (f"[vm]format=yuv420p,setsar=1[vms];[vms][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
                f"[vv]subtitles={ass}:fontsdir={FONTS_DIR}[vout]")
     run(["ffmpeg", "-v", "error", "-y", "-i", a.src, *extra_inputs, "-filter_complex", fc,
          "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", "21",

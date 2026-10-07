@@ -189,3 +189,4 @@
 
 - 2026-10-07: Mustafa asked to REMOVE the white grid background of the cards layout -> saved style now uses `--layout full` (video fills the screen; badge, captions, icons, b-roll, end card unchanged). reel3_v11 = this look.
 - 2026-10-07: NO music; sound effects = ONLY the caption sound (soft "bubble pop" when a key word / icon appears), no whoosh / ding / boom -> preset uses `--text-sfx-only`, no `--music`. reel3_v12 = this sound.
+- 2026-10-07 ("طور نفسك sound effects"): designed SFX `tools/sfx_pro.py` via `--sfx-style pro` (preset default, still NO music): soft bubble pop on key-word captions, 3-note bell sparkle on icons, ONE moving swoosh on the first b-roll, soft deep hit on the hook, C-E-G chime on the end card. reel3_v13 = this sound. (`--text-sfx-only` = pops only, if he wants it quieter.)
