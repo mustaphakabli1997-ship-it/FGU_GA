@@ -65,12 +65,33 @@ def card(im, box, plan):
         y += 96
 
 
+def meta_logo(im, x, cy, w):
+    """Meta-style infinity mark in Meta blue (#0064E0 -> #0082FB), drawn as a thick lemniscate."""
+    import math
+    S = 4; W2, H2 = w * S, int(w * 0.55) * S
+    m = Image.new("L", (W2, H2), 0); dm = ImageDraw.Draw(m)
+    pts = []
+    for i in range(400):
+        t = 2 * math.pi * i / 400
+        den = 1 + math.sin(t) ** 2
+        pts.append((W2 / 2 + (W2 * 0.42) * math.cos(t) / den, H2 / 2 + (H2 * 0.78) * math.sin(t) * math.cos(t) / den))
+    dm.line(pts + [pts[0]], fill=255, width=int(H2 * 0.2), joint="curve")
+    g = Image.new("RGBA", (W2, H2)); gd = ImageDraw.Draw(g)
+    for xx in range(W2):
+        k = xx / (W2 - 1)
+        gd.line([(xx, 0), (xx, H2)], fill=(0, int(100 + 30 * k), int(224 + 27 * k), 255))
+    out = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); out.paste(g, (0, 0), m)
+    out = out.resize((w, H2 // S), Image.LANCZOS)
+    im.alpha_composite(out, (x, cy - out.height // 2))
+
+
 def landscape(path):
     W, H = 1920, 1080
     im = M.bg(W, H).convert("RGBA")
     d = ImageDraw.Draw(im)
     logo = M.ICON.resize((96, 96), Image.LANCZOS); im.alpha_composite(logo, (60, 40))
     d.text((176, 88), "SPONSORING  •  META ADS", font=M.SORA(40), fill="white", anchor="lm")
+    meta_logo(im, int(176 + d.textlength("SPONSORING  •  META ADS", font=M.SORA(40)) + 24), 88, 90)
     M.grad_text(im, (W - 60, 90), "عروض الإعلانات الممولة", M.READ(64), anchor="rm")   # big title, brand gradient
     cw, gap, top = 330, 30, 175
     x = (W - (5 * cw + 4 * gap)) // 2
