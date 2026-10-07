@@ -3,7 +3,7 @@
 SAVED STYLE (Mustafa's choice, = videos/reel3_v2_motion.mp4): every new reel uses
 `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook with *key* word"` — FULL-SCREEN layout (no white card background, his request 2026-10-07), his own colours,
 key words only as neon captions, hook, one intro zoom, one light shake, NO music, designed SFX `--sfx-style pro` (caption pop, icon sparkle, one swoosh, hook hit, end chime), Remotion/3D b-roll, circle,
-neon icons from .srt tags, top-left K+M coin badge, animated end card, plus a _send.mp4 copy for the chat.
+neon icons from .srt tags, top-left K+M coin badge, WhatsApp number bottom-left (`--wa-badge`), NO end card, plus a _send.mp4 copy for the chat.
 Only change it when he asks. Template .srt: subs/reel3_v7.srt.
 
 VISUAL IDENTITY (his choice 2026-10-07) = PALETTE C "violet + neon blue": night violet #140B34, deep violet #2A1B5E,

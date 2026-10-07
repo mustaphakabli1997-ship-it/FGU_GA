@@ -152,8 +152,8 @@ ALIASES = {"sparks": "sparks_neon", "flash": "flash_white", "leak": "light_leak"
 
 
 REMOTION = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "remotion")
-TITLED = {"rm_cube", "rm_funnel"}   # Remotion b-roll whose title = the caption words
-REMOTION_COMPS = {"rm_badge": "BrandBadge", "rm_cube": "Cube3D", "rm_funnel": "Funnel", "rm_phone": "Phone3D", "rm_doc": "DocCard"}
+TITLED = {"rm_cube", "rm_funnel", "rm_dress"}   # Remotion b-roll whose title = the caption words
+REMOTION_COMPS = {"rm_badge": "BrandBadge", "rm_cube": "Cube3D", "rm_dress": "Dress3D", "rm_funnel": "Funnel", "rm_phone": "Phone3D", "rm_doc": "DocCard"}
 
 
 def remotion_render(comp, out, props=None):
@@ -472,6 +472,40 @@ def render_notif_png(text, path):
 CARD_W, CARD_H, CARD_Y = 800, 1422, 250
 
 
+def render_wa_badge(path):
+    """WhatsApp pill: official green logo (circle + phone) + number in Sora on a night-violet glass pill with a
+    violet -> blue rim."""
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+    f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), 44)
+    num = BRAND["whatsapp"]
+    tw = ImageDraw.Draw(Image.new("RGBA", (1, 1))).textlength(num, font=f)
+    S = 84; pad = 16; Wp, Hp = int(S + 34 + tw + 40), S + 2 * pad
+    im = Image.new("RGBA", (Wp + 40, Hp + 40), (0, 0, 0, 0))
+    sh = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ImageDraw.Draw(sh).rounded_rectangle([20, 26, 20 + Wp, 26 + Hp], radius=Hp // 2, fill=(0, 0, 0, 140))
+    im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(10)))
+    body = Image.new("RGBA", im.size, (0, 0, 0, 0)); bd = ImageDraw.Draw(body)
+    bd.rounded_rectangle([20, 20, 20 + Wp, 20 + Hp], radius=Hp // 2, fill=NIGHT + (225,))
+    im.alpha_composite(body)
+    ring = Image.new("L", im.size, 0); ImageDraw.Draw(ring).rounded_rectangle([20, 20, 20 + Wp, 20 + Hp], radius=Hp // 2, outline=255, width=3)
+    grad = Image.new("RGBA", im.size); gd = ImageDraw.Draw(grad)
+    for x in range(im.width):
+        k = x / im.width; gd.line([(x, 0), (x, im.height)], fill=tuple(int(VIOLET[j] + (BLUE[j] - VIOLET[j]) * k) for j in range(3)) + (255,))
+    im.paste(grad, (0, 0), ring)
+    d = ImageDraw.Draw(im)
+    cx, cy, r = 20 + pad + S // 2, 20 + Hp // 2, S // 2
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(37, 211, 102))          # WhatsApp green
+    d.ellipse([cx - r * .62, cy - r * .62, cx + r * .62, cy + r * .62], outline="white", width=6)
+    d.polygon([(cx - r * .55, cy + r * .35), (cx - r * .75, cy + r * .78), (cx - r * .25, cy + r * .6)], fill="white")
+    # phone handset inside the bubble
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import neon_icons
+    ph = neon_icons.glyph_mask("call", int(r * .7))
+    im.paste((255, 255, 255, 255), (int(cx - ph.width / 2), int(cy - ph.height / 2)), ph)
+    d.text((20 + pad + S + 22, cy + 2), num, font=f, fill="white", anchor="lm")
+    im.save(path)
+
+
 def render_card_assets(tmp):
     """Light grid paper with soft window-light shadows, card mask, card shadow, pip mask."""
     from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -769,6 +803,7 @@ def main():
     ap.add_argument("--no-sfx", action="store_true")
     ap.add_argument("--sfx-style", choices=["basic", "pro"], default="basic", help="pro = designed sounds (tools/sfx_pro.py): pop on captions, sparkle on icons, one swoosh on the first b-roll, soft hit on the hook, chime on the end card")
     ap.add_argument("--text-sfx-only", action="store_true", help="only the caption sounds (pop when a key word / icon appears): no whoosh, ding or boom (Mustafa 2026-10-07)")
+    ap.add_argument("--wa-badge", action="store_true", help="WhatsApp logo + number pill bottom-left for the whole reel (Mustafa 2026-10-07)")
     ap.add_argument("--no-badge", action="store_true", help="hide the top-left @kabli_ms badge with the spinning 3D K+M coin")
     ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
@@ -978,6 +1013,15 @@ def main():
         extra_inputs += ["-i", find_asset("flash", "flash")]
         fc += (f"[{n_in}:v]format=rgba,scale={W}:{H}[hfl];[{cur}][hfl]overlay=eof_action=pass:repeatlast=0[ovhf];")
         cur, n_in = "ovhf", n_in + 1
+
+    # WHATSAPP BADGE (bottom-left): official green WhatsApp logo + number in a brand pill, whole reel
+    if a.wa_badge:
+        wp = os.path.join(tmp, "wa_badge.png"); render_wa_badge(wp)
+        extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", wp]
+        t0 = 2.7 if a.hook else 0.3
+        fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={t0}:d=0.4:alpha=1[wab];"
+               f"[{cur}][wab]overlay=x=36:y={H - 420}:enable='gte(t,{t0})'[ovwa];")
+        cur, n_in = "ovwa", n_in + 1
 
     # BRAND BADGE (top-left): spinning 3D K+M coin + @kabli_ms pill, rendered by Remotion (ProRes 4444 alpha), looped
     if not a.no_badge:
