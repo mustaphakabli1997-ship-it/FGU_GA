@@ -219,7 +219,24 @@ def highlights():
         im.save(os.path.join(OUT, f"highlight_{kind}.png"))
 
 
+def canva_backgrounds():
+    """Text-free backgrounds for the editable Canva templates (texts are Canva text boxes on top)."""
+    def grid(im, step=72, alpha=18):
+        ov = Image.new("RGBA", im.size, (0, 0, 0, 0)); d = ImageDraw.Draw(ov)
+        for x in range(0, im.width, step): d.line([(x, 0), (x, im.height)], fill=LAV + (alpha,), width=1)
+        for y in range(0, im.height, step): d.line([(0, y), (im.width, y)], fill=LAV + (alpha,), width=1)
+        return Image.alpha_composite(im.convert("RGBA"), ov).convert("RGB")
+    def pill(im, box):
+        m = Image.new("L", im.size, 0); ImageDraw.Draw(m).rounded_rectangle(box, radius=(box[3] - box[1]) // 2, fill=255)
+        paste_grad(im, m)
+    p = grid(bg(1080, 1350)); pill(p, [80, 90, 236, 156]); glass(p, [80, 790, 1000, 1060])
+    p.save(os.path.join(OUT, "canva_bg_post.png"))
+    c = grid(bg(1080, 1920)); pill(c, [80, 150, 560, 224])
+    m = Image.new("L", c.size, 0); ImageDraw.Draw(m).line([(80, 1500), (1000, 1500)], fill=255, width=4); paste_grad(c, m)
+    c.save(os.path.join(OUT, "canva_bg_cover.png"))
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
-    brand_board(); reel_cover(); tip_post(); highlights()
+    brand_board(); reel_cover(); tip_post(); highlights(); canva_backgrounds()
     print(sorted(os.listdir(OUT)))
