@@ -546,8 +546,10 @@ def _neon_glyph_mask(ch, S):
         d.rounded_rectangle([c - S * .09, c - S * .45, c + S * .09, c + S * .12], radius=int(S * .06), fill=255)
         d.polygon(P([(-.38, .02), (.38, .02), (0, .5)]), fill=255)
     elif ch == "💬":
-        d.rounded_rectangle([c - S * .42, c - S * .34, c + S * .42, c + S * .22], radius=int(S * .16), fill=255)
-        d.polygon(P([(-.2, .18), (-.32, .5), (.06, .2)]), fill=255)
+        d.rounded_rectangle([c - S * .44, c - S * .38, c + S * .44, c + S * .2], radius=int(S * .16), fill=255)
+        d.polygon(P([(-.3, .3), (-.42, .74), (.04, .32)]), fill=255)
+        for x in (-.22, 0, .22):   # three typing dots
+            d.ellipse([c + x * u - S * .055, c - .18 * u - S * .055, c + x * u + S * .055, c - .18 * u + S * .055], fill=0)
     elif ch == "🛒":
         d.line(P([(-.55, -.4), (-.38, -.4), (-.22, .22), (.4, .22), (.52, -.22), (-.3, -.22)]), fill=255, width=int(S * .08), joint="curve")
         for x in (-.14, .32): d.ellipse([c + x * u - S * .065, c + .36 * u, c + x * u + S * .065, c + .36 * u + S * .13], fill=255)
