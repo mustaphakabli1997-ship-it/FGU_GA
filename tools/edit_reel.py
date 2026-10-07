@@ -257,7 +257,7 @@ def make_sfx(tmp):
 ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
 
 
-def render_caption_png(text, path, font_file, size=118, maxw=860):
+def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False):
     """NEON + SCRIPT caption (Mustafa's reference "Personal Branding"), brand colours (palette C):
     first word(s) in a big bold sans (Readex Pro / Sora) with a violet + neon-blue glow, the last word in white
     handwriting script overlapping its bottom-right with a soft white glow. One word -> bold neon only.
@@ -291,6 +291,10 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     H2 = int(bs * 1.25 + (ss * 0.95 if bottom else 0) + pad * 2)
     cx = W2 / 2
     ty = pad + bs * 0.62
+    if stacked and bottom:   # hook: script word on its OWN row under the bold line, centred (no text over text)
+        bb = tmpd.textbbox((0, 0), top, font=bf, anchor="mm"); sb = tmpd.textbbox((0, 0), bottom, font=sf, anchor="mm")
+        ty = pad - bb[1]
+        H2 = int(ty + bb[3] + bs * 0.10 - sb[1] + sb[3] + pad)
     accent = tuple(int(ACCENT_NEON[i:i + 2], 16) for i in (0, 2, 4))
     lay = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
     def draw(img, xy, t, f, fill, stroke=0, sfill=None):
@@ -322,6 +326,8 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     if bottom:   # white script overlapping the bold line, shifted toward the reading end
         sx = cx + (tw - sw) / 2 * (-0.6 if ar else 0.6)
         sy = ty + bs * (SCRIPT_DY_AR if ar else 0.55)   # Readex Pro has deep dots below: drop the Arabic script word a bit more
+        if stacked:
+            sx, sy = cx, ty + bb[3] + bs * 0.10 - sb[1]
         wg = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(wg, (sx, sy), bottom, sf, (255, 255, 255, 255))
         lay.alpha_composite(wg.filter(ImageFilter.GaussianBlur(ss * 0.12)))
         draw(lay, (sx, sy), bottom, sf, (255, 255, 255, 255), stroke=2, sfill=(30, 30, 30, 180))
@@ -334,7 +340,7 @@ def render_hook_png(text, path, font_file):
     from PIL import Image, ImageDraw
     cap = os.path.join(os.path.dirname(path), "hook_txt.png")
     if ARABIC_RE.search(text):
-        cw, ch = render_caption_png(text, cap, font_file, size=104, maxw=800)
+        cw, ch = render_caption_png(text, cap, font_file, size=104, maxw=800, stacked=True)
     else:
         from PIL import ImageFont
         f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), 130)
@@ -417,7 +423,8 @@ def caption_y(a, segs, ea, chh, tags, vis=None, eb=None):
     else:
         f_top = min(fy - fr for _, fy, fr in faces)
         f_bot = max(fy + fr for _, fy, fr in faces)
-        top_lim, bot_lim = int(H * 0.12), int(H * 0.80)              # IG top bar / bottom caption area
+        top_lim = 110 + 245 if not a.no_badge else int(H * 0.12)      # below the top-left @kabli_ms badge (y 110..345)
+        bot_lim = H - 440 if getattr(a, "wa_badge", False) else int(H * 0.80)   # above the WhatsApp badge
     gap = 25
     below = int(f_bot + gap - vt)          # visible top just under his chin
     if below + vb <= bot_lim:
@@ -833,6 +840,8 @@ def main():
         raw = srt_to_events(open(a.srt, encoding="utf-8").read())
         events = raw if a.srt_after_cut or a.no_silence_cut else [
             (remap(s, segs), remap(e, segs), t, em, tg) for s, e, t, em, tg in raw]
+    if a.hook:   # nothing is written over the hook card: captions/icons start once it is gone (2.65 s)
+        events = [(max(ea, 2.7), eb, t, em, tg) for ea, eb, t, em, tg in events if eb > 3.0]
     global ACCENT, TEXT_COLOR
     if a.accent:
         ACCENT = a.accent.lstrip("#").upper()
@@ -971,7 +980,10 @@ def main():
                     or any(kd == "broll" and ar_ in TITLED for kd, ar_ in _tg):
                 continue   # the graphic already shows these exact words as its title
             png = os.path.join(tmp, f"capimg{i_ev}.png")
-            cw, chh = render_caption_png(t, png, a.ar_font, size=(105 if on_broll else 150) if a.keywords_only else 106)
+            sz = (105 if on_broll else 150) if a.keywords_only else 106
+            cw, chh = render_caption_png(t, png, a.ar_font, size=sz)
+            if _em and not a.no_emoji and (W - cw) // 2 - 60 + cw - 40 + 230 > W + 30:   # icon would sit on the text
+                cw, chh = render_caption_png(t, png, a.ar_font, size=sz, maxw=640)
             from PIL import Image
             vis = Image.open(png).split()[3].point(lambda v: 255 if v > 40 else 0).getbbox() or (0, 0, cw, chh)
             caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg, vis=(vis[1], vis[3]), eb=eb))
