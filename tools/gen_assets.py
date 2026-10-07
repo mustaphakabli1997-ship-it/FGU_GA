@@ -4,11 +4,11 @@
   python3 tools/gen_assets.py
 
 Creates in assets/_generated/ (git-ignored, auto-created by edit_reel.py when missing; 540x960 @30fps; alpha ones are QuickTime 'qtrle' with transparency):
-  assets/_generated/sparks_orange.mov   rising orange sparks
+  assets/_generated/sparks_neon.mov     rising violet / neon-blue sparks
   assets/_generated/flash_white.mov     0.3s white flash
-  assets/_generated/light_leak.mov      warm orange light leak sweep
+  assets/_generated/light_leak.mov      violet / neon-blue light leak sweep
   assets/_generated/money_rain.mov      falling dollar bills
-  assets/_generated/growth_chart.mp4     animated growth chart in brand colours (opaque)
+  assets/_generated/growth_chart.mp4     animated growth chart in brand colours (palette C, opaque)
 Put your own files in assets/sparks, assets/broll, assets/icons (they win over generated ones) and reference them from the .srt.
 """
 import math, os, random, shutil, subprocess, sys, tempfile
@@ -36,7 +36,8 @@ def sparks(n_secs=1.2):
     d = tempfile.mkdtemp()
     parts = [dict(x=random.uniform(0, SW), y=random.uniform(SH * .55, SH * 1.05),
                   vx=random.uniform(-40, 40), vy=random.uniform(-520, -180),
-                  r=random.uniform(2, 6), life=random.uniform(.5, 1.2), delay=random.uniform(0, .35))
+                  r=random.uniform(2, 6), life=random.uniform(.5, 1.2), delay=random.uniform(0, .35),
+                  c=(139, 92, 246) if random.random() < .5 else (56, 189, 248))
              for _ in range(140)]
     for f in range(int(n_secs * FPS)):
         t = f / FPS
@@ -50,7 +51,7 @@ def sparks(n_secs=1.2):
             y = p["y"] + p["vy"] * a + 120 * a * a
             k = 1 - a / p["life"]
             r = p["r"] * (0.5 + k)
-            col = (255, int(120 + 100 * k), int(20 + 60 * k), int(255 * k))
+            col = tuple(int(v + (255 - v) * .45 * k) for v in p["c"]) + (int(255 * k),)   # violet / neon blue, hot core
             dr.line([(x, y), (x - p["vx"] * .03, y - p["vy"] * .03)], fill=col, width=max(1, int(r)))
             dr.ellipse([x - r, y - r, x + r, y + r], fill=col)
         glow = im.filter(ImageFilter.GaussianBlur(5))
@@ -76,8 +77,8 @@ def light_leak(n_secs=0.9):
         im = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
         dr = ImageDraw.Draw(im)
         cx = -150 + t * (SW + 300)
-        dr.ellipse([cx - 260, -200, cx + 260, SH * 0.75], fill=(255, 140, 30, int(190 * env)))
-        dr.ellipse([cx - 120, SH * .1, cx + 120, SH * .55], fill=(255, 220, 120, int(150 * env)))
+        dr.ellipse([cx - 260, -200, cx + 260, SH * 0.75], fill=(139, 92, 246, int(190 * env)))
+        dr.ellipse([cx - 120, SH * .1, cx + 120, SH * .55], fill=(120, 210, 250, int(150 * env)))
         im.filter(ImageFilter.GaussianBlur(70)).save(f"{d}/{f+1:04d}.png")
     return d
 
@@ -111,9 +112,9 @@ def money_rain(n_secs=2.0):
 
 def growth_chart(n_secs=2.6):
     d = tempfile.mkdtemp()
-    navy, blue, green = (15, 23, 42), (27, 42, 74), (255, 107, 44)
-    font = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 62)
-    big = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 110)
+    navy, blue, green = (20, 11, 52), (42, 27, 94), (56, 189, 248)   # palette C (line = neon blue)
+    font = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Sora-ExtraBold.ttf"), 56)
+    big = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Sora-ExtraBold.ttf"), 96)
     pts = [0.05, .12, .1, .22, .3, .28, .45, .6, .58, .8, .95]
     n = int(n_secs * FPS)
     L, R, T, B = 50, SW - 50, 330, 640
@@ -125,7 +126,7 @@ def growth_chart(n_secs=2.6):
         dr.text((SW / 2, 120), "ROAS", font=font, fill=(255, 255, 255), anchor="mm")
         for g in range(5):
             y = T + g * (B - T) / 4
-            dr.line([(L, y), (R, y)], fill=(60, 90, 130), width=1)
+            dr.line([(L, y), (R, y)], fill=(70, 50, 140), width=1)
         k = e * (len(pts) - 1)
         i = int(k)
         xy = [(L + j * (R - L) / (len(pts) - 1), B - pts[j] * (B - T)) for j in range(i + 1)]
@@ -152,8 +153,9 @@ def _emoji(ch, size):
     return im.resize((size, int(size * im.height / im.width)), Image.LANCZOS)
 
 
-NAVY_B, SLATE_B, ORANGE_B, SOFT_B = (15, 23, 42), (27, 42, 74), (255, 107, 44), (159, 179, 209)
-LALEZAR = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Lalezar-Regular.ttf"), s)
+NAVY_B, SLATE_B, ORANGE_B, SOFT_B = (20, 11, 52), (42, 27, 94), (139, 92, 246), (196, 181, 253)   # palette C (ORANGE_B = violet)
+BLUE_B = (56, 189, 248)
+LALEZAR = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/ReadexPro-Bold.ttf"), int(s * .9))   # brand Arabic font (Readex Pro)
 
 
 def _card_bg():
@@ -173,7 +175,7 @@ def broll_icon(emoji, big, small, n_secs=1.6):
     """Emoji pops in, big Latin word + Arabic line slide up."""
     d = tempfile.mkdtemp()
     base = _emoji(emoji, 300)
-    fb = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), 110)
+    fb = ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Sora-ExtraBold.ttf"), 68)
     for f in range(int(n_secs * FPS)):
         t = f / FPS
         im = _card_bg()
@@ -185,7 +187,7 @@ def broll_icon(emoji, big, small, n_secs=1.6):
         k2 = _ease((t - 0.2) / 0.35)
         dr.text((SW / 2, SH * .39 + 40 * (1 - k2)), big, font=fb, fill=(255, 255, 255), anchor="mm")
         k3 = _ease((t - 0.35) / 0.35)
-        dr.text((SW / 2, SH * .47 + 40 * (1 - k3)), small, font=LALEZAR(64), fill=ORANGE_B, anchor="mm", direction="rtl")
+        dr.text((SW / 2, SH * .47 + 40 * (1 - k3)), small, font=LALEZAR(64), fill=BLUE_B, anchor="mm", direction="rtl")
         im.save(f"{d}/{f+1:04d}.png")
     return d
 
@@ -200,7 +202,7 @@ def broll_chat(n_secs=1.8):
         im = _card_bg()
         dr = ImageDraw.Draw(im)
         dr.rounded_rectangle([50, 90, SW - 50, SH * .56], radius=40, fill=(11, 20, 26), outline=SLATE_B, width=4)
-        dr.text((SW / 2, 140), "WhatsApp", font=ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Montserrat-Bold.ttf"), 34), fill=(255, 255, 255), anchor="mm")
+        dr.text((SW / 2, 140), "WhatsApp", font=ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Sora-SemiBold.ttf"), 32), fill=(255, 255, 255), anchor="mm")
         y = 200
         for text, start, mine in msgs:
             k = _ease((t - start) / 0.25)
@@ -218,7 +220,7 @@ def broll_chat(n_secs=1.8):
 
 
 def main():
-    jobs = [("assets/_generated/sparks_orange.mov", sparks, True), ("assets/_generated/flash_white.mov", flash, True),
+    jobs = [("assets/_generated/sparks_neon.mov", sparks, True), ("assets/_generated/flash_white.mov", flash, True),
             ("assets/_generated/light_leak.mov", light_leak, True), ("assets/_generated/money_rain.mov", money_rain, True),
             ("assets/_generated/growth_chart.mp4", growth_chart, False),
             ("assets/_generated/trust.mp4", lambda: broll_icon("🤝", "CONFIANCE", "الثقة تاع البنادم"), False),

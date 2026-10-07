@@ -10,14 +10,18 @@ video unless --srt-after-cut is passed). Brand colors / contacts live in BRAND b
 """
 import argparse, os, re, subprocess, sys, tempfile
 
-BRAND = dict(navy="0F172A", blue="1B2A4A", green="FF6B2C",  # palette B: navy + signal orange (key "green" = accent colour)
+BRAND = dict(navy="140B34", blue="2A1B5E", accent="8B5CF6", neon="38BDF8",  # palette C: night violet + violet + neon blue
              whatsapp="0550 20 54 64", handle="@kabli_ms",
              cta="راسلني على واتساب")
-FONT = "Anton"  # bold condensed caption font (OFL), in tools/fonts; Arabic falls back to DejaVu Sans
+FONT = "Sora ExtraBold"  # Latin caption font for libass (static instance in tools/fonts); Arabic falls back to DejaVu Sans
 FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
-ACCENT = BRAND["green"]
+AR_BOLD, LAT_BOLD, LAT_SEMI = "ReadexPro-Bold.ttf", "Sora-ExtraBold.ttf", "Sora-SemiBold.ttf"   # brand fonts (palette C)
+ACCENT = BRAND["accent"]   # words wrapped as *word* in the .srt get this colour
 TEXT_COLOR = "FFFFFF"
-ACCENT_NEON = "FF6B2C"   # brand orange for the neon captions  # words wrapped as *word* in the .srt get this colour
+ACCENT_NEON = "38BDF8"   # neon blue = middle of the neon caption gradient
+VIOLET, BLUE, NIGHT = (139, 92, 246), (56, 189, 248), (20, 11, 52)
+# neon caption (chosen variant B): ice-blue top -> neon blue -> violet bottom, ice halo, violet wide glow + blue tight glow
+CAP_TOP, CAP_DEEP, CAP_HALO, CAP_GLOW_WIDE, CAP_GLOW_TIGHT = (186, 230, 253), VIOLET, (224, 242, 254), VIOLET, BLUE
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
@@ -123,7 +127,7 @@ WrapStyle: 0
 [V4+ Styles]
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
 Style: Sub,{FONT},128,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,2,0,1,5,3,2,80,200,700,1
-Style: CardBig,{FONT},70,{bgr(BRAND['green'])},&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
+Style: CardBig,{FONT},70,{bgr(BRAND['accent'])},&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 Style: CardSmall,{FONT},64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,0,0,5,60,60,0,1
 
 [Events]
@@ -143,7 +147,7 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 
 
 ASSETS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
-ALIASES = {"sparks": "sparks_orange", "flash": "flash_white", "leak": "light_leak", "money": "money_rain"}
+ALIASES = {"sparks": "sparks_neon", "flash": "flash_white", "leak": "light_leak", "money": "money_rain"}
 
 
 REMOTION = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "remotion")
@@ -164,6 +168,40 @@ def remotion_render(comp, out, props=None):
         cmd.append("--props=" + json.dumps(props, ensure_ascii=False))
     run(cmd, cwd=REMOTION)
     return out
+
+
+PALETTE_ID = "C-violet-neonblue-v1"   # change it when the brand look changes: cached generated clips are then rebuilt
+
+
+def refresh_generated_cache():
+    """assets/_generated holds clips rendered in the brand colours (git-ignored, all reproducible).
+    If they were made with another palette, delete them so they are rebuilt in the current one."""
+    import shutil
+    gen = os.path.join(ASSETS, "_generated")
+    stamp = os.path.join(gen, ".palette")
+    old = open(stamp).read().strip() if os.path.exists(stamp) else None
+    if os.path.isdir(gen) and old != PALETTE_ID:
+        print(f"brand palette changed ({old} -> {PALETTE_ID}): rebuilding assets/_generated")
+        shutil.rmtree(gen)
+    os.makedirs(gen, exist_ok=True)
+    open(stamp, "w").write(PALETTE_ID)
+
+
+def render_endcard(tagline=""):
+    """Animated end card (Remotion 'EndCard', 1080x1920, 3 s): logo pop + glow, handle, Arabic CTA, WhatsApp pill.
+    Cached per text in assets/_generated; returns None if Remotion can't run (then the simple ASS card is used)."""
+    import hashlib, json
+    props = {"handle": BRAND["handle"], "whatsapp": BRAND["whatsapp"], "cta": BRAND["cta"],
+             "tag": tagline or "E-COMMERCE • SPONSOR • META ADS"}
+    key = hashlib.md5((PALETTE_ID + json.dumps(props, sort_keys=True, ensure_ascii=False)).encode()).hexdigest()[:8]
+    path = os.path.join(ASSETS, "_generated", f"rm_endcard_{key}.mp4")
+    if not os.path.exists(path):
+        try:
+            remotion_render("EndCard", path, props)
+        except Exception as e:
+            print("end card: Remotion failed, using the simple card:", e)
+            return None
+    return path
 
 
 def find_asset(kind, name):
@@ -212,14 +250,15 @@ ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
 
 
 def render_caption_png(text, path, font_file, size=118, maxw=860):
-    """NEON + SCRIPT caption (Mustafa's reference "Personal Branding"), brand colours:
-    first word(s) in a big bold sans with an orange neon glow, the last word in white handwriting script
-    overlapping its bottom-right with a soft white glow. One word -> bold neon only. Works for Arabic and French."""
+    """NEON + SCRIPT caption (Mustafa's reference "Personal Branding"), brand colours (palette C):
+    first word(s) in a big bold sans (Readex Pro / Sora) with a violet + neon-blue glow, the last word in white
+    handwriting script overlapping its bottom-right with a soft white glow. One word -> bold neon only.
+    Works for Arabic and French."""
     from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
     clean = re.sub(r"\*", "", text).strip()
     words = clean.split()
     ar = bool(ARABIC_RE.search(clean))
-    bold_f = os.path.join(FONTS_DIR, "Tajawal-ExtraBold.ttf" if ar else "Montserrat-Bold.ttf")
+    bold_f = os.path.join(FONTS_DIR, AR_BOLD if ar else LAT_BOLD)
     scr_f = os.path.join(FONTS_DIR, "ArefRuqaa-Bold.ttf" if ar else "GreatVibes-Regular.ttf")
     if len(words) >= 2:
         k = max(1, len(words) - (2 if len(words) >= 4 else 1))
@@ -227,10 +266,7 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     else:
         top, bottom = clean, ""
     def font(pth, sz):
-        f = ImageFont.truetype(pth, sz)
-        if "Montserrat" in pth:
-            f.set_variation_by_name("Black")
-        return f
+        return ImageFont.truetype(pth, sz)
     tmpd = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     bs = int(size * 1.05)
     while bs > 50 and tmpd.textlength(top, font=font(bold_f, bs)) > maxw:
@@ -251,23 +287,23 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     lay = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
     def draw(img, xy, t, f, fill, stroke=0, sfill=None):
         ImageDraw.Draw(img).text(xy, t, font=f, fill=fill, anchor="mm", stroke_width=stroke, stroke_fill=sfill)
-    # neon glow (two blur radii) + crisp bold text with a lighter core
-    g = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(g, (cx, ty), top, bf, accent + (255,))
-    for _ in range(2):
-        lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(bs * 0.30)))
-    lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(bs * 0.10)))
+    # neon glow: wide neon-blue haze + tight violet glow, then crisp bold text with a lighter core
+    for col, rad, n in ((CAP_GLOW_WIDE, 0.30, 2), (CAP_GLOW_TIGHT, 0.10, 1)):
+        g = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(g, (cx, ty), top, bf, col + (255,))
+        for _ in range(n):
+            lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(bs * rad)))
     shadow = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(shadow, (cx + 4, ty + 6), top, bf, (0, 0, 0, 150))
     lay.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(6)))
-    # bright outline halo, then a vertical gradient fill (light amber top -> brand orange -> deep orange bottom)
+    # bright outline halo, then a vertical gradient fill (ice-blue top -> neon blue -> violet bottom)
     halo = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
-    draw(halo, (cx, ty), top, bf, (255, 214, 160, 255), stroke=max(3, bs // 40), sfill=(255, 214, 160, 255))
+    draw(halo, (cx, ty), top, bf, CAP_HALO + (255,), stroke=max(3, bs // 40), sfill=CAP_HALO + (255,))
     lay.alpha_composite(halo.filter(ImageFilter.GaussianBlur(1.2)))
     m = Image.new("L", (W2, H2), 0); ImageDraw.Draw(m).text((cx, ty), top, font=bf, fill=255, anchor="mm")
     grad = Image.new("RGBA", (W2, H2)); gd = ImageDraw.Draw(grad)
     y0, y1 = ty - bs * 0.55, ty + bs * 0.45
     for y in range(H2):
         k = min(1, max(0, (y - y0) / (y1 - y0)))
-        c0, c1, c2 = (255, 196, 120), accent, (214, 66, 18)
+        c0, c1, c2 = CAP_TOP, accent, CAP_DEEP
         col = [int(c0[i] + (c1[i] - c0[i]) * k * 2) if k < .5 else int(c1[i] + (c2[i] - c1[i]) * (k - .5) * 2) for i in range(3)]
         gd.line([(0, y), (W2, y)], fill=tuple(col) + (255,))
     lay.paste(grad, (0, 0), m)
@@ -286,14 +322,14 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
 
 
 def render_hook_png(text, path, font_file):
-    """Hook card: huge text, accent words orange, on a rounded navy plate."""
+    """Hook card: huge text, accent words in the brand accent, on a rounded night-violet plate with a violet->blue neon rim."""
     from PIL import Image, ImageDraw
     cap = os.path.join(os.path.dirname(path), "hook_txt.png")
     if ARABIC_RE.search(text):
         cw, ch = render_caption_png(text, cap, font_file, size=104, maxw=800)
     else:
         from PIL import ImageFont
-        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), 150)
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), 130)
         parts = re.split(r"(\*[^*]+\*)", text.upper())
         d0 = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
         tw = sum(d0.textlength(p.strip("*"), font=f) for p in parts)
@@ -307,7 +343,14 @@ def render_hook_png(text, path, font_file):
     txt = Image.open(cap)
     pad = 14
     im = Image.new("RGBA", (txt.width + pad * 2, txt.height + pad * 2), (0, 0, 0, 0))
-    ImageDraw.Draw(im).rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=48, fill=(15, 23, 42, 215), outline=(255, 107, 44, 255), width=6)
+    ImageDraw.Draw(im).rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=48, fill=NIGHT + (215,))
+    ring = Image.new("L", im.size, 0)
+    ImageDraw.Draw(ring).rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=48, outline=255, width=6)
+    grad = Image.new("RGBA", im.size); gd = ImageDraw.Draw(grad)
+    for x in range(im.width):   # violet (left) -> neon blue (right)
+        k = x / max(1, im.width - 1)
+        gd.line([(x, 0), (x, im.height)], fill=tuple(int(VIOLET[j] + (BLUE[j] - VIOLET[j]) * k) for j in range(3)) + (255,))
+    im.paste(grad, (0, 0), ring)
     im.alpha_composite(txt, (pad, pad))
     im.save(path)
     return im.size
@@ -403,12 +446,10 @@ def render_notif_png(text, path):
     d.rounded_rectangle([0, 0, w - 1, h - 1], radius=40, fill=(245, 245, 247, 245))
     d.rounded_rectangle([28, 35, 128, 135], radius=24, fill=(37, 211, 102))
     d.ellipse([52, 59, 104, 111], outline=(255, 255, 255), width=7)
-    fl = ImageFont.truetype(os.path.join(FONTS_DIR, "Montserrat-Bold.ttf"), 30)
-    try: fl.set_variation_by_name("Bold")
-    except Exception: pass
+    fl = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_SEMI), 30)
     d.text((150, 52), "WhatsApp", font=fl, fill=(60, 60, 67), anchor="lm")
     d.text((w - 30, 52), "now", font=fl, fill=(140, 140, 150), anchor="rm")
-    fa = ImageFont.truetype(os.path.join(FONTS_DIR, "Lalezar-Regular.ttf"), 44)
+    fa = ImageFont.truetype(os.path.join(FONTS_DIR, AR_BOLD), 40)
     d.text((w - 30, 115), text, font=fa, fill=(20, 20, 25), anchor="rm", direction="rtl" if ARABIC_RE.search(text) else None)
     im.save(path)
 
@@ -434,11 +475,11 @@ def render_card_assets(tmp):
     sh = sh.filter(ImageFilter.GaussianBlur(28))
     bg = Image.composite(Image.new("RGB", (W, H), (150, 150, 146)), bg, sh.point(lambda v: int(v * 0.85)))
     d = ImageDraw.Draw(bg)
-    fa = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), 420)
-    d.text((40, H - 40), "#", font=fa, fill=(25, 25, 25), anchor="ls")
+    fa = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), 400)
+    d.text((40, H - 40), "#", font=fa, fill=NIGHT, anchor="ls")
     for i in range(42):    # barcode decoration
         if (i * 7) % 5 < 3:
-            d.rectangle([W - 300 + i * 6, H - 150, W - 300 + i * 6 + (2 if i % 3 else 4), H - 70], fill=(30, 30, 30))
+            d.rectangle([W - 300 + i * 6, H - 150, W - 300 + i * 6 + (2 if i % 3 else 4), H - 70], fill=NIGHT)
     bgp = os.path.join(tmp, "cards_bg.png"); bg.save(bgp)
 
     def rounded(w, h, r, path):
@@ -488,10 +529,10 @@ def _glyph_layer(ch, size, tint):
         d.line([(c - S * .23, c - S * .23), (c + S * .23, c + S * .23)], fill=255, width=w)
         d.line([(c + S * .23, c - S * .23), (c - S * .23, c + S * .23)], fill=255, width=w)
     elif ch in ("💸", "💰"):
-        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), int(S * .78))
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), int(S * .72))
         d.text((c, c + S * .02), "$", font=f, fill=255, anchor="mm")
     elif ch == "🚨":
-        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), int(S * .78))
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), int(S * .72))
         d.text((c, c + S * .02), "!", font=f, fill=255, anchor="mm")
     else:
         return None
@@ -514,7 +555,7 @@ def render_icon_glass_mov(ch, path, secs=2.0, size=210):
     Pops in with overshoot then floats. Alpha .mov (qtrle)."""
     from PIL import Image, ImageDraw, ImageFilter
     import math
-    tint = GLASS_TINT.get(ch, (255, 107, 44))
+    tint = GLASS_TINT.get(ch, VIOLET)
     T = size * 2                                   # draw at 2x
     rad = int(T * .26)
     tile = Image.new("RGBA", (T, T), (0, 0, 0, 0)); td = ImageDraw.Draw(tile)
@@ -593,7 +634,7 @@ def _neon_glyph_mask(ch, S):
             d.line(P([a_, b_]), fill=255, width=w)
             for x, y in (a_, b_): d.ellipse([c + x * u - w / 2, c + y * u - w / 2, c + x * u + w / 2, c + y * u + w / 2], fill=255)
     elif ch in ("💸", "💰"):
-        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Montserrat-Bold.ttf"), int(S * .78)); f.set_variation_by_name("Black")
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, LAT_BOLD), int(S * .74))
         d.text((c, c + S * .03), "$", font=f, fill=255, anchor="mm")
     elif ch == "🚨":   # rounded warning triangle with "!"
         d.polygon(P([(0, -.62), (.66, .5), (-.66, .5)]), fill=255)
@@ -631,12 +672,12 @@ def _neon_glyph_mask(ch, S):
 
 def render_icon3d_mov(ch, path, secs=2.0, size=210):
     """Modern neon app-icon (style chosen by Mustafa from his references), in his brand colours:
-    dark navy glass squircle, glowing orange->amber gradient rim, inner warm glow, diagonal light sheen,
-    clean white glowing pictogram, small sparkle. Pops in, sways in 3D, floats; glow pulses. Alpha .mov."""
+    dark night-violet glass squircle, glowing violet->neon-blue gradient rim, inner violet glow, diagonal light sheen,
+    clean white pictogram with a neon-blue glow, small sparkle. Pops in, sways in 3D, floats; glow pulses. Alpha .mov."""
     from PIL import Image, ImageDraw, ImageFilter, ImageChops
     import math
     T = size * 2; rad = int(T * .27); pad = int(T * .22); C = T + 2 * pad
-    NAVY_T, NAVY_B, ORA, AMB = (34, 50, 86), (10, 16, 32), (255, 107, 44), (255, 184, 77)
+    NAVY_T, NAVY_B, ORA, AMB = (46, 30, 102), (12, 7, 32), VIOLET, BLUE   # body top/bottom, rim start/end (palette C)
     sq = Image.new("L", (T, T), 0); ImageDraw.Draw(sq).rounded_rectangle([0, 0, T - 1, T - 1], radius=rad, fill=255)
     # body: vertical navy gradient, slightly see-through
     body = Image.new("RGBA", (T, T))
@@ -651,7 +692,7 @@ def render_icon3d_mov(ch, path, secs=2.0, size=210):
     ImageDraw.Draw(sheen).polygon([(T * .45, 0), (T, 0), (T, T * .55)], fill=(255, 255, 255, 34))
     body.alpha_composite(sheen.filter(ImageFilter.GaussianBlur(T * .03)))
     body.putalpha(ImageChops.multiply(body.split()[3], sq))
-    # gradient rim (orange top-left -> amber bottom-right)
+    # gradient rim (violet top-left -> neon blue bottom-right)
     ring = Image.new("L", (T, T), 0)
     ImageDraw.Draw(ring).rounded_rectangle([3, 3, T - 4, T - 4], radius=rad, outline=255, width=int(T * .022))
     gradc = Image.new("RGBA", (T, T)); gc = ImageDraw.Draw(gradc)
@@ -685,7 +726,7 @@ def render_icon3d_mov(ch, path, secs=2.0, size=210):
         cv.alpha_composite(rim, (pad, pad))
         sp = ImageDraw.Draw(cv); sx, sy, r0 = pad + T * .8, pad + T * .18, T * .055   # sparkle
         sp.polygon([(sx, sy - r0), (sx + r0 * .25, sy - r0 * .25), (sx + r0, sy), (sx + r0 * .25, sy + r0 * .25),
-                    (sx, sy + r0), (sx - r0 * .25, sy + r0 * .25), (sx - r0, sy), (sx - r0 * .25, sy - r0 * .25)], fill=(255, 236, 210, 230))
+                    (sx, sy + r0), (sx - r0 * .25, sy + r0 * .25), (sx - r0, sy), (sx - r0 * .25, sy - r0 * .25)], fill=(224, 242, 254, 230))
         return cv.resize((C // 2, C // 2), Image.LANCZOS)
     statics = {p: frame_static(p) for p in (0.8, 1.0, 1.2)}
     OW, OH = C // 2 + 40, C // 2 + 40
@@ -758,14 +799,14 @@ def main():
     ap.add_argument("--no-badge", action="store_true", help="hide the top-left @kabli_ms badge with the spinning 3D K+M coin")
     ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
-    ap.add_argument("--accent", default="", help="hex colour for key words, e.g. FFD60A (yellow); default = brand orange")
+    ap.add_argument("--accent", default="", help="hex colour for key words, e.g. 38BDF8 (neon blue); default = brand violet")
     ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
     ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
     ap.add_argument("--music", default="", help="'beat' = generated royalty-free beat, or a path to your own audio file")
     ap.add_argument("--bpm", type=float, default=100)
     ap.add_argument("--zoom-mode", choices=["intro", "all"], default="intro", help="intro = ONE zoom-out at the start only (Mustafa's choice); all = a zoom on every caption")
     ap.add_argument("--zoom", type=float, default=0.45, help="zoom strength: 1 = strong punch, 0.45 = soft (default), 0 = none")
-    ap.add_argument("--ar-font", default="Lalezar-Regular.ttf", help="Arabic caption font file in tools/fonts (drawn as images, any font works)")
+    ap.add_argument("--ar-font", default=AR_BOLD, help="(unused: captions use the brand fonts AR_BOLD / LAT_BOLD)")
     ap.add_argument("--no-bar", action="store_true")
     ap.add_argument("--tagline", default="")
     ap.add_argument("--no-emoji", action="store_true")
@@ -774,6 +815,8 @@ def main():
     a = ap.parse_args()
 
     out = a.out or re.sub(r"\.[^.]+$", "", a.src) + "_v1.mp4"
+    refresh_generated_cache()
+    endcard = None if a.no_endcard else render_endcard(a.tagline)
     segs, dur = ([(0, probe_duration(a.src))], None) if a.no_silence_cut else keep_segments(a.src)
     total = sum(b - x for x, b in segs)
 
@@ -791,7 +834,7 @@ def main():
     tmp = tempfile.mkdtemp()
     ass = os.path.join(tmp, "s.ass")
     ass_events = [(ea, eb, "", em, tg) for ea, eb, t, em, tg in events] if a.keywords_only else events  # keywords: all drawn as images
-    open(ass, "w", encoding="utf-8").write(build_ass(ass_events, total, not a.no_endcard, a.tagline))
+    open(ass, "w", encoding="utf-8").write(build_ass(ass_events, total, not a.no_endcard and not endcard, a.tagline))
 
     n = len(segs)
     parts = []
@@ -817,7 +860,7 @@ def main():
         zoom += f"scale={int(W * 1.03) // 2 * 2}:{int(H * 1.03) // 2 * 2},crop={W}:{H}:x='(iw-{W})/2+{sx}':y='(ih-{H})/2+{sy}',"
     fc += (f"[vc]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},{zoom}"
            f"{GRADES[a.grade]},unsharp=5:5:0.4,fps=30"
-           + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['green']}@1:t=fill")
+           + ("" if a.no_bar else f",drawbox=x=0:y=0:w='iw*t/{total:.2f}':h=12:color=0x{BRAND['neon']}@1:t=fill")
            + "[vm0];"
            f"[ac]loudnorm=I=-14:TP=-1.5,aresample=48000[am0];")
 
@@ -1029,9 +1072,15 @@ def main():
     if a.no_endcard:
         fc += f"[vm]subtitles={ass}:fontsdir={FONTS_DIR}[vout];[am]anull[aout]"
     else:
-        fc += (f"color=c=0x{BRAND['navy']}:s={W}x{H}:d={ENDCARD_SECS}:r=30[card];"
-               f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
-               f"[vm][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
+        if endcard:   # animated Remotion end card
+            extra_inputs += ["-i", endcard]
+            fc += (f"[{n_in}:v]scale={W}:{H},fps=30,format=yuv420p,setsar=1,"
+                   f"trim=duration={ENDCARD_SECS},setpts=PTS-STARTPTS[card];")
+            n_in += 1
+        else:
+            fc += f"color=c=0x{BRAND['navy']}:s={W}x{H}:d={ENDCARD_SECS}:r=30,format=yuv420p,setsar=1[card];"
+        fc += (f"anullsrc=r=48000:cl=stereo,atrim=0:{ENDCARD_SECS}[csil];"
+               f"[vm]format=yuv420p,setsar=1[vms];[vms][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
                f"[vv]subtitles={ass}:fontsdir={FONTS_DIR}[vout]")
     run(["ffmpeg", "-v", "error", "-y", "-i", a.src, *extra_inputs, "-filter_complex", fc,
          "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", "21",

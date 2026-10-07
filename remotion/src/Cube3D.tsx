@@ -1,11 +1,11 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
-import {C, Fonts, NavyBg, neon} from './brand';
+import {C, Fonts, NavyBg, arFont, neon} from './brand';
 
-// Real CSS-3D cube (product box) spinning in with a spring, glossy faces in brand colours.
+// Real CSS-3D cube (product box) spinning in with a spring, glossy faces in brand colours (violet sides, neon-blue lid).
 const S = 190;
 const face = (tf: string, bg: string, label?: string): React.CSSProperties & {label?: string} => ({
-  position: 'absolute', width: S, height: S, transform: tf, background: bg, border: `3px solid ${C.amber}`,
+  position: 'absolute', width: S, height: S, transform: tf, background: bg, border: `3px solid ${C.blue}`,
   boxShadow: `inset 0 0 40px #0006`, display: 'flex', alignItems: 'center', justifyContent: 'center', label});
 
 export const Cube3D: React.FC<{title: string; sub: string}> = ({title, sub}) => {
@@ -14,12 +14,12 @@ export const Cube3D: React.FC<{title: string; sub: string}> = ({title, sub}) => 
   const ry = interpolate(k, [0, 1], [-200, -28]) + Math.sin(f / 10) * 6;
   const rx = -18 + Math.sin(f / 13) * 4;
   const faces = [
-    face(`translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.amber}, ${C.orange})`),
-    face(`rotateY(90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.orange}, #B4380E)`),
-    face(`rotateY(180deg) translateZ(${S / 2}px)`, '#B4380E'),
-    face(`rotateY(-90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.orange}, #C2410C)`),
-    face(`rotateX(90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, #FFD19A, ${C.amber})`),
-    face(`rotateX(-90deg) translateZ(${S / 2}px)`, '#7a2a0c'),
+    face(`translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.lav}, ${C.violet})`),
+    face(`rotateY(90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.violet}, #5B21B6)`),
+    face(`rotateY(180deg) translateZ(${S / 2}px)`, C.edge),
+    face(`rotateY(-90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.violet}, #6D28D9)`),
+    face(`rotateX(90deg) translateZ(${S / 2}px)`, `linear-gradient(160deg, ${C.ice}, ${C.blue})`),
+    face(`rotateX(-90deg) translateZ(${S / 2}px)`, '#2E1065'),
   ];
   return (
     <AbsoluteFill>
@@ -30,11 +30,11 @@ export const Cube3D: React.FC<{title: string; sub: string}> = ({title, sub}) => 
         <div style={{width: S, height: S, position: 'relative', transformStyle: 'preserve-3d',
           transform: `translateY(${(1 - k) * -300 + Math.sin(f / 8) * 8}px) rotateX(${rx}deg) rotateY(${ry}deg)`}}>
           {faces.map((st, i) => <div key={i} style={st}>{i === 0 &&
-            <div style={{width: 46, height: S, background: '#FFE3BD88'}} />}</div>)}
+            <div style={{width: 46, height: S, background: '#E0F2FE88'}} />}</div>)}
         </div>
       </div>
-      <div style={{position: 'absolute', top: 455, width: '100%', textAlign: 'center', fontFamily: /[\u0600-\u06ff]/.test(title) ? 'Tajawal' : 'Mont', fontSize: title.length > 12 ? 58 : 72, direction: 'rtl',
-        color: '#FFE9D6', textShadow: neon(C.orange), transform: `translateY(${(1 - k) * 40}px)`, opacity: k}}>{title}</div>
+      <div style={{position: 'absolute', top: 455, width: '100%', textAlign: 'center', fontFamily: arFont(title), fontSize: title.length > 12 ? 58 : 72, direction: 'rtl',
+        color: C.cream, textShadow: neon(C.violet), transform: `translateY(${(1 - k) * 40}px)`, opacity: k}}>{title}</div>
       <div style={{position: 'absolute', top: 545, width: '100%', textAlign: 'center', fontFamily: 'Ruqaa', fontSize: 50,
         color: C.white, direction: 'rtl', textShadow: '0 0 14px #fff8', opacity: interpolate(f, [14, 24], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})}}>{sub}</div>
     </AbsoluteFill>

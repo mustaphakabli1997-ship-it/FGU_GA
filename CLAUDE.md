@@ -2,8 +2,15 @@
 
 SAVED STYLE (Mustafa's choice, = videos/reel3_v2_motion.mp4): every new reel uses
 `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook with *key* word"` — Motion cards layout, his own colours,
-yellow key words only, hook, one intro zoom, one light shake, whoosh once, beat, 3D b-roll/circle/emoji from .srt tags,
-plus a _send.mp4 copy for the chat. Only change it when he asks. Template .srt: subs/reel3.srt.
+key words only as neon captions, hook, one intro zoom, one light shake, whoosh once, beat, Remotion/3D b-roll, circle,
+neon icons from .srt tags, top-left K+M coin badge, animated end card, plus a _send.mp4 copy for the chat.
+Only change it when he asks. Template .srt: subs/reel3_v7.srt.
+
+VISUAL IDENTITY (his choice 2026-10-07) = PALETTE C "violet + neon blue": night violet #140B34, deep violet #2A1B5E,
+violet #8B5CF6, neon blue #38BDF8 (gradient violet -> blue); fonts Readex Pro (Arabic) + Sora (Latin), script word
+Aref Ruqaa / Great Vibes; new K+M logo (`tools/make_logo.py`, assets/brand/logo_*). Palette B (navy + orange) is retired
+(archived in assets/brand/archive_palette_b/). After any brand change bump `PALETTE_ID` in tools/edit_reel.py so the
+generated clips in assets/_generated are rebuilt.
 
 Start of every session:
 1. Read `profile/mustafa.md` (who he is, tone, brand colors, contacts, audience, offer).
@@ -13,7 +20,7 @@ Editing a reel (Mustafa uploads to `videos/`, sometimes on `main` — check `git
 1. `ffprobe` the file and look at a contact sheet of frames before deciding anything.
 2. Ask for / write the subtitle script as an `.srt` (mixed Darija + French, emoji allowed: the tool overlays them as PNGs (needs `pip install pillow`)).
 3. Run: `python3 tools/edit_reel.py videos/reelN.mov --srt subs.srt`
-   - cuts silences, 1080x1920, light grade, loudness -14 LUFS, big subtitles, navy end card with WhatsApp + @kabli_ms.
+   - cuts silences, 1080x1920, light grade, loudness -14 LUFS, big subtitles, animated brand end card (Remotion EndCard) with WhatsApp + @kabli_ms.
    - Flags: `--no-silence-cut`, `--no-endcard`, `--srt-after-cut`, `--out`.
 4. Check frames of the output (subtitle position/readability, end card) before delivering.
 5. Commit to the current branch with the output at `videos/reelN_vX.mp4`; tell him the branch + path and how to download it (GitHub app/website, raw file).

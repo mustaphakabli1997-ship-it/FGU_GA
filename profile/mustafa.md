@@ -10,15 +10,16 @@
 - Goal: grow his own brand and get better at editing Reels. Claude acts as his Reels editing + content copilot.
 
 ## CURRENT DEFAULT RECIPE (latest preferences — these win over older notes below)
-- Brand badge (his request): top-left for the whole reel (after the hook), a 3D coin with the K+M logo that spins around Y every 4 s, orange neon rim, + fixed '@kabli_ms / E-COMMERCE • SPONSOR' pill. Remotion composition BrandBadge -> assets/_generated/rm_badge.mov (ProRes 4444 alpha), looped by edit_reel.py; `--no-badge` to hide.
-- Remotion (Mustafa asked for it) = the motion-graphics engine for b-roll: project in remotion/ (React, `npm install` once, renders with the preinstalled headless Chromium). Tags: `[broll:rm_cube]` real CSS-3D product box, `[broll:rm_funnel]` animated sales funnel (إعلان → رسائل → طلبيات), `[broll:rm_phone]` 3D phone with WhatsApp messages, `[doc:TEXT]` documentary paper card with orange highlighter + grain. For rm_cube / rm_funnel the cue's key words become the graphic's title (no caption/icon drawn on top); doc cards with the same words also hide the caption. Remotion license: free for individuals and companies up to 3 people.
+- VISUAL IDENTITY = PALETTE C "violet + neon blue" + new K+M logo + new fonts (Readex Pro / Sora), chosen by Mustafa 2026-10-07 ("نغيرو هوية بصرية" -> بنفسجي + أزرق نيون, اللوغو, الخطوط). See "Brand colors — PALETTE C" below. Everything (captions, icons, badge, b-roll, end card, identity pack) uses it; palette B (navy + orange) is retired.
+- Brand badge (his request): top-left for the whole reel (after the hook), a 3D coin with the K+M logo that spins around Y every 4 s, violet rim with a neon-blue glow, + fixed '@kabli_ms / E-COMMERCE • SPONSOR' pill. Remotion composition BrandBadge -> assets/_generated/rm_badge.mov (ProRes 4444 alpha), looped by edit_reel.py; `--no-badge` to hide.
+- Remotion (Mustafa asked for it) = the motion-graphics engine for b-roll: project in remotion/ (React, `npm install` once, renders with the preinstalled headless Chromium). Tags: `[broll:rm_cube]` real CSS-3D product box, `[broll:rm_funnel]` animated sales funnel (إعلان → رسائل → طلبيات), `[broll:rm_phone]` 3D phone with WhatsApp messages, `[doc:TEXT]` documentary paper card with neon-blue highlighter + grain. `EndCard` = animated end card (see below). For rm_cube / rm_funnel the cue's key words become the graphic's title (no caption/icon drawn on top); doc cards with the same words also hide the caption. Remotion license: free for individuals and companies up to 3 people.
 - Other illustration/motion b-roll (Python, tools/motion_gfx.py): `[broll:funnel]`, `[broll:merchant]` neon-rim merchant silhouette ("Personal Branding" style).
-- Caption look (his reference "Personal Branding"): first word(s) in a big bold sans (Tajawal ExtraBold / Montserrat Black) in BRAND ORANGE with a strong neon glow, amber->orange->deep-orange gradient fill, light outline halo and glossy top half; last word in white handwriting script (Aref Ruqaa for Arabic, Great Vibes for Latin) overlapping it with a soft white glow. One-word captions = neon bold only. Captions stay inside the frame; on b-roll cues they sit lower.
+- Caption look (his reference "Personal Branding", palette C variant B chosen on a real frame): first word(s) in a big bold sans (Readex Pro Bold for Arabic / Sora ExtraBold for Latin) with an ice-blue -> neon-blue -> violet gradient fill, wide violet glow + tight neon-blue glow, light ice halo and glossy top half (constants CAP_* in edit_reel.py); last word in white handwriting script (Aref Ruqaa for Arabic, Great Vibes for Latin) overlapping it with a soft white glow. One-word captions = neon bold only. Captions stay inside the frame; on b-roll cues they sit lower.
 - Caption placement: NEVER on his face — each caption goes just below or just above the face, wherever there is room (auto face detection per cue, `caption_y`); in the cards layout it also stays clear of the small face card.
-- Icons (his chosen reference: neon app-icon tiles): dark navy glass squircle, glowing orange->amber gradient rim, warm inner glow, diagonal sheen, clean white glowing pictogram (check, cross, $, warning, flame, box, cart, chat, arrow), small sparkle; pops in, sways in 3D, floats, glow pulses; placed next to the caption. Code: `render_icon3d_mov` (old glass version kept as `render_icon_glass_mov`).
-- SAVED STYLE = reel3_v2_motion (Mustafa: "احفظ آخر تعديل وخدم بهذاك الأسلوب"). Run `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook"`; .srt template = subs/reel3.srt (key phrases starred, tags like [broll:chat3d], [broll:product3d], [circle], emoji).
+- Icons (his chosen reference: neon app-icon tiles): dark night-violet glass squircle, glowing violet->neon-blue gradient rim, violet inner glow, diagonal sheen, clean white pictogram with a neon-blue glow (check, cross, $, warning, flame, box, cart, chat, arrow), small sparkle; pops in, sways in 3D, floats, glow pulses; placed next to the caption. Code: `render_icon3d_mov` (old glass version kept as `render_icon_glass_mov`).
+- SAVED STYLE = reel3_v2_motion (Mustafa: "احفظ آخر تعديل وخدم بهذاك الأسلوب"). Run `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook"`; .srt template = subs/reel3_v7.srt (latest: key phrases starred, Remotion tags [broll:rm_phone] [broll:rm_funnel] [broll:rm_cube] [doc:TEXT], [circle], [ding], emoji); older one subs/reel3.srt.
 - Upload: always the original .mov/.mp4 via GitHub (`main`); the chat turns videos into stills/GIFs (no sound) — never edit from those.
-- Captions: KEY WORDS ONLY (`--keywords-only`), big, yellow `--accent FFD60A` with black outline, drawn as images (Lalezar). Star whole short phrases (`*البيع ما كاش*`) so small words are never dropped. French words he says are written in French (confiance, créative, cliente, messages).
+- Captions: KEY WORDS ONLY (`--keywords-only`), big neon captions (look above) drawn as images; `--accent 38BDF8` (neon blue) only colours a Latin hook's *key word*. Star whole short phrases (`*البيع ما كاش*`) so small words are never dropped. French words he says are written in French (confiance, créative, cliente, messages).
 - Words come from his real speech: `tools/transcribe.py` (Whisper large-v3 on cleaned audio) gives timings + a draft; pick only clearly heard key words, ask him when unsure.
 - Colours: keep his filter (`--grade none`) unless he asks; `pro` if the face lighting is bad. Never `cinema` (skin too pink).
 - Motion: ONE zoom-out at the start only (`--zoom-mode intro`, default); ONE light shake (at the hook only); whoosh max ONCE per reel; click only on key words.
@@ -26,8 +27,10 @@
 - B-roll: 3D clips (`[broll:product3d]`, `[broll:trust3d]`, `[broll:chat3d]`), `[circle]` on his face, emoji; real filmed b-roll from him is better when available.
 - Music: `--music beat --bpm 100` (generated, royalty-free) under the voice.
 - Output: 1080x1920 (9:16). If > 30 MB, also make a `_send.mp4` copy (crf 25) to send in the chat.
-- Layout: Mustafa CHOSE the Motion / After-Effects card style (`--layout cards`, now the tool default); `--layout full` only if he asks. Brand palette B (navy #0F172A + orange #FF6B2C) for end card, b-roll, identity pack.
-- Example: `python3 tools/edit_reel.py videos/reel3.mov --srt subs/reel3.srt --grade none --keywords-only --accent FFD60A --hook "عندك *créative* مليحة وما تبيعش؟" --music beat --bpm 100 --out videos/reel3_v1.mp4`
+- Layout: Mustafa CHOSE the Motion / After-Effects card style (`--layout cards`, now the tool default); `--layout full` only if he asks. Brand palette C (violet + neon blue) for end card, b-roll, badge, icons, identity pack.
+- End card (3 s): animated Remotion `EndCard` (logo pops with a neon glow, @kabli_ms, "راسلني على واتساب", WhatsApp pill 0550 20 54 64 with a violet->blue border and light sweep, tagline). `--tagline` = the small line at the bottom. Cached in assets/_generated/rm_endcard_<hash>.mp4; falls back to the plain card if Remotion can't run.
+- Cache: assets/_generated (git-ignored) is wiped and rebuilt automatically when `PALETTE_ID` in edit_reel.py changes — bump it after any brand change.
+- Example: `python3 tools/edit_reel.py videos/reel3.mov --srt subs/reel3.srt --grade none --keywords-only --accent 38BDF8 --hook "عندك *créative* مليحة وما تبيعش؟" --music beat --bpm 100 --out videos/reel3_v1.mp4`
 
 ## Language
 - User writes in Algerian Darija (Arabic script). Reply in Darija, short and practical.
@@ -39,12 +42,21 @@
 - Avoid: exaggeration/hype, unexplained jargon, stiffness.
 - Terms to keep consistent: Meta Ads, ROAS, Foorweb, Builddz, Shopify, Landing Pages.
 
-## Brand colors — PALETTE B (chosen by Mustafa 2026-10-06; replaces the old blue/green palette)
-- Deep Navy #0F172A — backgrounds, trust
-- Slate Blue #1B2A4A — cards, depth
-- Signal Orange #FF6B2C — the ONE accent word per phrase, arrows, chips, CTA numbers
-- White #FFFFFF — text; Ink #080D1C — shadows
-- In code the accent is BRAND["green"] (kept for compatibility) = orange. Older notes below that say "green accent" mean this orange now.
+## Brand colors — PALETTE C "violet + neon blue" (chosen by Mustafa 2026-10-07; replaces palette B navy + orange)
+- Night Violet #140B34 — backgrounds
+- Deep Violet #2A1B5E — cards, depth
+- Violet #8B5CF6 — main brand colour (logo arrow start, rims, chips, glows)
+- Neon Blue #38BDF8 — neon accent (caption gradient, glows, progress bar, highlighter, Latin hook key word)
+- Tints: Lavender #C4B5FD, Ice #BAE6FD, Cream #EDE9FE; White #FFFFFF text; Ink #0B0620 shadows
+- Signature gradient: violet #8B5CF6 -> neon blue #38BDF8. Older notes below that say "orange"/"green accent" now mean violet / neon blue.
+- In code: edit_reel.py `BRAND` (navy/blue/accent/neon), `VIOLET`/`BLUE`/`NIGHT`, `CAP_*`; remotion/src/brand.tsx `C`; make_logo.py; make_identity.py; gen_assets.py / broll3d.py / motion_gfx.py.
+- Palette B logo/files are kept in assets/brand/archive_palette_b/ (in case he wants to go back).
+
+## Fonts (identity C)
+- Readex Pro Bold — Arabic headlines + captions; Readex Pro Medium — Arabic body.
+- Sora ExtraBold — Latin headlines, numbers, @kabli_ms; Sora SemiBold — labels.
+- Script accent (the overlapping white word in captions): Aref Ruqaa (Arabic), Great Vibes (Latin).
+- Static .ttf instances made from the Google variable fonts with fontTools (tools/fonts). Sora/Readex have no "→" glyph: use "»".
 
 ## Reel structure (default)
 - 0-3s hook (number / problem / result), 3-10s problem or story, 10-22s solution in 3 points with on-screen text, last 5-8s CTA.
@@ -91,7 +103,7 @@
 - Takeaway for Mustafa's reels: very short caption chunks (1-3 words), more B-roll/icons per sentence, a glow on captions, sparks/flash on the key claim.
 
 ## Effects toolkit (built by Claude, no downloads needed)
-- Tags go at the end of a cue in the .srt: `[sparks]` orange sparks, `[flash]` white flash, `[leak]` warm light leak, `[money]` falling dollars, `[broll:growth_chart]` full-frame b-roll clip for the cue, `[icon:NAME]` PNG icon from assets/icons.
+- Tags go at the end of a cue in the .srt: `[sparks]` violet/neon-blue sparks, `[flash]` white flash, `[leak]` violet/blue light leak, `[money]` falling dollars, `[broll:growth_chart]` full-frame b-roll clip for the cue, `[icon:NAME]` PNG icon from assets/icons.
 - Generated assets live in `assets/_generated/` (git-ignored; rebuilt automatically or with `python3 tools/gen_assets.py`).
 - Mustafa's own files go in `assets/sparks/`, `assets/broll/`, `assets/icons/` (uploaded via GitHub on `main`); file name = tag name, and his files win over generated ones. Only use royalty-free sources (Pexels, Pixabay, Mixkit, CapCut library).
 - Example cue: `00:00:02,600 --> 00:00:05,500` / `MASHI MOSHKIL FL *META* 🔥 [flash]`
@@ -122,18 +134,19 @@
 
 ## Decisions taken (were open points)
 - Handle: @kabli_ms (confirmed; "kabli.ms" in a brief was a typo).
-- Palette: B chosen (navy #0F172A + orange #FF6B2C). Caption key words: yellow FFD60A (his latest choice in videos).
-- Fonts: Arabic captions Lalezar (images), identity Tajawal, Latin Anton / Montserrat.
-- Logo: K+M monogram with rising orange arrow made (assets/brand/), Canva variant saved in his account.
+- Palette: C chosen 2026-10-07 (violet #8B5CF6 + neon blue #38BDF8 on night violet #140B34); palette B retired.
+- Fonts: Readex Pro (Arabic) + Sora (Latin) everywhere; Aref Ruqaa / Great Vibes only for the script word in captions.
+- Logo: new K+M monogram with a violet->blue rising arrow in a neon app-icon squircle (assets/brand/logo_*).
 
-## Logo (made by Claude, `python3 tools/make_logo.py` -> assets/brand/)
-- Geometric K+M monogram, green rising arrow as the K's upper arm, on Midnight Blue. Files: logo_mark_navy (profile pic), logo_mark_transparent_dark / _white (overlays), logo_horizontal_navy (banner), SVG sources.
-- Canva logo candidate 1 saved to his account (design DAHXMVIM1B8, edit: https://www.canva.com/d/Oao8dSbZ2n4UWh2), exported as assets/brand/logo_canva_v1.png. Reads "MK" with some merged-letter artifacts; 3 other candidates not saved yet.
+## Logo (identity C, made by Claude, `python3 tools/make_logo.py` -> assets/brand/)
+- K+M monogram with rounded strokes; the K's upper arm is a rising arrow in a violet -> neon-blue gradient; app-icon squircle (dark violet glass + violet->blue neon rim), same family as his reel icons.
+- Files: logo_mark (app icon), logo_mark_white (videos / dark backgrounds / badge coin), logo_mark_dark (light backgrounds), logo_profile.png (Instagram profile picture, circle-safe), logo_horizontal.png (banner), SVG sources. remotion/public/logo_white.png + logo_icon.png are copies.
+- Old palette B logo + Canva candidate (design DAHXMVIM1B8) archived in assets/brand/archive_palette_b/.
 
 ## Visual identity pack for e-commerce tips (tools/make_identity.py -> assets/brand/identity/)
-- brand_board.png (palette, fonts, rules), reel_cover_template.png (1080x1920), tip_post_template.png (1080x1350), highlight_{tips,ads,store,results}.png (IG highlight covers).
-- Fonts in tools/fonts: Anton (Latin headlines/captions), Montserrat Bold (labels), Tajawal ExtraBold/Bold (Arabic). Pillow+raqm shapes Arabic itself: do NOT use arabic-reshaper/bidi.
-- Rules: one green accent word per phrase, caption max 3 words, hook in 2 seconds, CTA = WhatsApp 0550 20 54 64, handle @kabli_ms, K+M mark bottom-left.
+- brand_board.png (palette C, fonts, sample neon caption, rules), reel_cover_template.png (1080x1920), tip_post_template.png (1080x1350), highlight_{tips,ads,store,results}.png (IG highlight covers). Icon sheet: `python3 tools/icons_preview.py` -> assets/brand/icons_preview.png + icon_check_anim.gif.
+- Fonts in tools/fonts: Sora ExtraBold/SemiBold (Latin), Readex Pro Bold/Medium (Arabic), Aref Ruqaa / Great Vibes (script). Older fonts (Anton, Montserrat, Tajawal, Lalezar...) stay in the folder but are no longer the brand fonts. Pillow+raqm shapes Arabic itself: do NOT use arabic-reshaper/bidi.
+- Rules: key words only (neon ice-blue -> violet + one script word), caption max 3 words, hook in 2 seconds, CTA = WhatsApp 0550 20 54 64, handle @kabli_ms, K+M mark bottom-left.
 - Canva: 4 tip-post candidates generated (not saved yet): _rXdS_rJ-gyblqT, hYZZQ2jVaOQ9_nl, OZ25760xbuiCkT9, t0aEF9vkqn9Y43U (canva.com/d/...).
 
 ## Caption font & motion update (reel2 F)
@@ -160,7 +173,7 @@
 - SFX: click on every caption, whoosh on b-roll, pop on emoji/overlays, ding on `[ding]`/`[flash]`/`[money]`, boom on `[shake]`/hook; generated beat under the voice.
 - 3D: broll3d.py (box, coin, phone).
 - Mustafa's preferences (latest): whoosh at most ONCE per reel; camera shake only once, light (at the hook); French words he says (confiance, produit, commande...) are written in French (Latin letters) inside Arabic captions — the caption renderer handles mixed Arabic/French word order.
-- Captions: Mustafa wants ONLY the key words on screen (`--keywords-only`: only the *starred* words, big, drawn as images, Arabic and French alike). Test colour: yellow `--accent FFD60A` (`--text-color` for non-key words). Waiting for his final colour choice.
+- Captions: Mustafa wants ONLY the key words on screen (`--keywords-only`: only the *starred* words, big, drawn as images, Arabic and French alike). (Old test colour yellow FFD60A — replaced by the palette C neon captions.)
 
 ## "After Effects" card style (reference: reel recorded on a laptop, "4 hours of editing for 20 seconds")
 - `--layout cards`: light grid-paper background with soft window-light shadows, the video in a big rounded card (800x1422) with drop shadow that slides up at the start, a small face card (auto face crop, white border, from the clean talking-head stream) sliding in from the left at 1 s, big "#" and a barcode as decorations. Captions/hook/emoji sit on top.
@@ -169,4 +182,4 @@
 ## reel3 (car, black t-shirt, 63 s) — "créative مليحة وما تبيعش؟"
 - Source: `1006 (1)(2).mov` uploaded to main (the chat converts videos to GIF — always upload the .mov via GitHub). Saved as videos/reel3.mov.
 - Story heard (Whisper large-v3, cleaned audio): a client had a good créative and messages were coming, but the problem was in selling; the fix = "اعرف وين تشري" (know where to buy / sourcing).
-- Mustafa asked to keep his filter: `--grade none`. Keywords-only yellow captions; star whole short phrases (e.g. `*البيع ما كاش*`) so small words like "ما" are never dropped.
+- Mustafa asked to keep his filter: `--grade none`. Keywords-only neon captions (palette C); star whole short phrases (e.g. `*البيع ما كاش*`) so small words like "ما" are never dropped.

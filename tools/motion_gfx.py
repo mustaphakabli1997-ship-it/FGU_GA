@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Motion graphics / illustration / documentary B-roll in Mustafa's brand (navy + orange), 540x960 @30fps.
+"""Motion graphics / illustration / documentary B-roll in Mustafa's brand (palette C: night violet + violet + neon blue), 540x960 @30fps.
 
   python3 tools/motion_gfx.py            -> assets/_generated/{funnel,merchant}.mp4
   doc_card(text, out)                    -> documentary paper card with a highlighter stroke (used by [doc:TEXT])
@@ -11,8 +11,9 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FD = os.path.join(ROOT, "tools", "fonts")
 FPS, W, H, SS = 30, 540, 960, 2
-NAVY, SLATE, ORANGE, AMBER, CREAM = (15, 23, 42), (27, 42, 74), (255, 107, 44), (255, 184, 77), (245, 238, 225)
-TAJ = lambda s: ImageFont.truetype(os.path.join(FD, "Tajawal-ExtraBold.ttf"), s)
+NAVY, SLATE, ORANGE, AMBER, CREAM = (20, 11, 52), (42, 27, 94), (139, 92, 246), (56, 189, 248), (245, 238, 225)   # palette C: ORANGE = violet, AMBER = neon blue
+TAJ = lambda s: ImageFont.truetype(os.path.join(FD, "ReadexPro-Bold.ttf"), int(s))
+SORA_SEMI = lambda s: ImageFont.truetype(os.path.join(FD, "Sora-SemiBold.ttf"), int(s))
 ease = lambda t: 1 - (1 - min(max(t, 0), 1)) ** 3
 back = lambda t: (lambda x: 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2)(min(max(t, 0), 1))
 
@@ -37,7 +38,7 @@ def neon_text(im, xy, text, size, col=ORANGE):
     g = Image.new("RGBA", im.size, (0, 0, 0, 0))
     ImageDraw.Draw(g).text(xy, text, font=TAJ(size), fill=col + (255,), anchor="mm")
     im.paste(g.filter(ImageFilter.GaussianBlur(size * .25)), (0, 0), g.filter(ImageFilter.GaussianBlur(size * .25)))
-    ImageDraw.Draw(im).text(xy, text, font=TAJ(size), fill=(255, 236, 214), anchor="mm")
+    ImageDraw.Draw(im).text(xy, text, font=TAJ(size), fill=(237, 233, 254), anchor="mm")
 
 
 # ---------- 1. motion graphic: sales funnel  إعلان -> رسائل -> طلبيات ----------
@@ -65,7 +66,7 @@ def funnel(n_secs=2.2):
             ph = (t * 1.3 + j * .23) % 1.6
             if ph > 1.15 or t < .9: continue
             yy = top - 30 * SS + ph * 380 * SS; xx = W * SS / 2 + math.sin(j * 2.3) * (1 - ph / 1.15) * 120 * SS
-            dr.ellipse([xx - 7 * SS, yy - 7 * SS, xx + 7 * SS, yy + 7 * SS], fill=(255, 236, 214))
+            dr.ellipse([xx - 7 * SS, yy - 7 * SS, xx + 7 * SS, yy + 7 * SS], fill=(186, 230, 253))
         im.resize((W, H), Image.LANCZOS).save(f"{d}/{f + 1:04d}.png")
     return d
 
@@ -113,7 +114,7 @@ def merchant(n_secs=2.2):
         im.paste(st, (0, 0), st)
         rimc = Image.new("RGBA", m.size, AMBER + (0,)); rimc.putalpha(edge)
         im.paste(rimc, (0, 0), rimc)
-        hl = Image.new("RGBA", m.size, (255, 230, 200, 0))
+        hl = Image.new("RGBA", m.size, (224, 231, 255, 0))
         from PIL import ImageChops
         hl.putalpha(ImageChops.multiply(ImageChops.multiply(m, sweep), Image.new("L", m.size, 28)))
         im.paste(hl, (0, 0), hl)
@@ -135,7 +136,7 @@ def doc_card(text, out, n_secs=2.0):
     for i in range(8):      # faint text lines (newspaper)
         y = (470 + i * 52) * SS
         pd.rounded_rectangle([60 * SS, y, (480 - (i % 3) * 60) * SS, y + 14 * SS], radius=6 * SS, fill=(200, 192, 178))
-    pd.text((W * SS / 2, 120 * SS), "E-COMMERCE  •  DZ", font=TAJ(30 * SS), fill=(120, 110, 95), anchor="mm")
+    pd.text((W * SS / 2, 120 * SS), "E-COMMERCE  •  DZ", font=SORA_SEMI(26 * SS), fill=(120, 110, 95), anchor="mm")
     pd.line([(60 * SS, 150 * SS), (480 * SS, 150 * SS)], fill=(120, 110, 95), width=2 * SS)
     font = TAJ(66 * SS)
     tw = pd.textlength(text, font=font, direction="rtl")
@@ -148,7 +149,7 @@ def doc_card(text, out, n_secs=2.0):
         k = ease((t - .25) / .6)            # highlighter sweeps right -> left (Arabic reading direction)
         x1 = W * SS / 2 + tw / 2 + 14 * SS; x0 = x1 - (tw + 28 * SS) * k
         if k > 0:
-            dr.rounded_rectangle([x0, ty - 34 * SS, x1, ty + 40 * SS], radius=10 * SS, fill=ORANGE + (150,))
+            dr.rounded_rectangle([x0, ty - 34 * SS, x1, ty + 40 * SS], radius=10 * SS, fill=AMBER + (140,))
         dr.text((W * SS / 2, ty), text, font=font, fill=(25, 22, 18), anchor="mm", direction="rtl")
         z = 1 + 0.06 * t / n_secs           # Ken Burns
         cw, ch = int(W * SS / z), int(H * SS / z)

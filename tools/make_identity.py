@@ -1,38 +1,55 @@
 #!/usr/bin/env python3
-"""Visual identity pack for @kabli_ms e-commerce tips content -> assets/brand/identity/
-   python3 tools/make_identity.py   (needs pillow, arabic-reshaper, python-bidi, cairosvg)"""
-import os, math
+"""Visual identity pack for @kabli_ms e-commerce tips content, palette C (violet + neon blue) -> assets/brand/identity/
+   python3 tools/make_logo.py && python3 tools/make_identity.py   (needs pillow with raqm)"""
+import os, sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets/brand/identity")
-def F(n, s):
-    f = ImageFont.truetype(os.path.join(ROOT, "tools/fonts", n), s)
-    if n.startswith("Montserrat"):
-        f.set_variation_by_name("Bold")
-    return f
-ANTON = lambda s: F("Anton-Regular.ttf", s)
-TAJ = lambda s: F("Tajawal-ExtraBold.ttf", s)
-TAJR = lambda s: F("Tajawal-Bold.ttf", s)
-NAVY, BLUE, GREEN, WHITE, INK, SOFT = (15, 23, 42), (27, 42, 74), (255, 107, 44), (255, 255, 255), (8, 13, 28), (159, 179, 209)  # palette B: GREEN = signal orange
-MARK = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_transparent_white.png")).convert("RGBA")
-MARKNAVY = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_navy.png")).convert("RGBA")
+F = lambda n, s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts", n), int(s))
+SORA = lambda s: F("Sora-ExtraBold.ttf", s)       # Latin headlines, numbers
+SORAS = lambda s: F("Sora-SemiBold.ttf", s)       # Latin labels
+READ = lambda s: F("ReadexPro-Bold.ttf", s)       # Arabic headlines
+READM = lambda s: F("ReadexPro-Medium.ttf", s)    # Arabic body
+RUQ = lambda s: F("ArefRuqaa-Bold.ttf", s)        # script accent
+NIGHT, DEEP, VIOLET, BLUE, WHITE, INK = (20, 11, 52), (42, 27, 94), (139, 92, 246), (56, 189, 248), (255, 255, 255), (11, 6, 32)
+LAV, ICE, MUTED = (196, 181, 253), (186, 230, 253), (110, 100, 150)
+MARK = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_white.png")).convert("RGBA")
+ICON = Image.open(os.path.join(ROOT, "assets/brand/logo_mark.png")).convert("RGBA")
 
 
-def ar(t):
-    return t  # Pillow+raqm already shapes and orders Arabic text; reshaping again would break it
+def lerp(a, b, k):
+    return tuple(int(a[i] + (b[i] - a[i]) * k) for i in range(3))
 
 
-def bg(w, h, top=NAVY, bottom=INK):
-    im = Image.new("RGB", (w, h), top)
-    px = ImageDraw.Draw(im)
+def hgrad(w, h, c0=VIOLET, c1=BLUE):
+    g = Image.new("RGB", (w, h)); d = ImageDraw.Draw(g)
+    for x in range(w):
+        d.line([(x, 0), (x, h)], fill=lerp(c0, c1, x / max(1, w - 1)))
+    return g
+
+
+def paste_grad(im, mask, c0=VIOLET, c1=BLUE):
+    """Fill the white parts of an L mask with the violet -> blue gradient."""
+    im.paste(hgrad(im.width, im.height, c0, c1), (0, 0), mask)
+
+
+def bg(w, h):
+    im = Image.new("RGB", (w, h)); px = ImageDraw.Draw(im)
     for y in range(h):
-        k = y / h
-        px.line([(0, y), (w, y)], fill=tuple(int(top[i] + (bottom[i] - top[i]) * k) for i in range(3)))
-    glow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    ImageDraw.Draw(glow).ellipse([w * .35, -h * .15, w * 1.3, h * .45], fill=GREEN + (70,))
-    im.paste(glow.filter(ImageFilter.GaussianBlur(120)), (0, 0), glow.filter(ImageFilter.GaussianBlur(120)))
+        px.line([(0, y), (w, y)], fill=lerp((30, 18, 78), INK, y / h))
+    glow = Image.new("RGBA", (w, h), (0, 0, 0, 0)); gd = ImageDraw.Draw(glow)
+    gd.ellipse([w * .35, -h * .15, w * 1.3, h * .45], fill=VIOLET + (80,))
+    gd.ellipse([-w * .4, h * .55, w * .5, h * 1.1], fill=BLUE + (45,))
+    glow = glow.filter(ImageFilter.GaussianBlur(140))
+    im.paste(glow, (0, 0), glow)
     return im
+
+
+def fit(d, t, font_fn, size, maxw):
+    while size > 20 and d.textlength(t, font=font_fn(size)) > maxw:
+        size -= 4
+    return font_fn(size)
 
 
 def wrap(d, t, font, maxw):
@@ -48,18 +65,21 @@ def wrap(d, t, font, maxw):
 
 def glass(im, box, radius=36):
     ov = Image.new("RGBA", im.size, (0, 0, 0, 0))
-    ImageDraw.Draw(ov).rounded_rectangle(box, radius=radius, fill=(255, 255, 255, 22), outline=(80, 120, 170, 255), width=3)
-    im.paste(Image.alpha_composite(im.convert("RGBA"), ov).convert("RGB"))
+    ImageDraw.Draw(ov).rounded_rectangle(box, radius=radius, fill=(255, 255, 255, 18))
+    out = Image.alpha_composite(im.convert("RGBA"), ov)
+    ring = Image.new("L", im.size, 0)
+    ImageDraw.Draw(ring).rounded_rectangle(box, radius=radius, outline=255, width=3)
+    out = out.convert("RGB"); paste_grad(out, ring)
+    im.paste(out)
 
 
-def text_c(d, xy, t, font, fill, anchor="mm"):
-    d.text(xy, t, font=font, fill=fill, anchor=anchor)
-
-
-def chip(d, x, y, label, font, fg=NAVY, fill=GREEN, pad=26):
-    w = d.textlength(label, font=font)
-    d.rounded_rectangle([x, y, x + w + pad * 2, y + font.size + pad], radius=(font.size + pad) // 2, fill=fill)
-    d.text((x + pad, y + (font.size + pad) / 2), label, font=font, fill=fg, anchor="lm")
+def chip(im, x, y, label, font, pad=26):
+    d = ImageDraw.Draw(im)
+    w = d.textlength(label, font=font); h = font.size + pad
+    m = Image.new("L", im.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle([x, y, x + w + pad * 2, y + h], radius=h // 2, fill=255)
+    paste_grad(im, m)
+    ImageDraw.Draw(im).text((x + pad, y + h / 2), label, font=font, fill=WHITE, anchor="lm")
     return x + w + pad * 2
 
 
@@ -68,74 +88,103 @@ def paste_mark(im, size, xy, src=MARK):
     im.paste(m, xy, m)
 
 
+def grad_text(im, xy, t, font, anchor="la"):
+    """Text filled with the violet -> blue gradient."""
+    m = Image.new("L", im.size, 0)
+    ImageDraw.Draw(m).text(xy, t, font=font, fill=255, anchor=anchor)
+    x0, _, x1, _ = m.getbbox() or (0, 0, im.width, 0)
+    g = Image.new("RGB", im.size); g.paste(hgrad(max(1, x1 - x0), im.height, VIOLET, BLUE), (x0, 0))
+    im.paste(g, (0, 0), m)
+
+
+def sample_caption(path):
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import edit_reel
+    edit_reel.render_caption_png("*باش تبيع*", path, None, size=110)
+    return Image.open(path).convert("RGBA")
+
+
 def brand_board():
     W, H = 1920, 1080
-    im = Image.new("RGB", (W, H), (245, 248, 252))
+    im = Image.new("RGB", (W, H), (246, 244, 252))
+    left = bg(760, H); im.paste(left, (0, 0))
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, 760, H], fill=NAVY)
-    paste_mark(im, 360, (200, 150))
-    text_c(d, (380, 590), "KABLI_MS", ANTON(120), WHITE)
-    d.rectangle([325, 660, 435, 670], fill=GREEN)
-    text_c(d, (380, 730), "E-COMMERCE  •  SPONSOR  •  META ADS", F("Montserrat-Bold.ttf", 25), SOFT)
-    text_c(d, (380, 900), ar("نصائح التجارة الإلكترونية"), TAJ(52), WHITE)
-    text_c(d, (380, 970), ar("نتائج حقيقية، بلا تضخيم"), TAJR(34), SOFT)
-    d.text((840, 90), "PALETTE", font=F("Montserrat-Bold.ttf", 30), fill=NAVY)
-    sw = [("Deep Navy", "#0F172A", NAVY, "الثقة · الخلفية"), ("Slate Blue", "#1B2A4A", BLUE, "البطاقات · العمق"),
-          ("Signal Orange", "#FF6B2C", GREEN, "الكلمة المهمة"), ("White", "#FFFFFF", WHITE, "النص"), ("Ink", "#080D1C", INK, "الظلال")]
-    for i, (n, h, c, use) in enumerate(sw):
+    paste_mark(im, 300, (230, 90), ICON)
+    d.text((380, 500), "KABLI_MS", font=SORA(96), fill=WHITE, anchor="mm")
+    im.paste(hgrad(140, 10), (310, 560))
+    d.text((380, 620), "E-COMMERCE  •  SPONSOR  •  META ADS", font=SORAS(24), fill=LAV, anchor="mm")
+    cap = sample_caption(os.path.join(OUT, "_caption_sample.png"))
+    cap = cap.resize((int(cap.width * .78), int(cap.height * .78)), Image.LANCZOS)
+    im.paste(cap, (380 - cap.width // 2, 690), cap)
+    os.remove(os.path.join(OUT, "_caption_sample.png"))
+    d.text((380, 1010), "نصائح عملية للتجار المبتدئين", font=READM(30), fill=ICE, anchor="mm")
+    d.text((840, 80), "PALETTE", font=SORA(30), fill=NIGHT)
+    sw = [("Night Violet", "#140B34", NIGHT, "الخلفية"), ("Deep Violet", "#2A1B5E", DEEP, "البطاقات · العمق"),
+          ("Violet", "#8B5CF6", VIOLET, "اللون الأساسي"), ("Neon Blue", "#38BDF8", BLUE, "النيون · الكلمة المهمة"),
+          ("White", "#FFFFFF", WHITE, "النص")]
+    for i, (n, hx, c, use) in enumerate(sw):
         x = 840 + i * 205
-        d.rounded_rectangle([x, 150, x + 185, 400], radius=26, fill=c, outline=(210, 220, 235), width=2)
-        d.text((x + 12, 420), n, font=F("Montserrat-Bold.ttf", 21), fill=NAVY)
-        d.text((x + 12, 452), h, font=F("Montserrat-Bold.ttf", 21), fill=(100, 116, 139))
-        d.text((x + 12, 486), ar(use), font=TAJR(22), fill=(100, 116, 139))
-    d.text((840, 580), "TYPOGRAPHY", font=F("Montserrat-Bold.ttf", 30), fill=NAVY)
-    d.text((840, 640), "ANTON — HEADLINES & CAPTIONS", font=ANTON(64), fill=NAVY)
-    d.text((840, 740), "Montserrat Bold — labels, numbers", font=F("Montserrat-Bold.ttf", 38), fill=NAVY)
-    d.text((840, 810), ar("Tajawal — العناوين بالعربية"), font=TAJ(54), fill=NAVY)
-    d.text((840, 920), "RULE: ONE accent word per phrase in Signal Orange.", font=F("Montserrat-Bold.ttf", 26), fill=GREEN)
-    d.text((840, 975), "Caption max 3 words · Hook in 2 seconds · CTA = WhatsApp", font=F("Montserrat-Bold.ttf", 26), fill=(100, 116, 139))
+        d.rounded_rectangle([x, 140, x + 185, 380], radius=26, fill=c, outline=(215, 210, 235), width=2)
+        d.text((x + 12, 400), n, font=SORA(21), fill=NIGHT)
+        d.text((x + 12, 432), hx, font=SORAS(20), fill=MUTED)
+        d.text((x + 173, 470), use, font=READM(20), fill=MUTED, anchor="ra")
+    m = Image.new("L", im.size, 0); ImageDraw.Draw(m).rounded_rectangle([840, 515, 1840, 545], radius=15, fill=255)
+    paste_grad(im, m)
+    d.text((840, 580), "TYPOGRAPHY", font=SORA(30), fill=NIGHT)
+    d.text((840, 630), "Sora ExtraBold — HEADLINES", font=SORA(52), fill=NIGHT)
+    d.text((840, 710), "Sora SemiBold — labels, numbers 0550 20 54 64", font=SORAS(30), fill=NIGHT)
+    d.text((1840, 770), "Readex Pro — العناوين والترجمة بالعربية", font=READ(46), fill=NIGHT, anchor="ra")
+    d.text((1840, 845), "Aref Ruqaa — لمسة بخط اليد", font=RUQ(46), fill=VIOLET, anchor="ra")
+    grad_text(im, (840, 935), "RULE: key words only · neon ice-blue » violet + one script word", SORA(25))
+    d.text((840, 985), "Hook in 2 seconds · one intro zoom · CTA = WhatsApp", font=SORAS(25), fill=MUTED)
     im.save(os.path.join(OUT, "brand_board.png"))
 
 
 def reel_cover():
     W, H = 1080, 1920
     im = bg(W, H)
+    chip(im, 80, 150, "TIP E-COMMERCE", SORA(38))
     d = ImageDraw.Draw(im)
-    chip(d, 80, 150, "TIP E-COMMERCE", F("Montserrat-Bold.ttf", 38), fg=WHITE, fill=GREEN)
-    for i, (t, c) in enumerate([("3 AKHTA2", WHITE), ("TOUSSAR", GREEN), ("L SPONSOR", WHITE)]):
-        d.text((80, 360 + i * 280), t, font=ANTON(222), fill=c)
-    d.text((80, 1330), ar("3 أخطاء تحرق ميزانية الإعلان تاعك"), font=TAJ(60), fill=SOFT)
-    d.line([(80, 1500), (1000, 1500)], fill=(70, 100, 140), width=3)
-    paste_mark(im, 230, (60, 1540))
-    d.text((300, 1640), "@kabli_ms", font=F("Montserrat-Bold.ttf", 56), fill=WHITE, anchor="lm")
-    d.text((300, 1710), "WhatsApp 0550 20 54 64", font=F("Montserrat-Bold.ttf", 36), fill=SOFT, anchor="lm")
+    lines = [("3 AKHTA2", False), ("TOUSSAR", True), ("L SPONSOR", False)]
+    for i, (t, acc) in enumerate(lines):
+        f = fit(d, t, SORA, 190, 920)
+        if acc:
+            grad_text(im, (80, 360 + i * 270), t, f)
+        else:
+            d.text((80, 360 + i * 270), t, font=f, fill=WHITE)
+    d.text((1000, 1290), "3 أخطاء تحرق ميزانية الإعلان تاعك", font=READ(56), fill=ICE, anchor="ra")
+    m = Image.new("L", im.size, 0); ImageDraw.Draw(m).line([(80, 1500), (1000, 1500)], fill=255, width=4)
+    paste_grad(im, m)
+    paste_mark(im, 210, (70, 1550), ICON)
+    d.text((310, 1625), "@kabli_ms", font=SORA(56), fill=WHITE, anchor="lm")
+    d.text((310, 1700), "WhatsApp 0550 20 54 64", font=SORAS(34), fill=LAV, anchor="lm")
     im.save(os.path.join(OUT, "reel_cover_template.png"))
 
 
 def tip_post(n=1, title="ZID L BUDGET B 20% KOL YOMEIN", sub="ما تكبّرش الميزانية دفعة وحدة، وراقب السعر في كل مرة.", name="tip_post_template.png"):
     W, H = 1080, 1350
     im = bg(W, H)
+    x = chip(im, 80, 90, "TIP", SORA(40))
+    grad_text(im, (x + 30, 128), f"#{n}", SORA(110), anchor="lm")
     d = ImageDraw.Draw(im)
-    chip(d, 80, 90, "TIP", F("Montserrat-Bold.ttf", 40), fg=WHITE, fill=GREEN)
-    d.text((300, 118), f"#{n}", font=ANTON(120), fill=GREEN, anchor="lm")
-    tf = ANTON(130)
+    tf = SORA(108)
     y = 270
     for ln in wrap(d, title.upper(), tf, 920):
         d.text((80, y), ln, font=tf, fill=WHITE)
-        y += 150
-    glass(im, [80, 760, 1000, 1040])
+        y += 130
+    glass(im, [80, 790, 1000, 1060])
     d = ImageDraw.Draw(im)
-    y = 830
-    for ln in wrap(d, sub, TAJ(50), 820):
-        d.text((540, y), ln, font=TAJ(50), fill=WHITE, anchor="mm")
-        y += 78
-    paste_mark(im, 150, (60, 1130))
-    d.text((220, 1195), "@kabli_ms", font=F("Montserrat-Bold.ttf", 44), fill=WHITE, anchor="lm")
-    d.text((1000, 1195), "SWIPE  →", font=F("Montserrat-Bold.ttf", 34), fill=GREEN, anchor="rm")
+    y = 865
+    for ln in wrap(d, sub, READ(48), 820):
+        d.text((540, y), ln, font=READ(48), fill=WHITE, anchor="mm")
+        y += 76
+    paste_mark(im, 130, (70, 1140), ICON)
+    d.text((220, 1205), "@kabli_ms", font=SORA(44), fill=WHITE, anchor="lm")
+    grad_text(im, (1000, 1205), "SWIPE  »", SORA(34), anchor="rm")
     im.save(os.path.join(OUT, name))
 
 
-def icon(kind, d, cx, cy, s, col):
+def icon(kind, d, cx, cy, s, col, acc=BLUE):
     w = max(8, s // 11)
     if kind == "tips":      # lightbulb
         d.ellipse([cx - s * .32, cy - s * .5, cx + s * .32, cy + s * .14], outline=col, width=w)
@@ -152,18 +201,21 @@ def icon(kind, d, cx, cy, s, col):
         for i, h in enumerate((.2, .35, .55)):
             x = cx - s * .42 + i * s * .3
             d.rectangle([x, cy + s * .4 - s * h, x + s * .2, cy + s * .4], fill=col)
-        d.line([(cx - s * .45, cy - s * .05), (cx - s * .05, cy - s * .3), (cx + s * .15, cy - s * .15), (cx + s * .46, cy - s * .48)], fill=GREEN, width=w, joint="curve")
-        d.polygon([(cx + s * .5, cy - s * .52), (cx + s * .3, cy - s * .5), (cx + s * .48, cy - s * .32)], fill=GREEN)
+        d.line([(cx - s * .45, cy - s * .05), (cx - s * .05, cy - s * .3), (cx + s * .15, cy - s * .15), (cx + s * .46, cy - s * .48)], fill=acc, width=w, joint="curve")
+        d.polygon([(cx + s * .5, cy - s * .52), (cx + s * .3, cy - s * .5), (cx + s * .48, cy - s * .32)], fill=acc)
 
 
 def highlights():
     items = [("tips", "NASA2E7"), ("ads", "SPONSOR"), ("store", "MATJER"), ("results", "NATA2IJ")]
     for kind, label in items:
-        im = Image.new("RGB", (1080, 1080), NAVY)
+        im = bg(1080, 1080)
+        ring = Image.new("L", im.size, 0); ImageDraw.Draw(ring).ellipse([40, 40, 1040, 1040], outline=255, width=16)
+        glow = Image.new("RGBA", im.size, (0, 0, 0, 0)); glow.paste(VIOLET + (255,), (0, 0), ring)
+        glow = glow.filter(ImageFilter.GaussianBlur(18)); im.paste(glow, (0, 0), glow)
+        paste_grad(im, ring)
         d = ImageDraw.Draw(im)
-        d.ellipse([40, 40, 1040, 1040], fill=NAVY, outline=GREEN, width=14)
-        icon(kind, d, 540, 480, 430, WHITE)
-        d.text((540, 840), label, font=ANTON(120), fill=WHITE, anchor="mm")
+        icon(kind, d, 540, 470, 420, WHITE)
+        d.text((540, 830), label, font=fit(d, label, SORA, 104, 640), fill=WHITE, anchor="mm")
         im.save(os.path.join(OUT, f"highlight_{kind}.png"))
 
 

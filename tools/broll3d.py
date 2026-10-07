@@ -2,7 +2,7 @@
 """Animated pseudo-3D B-roll clips (own tiny renderer: perspective projection, flat shading, painter's sort).
 
   python3 tools/broll3d.py        -> assets/_generated/{product3d,trust3d,chat3d}.mp4  (540x960, 30fps, ~1.6s)
-Brand palette B. Text sits in the upper half so the burned captions (at ~60% height) stay readable.
+Brand palette C (night violet + violet + neon blue). Text sits in the upper half so the burned captions (at ~60% height) stay readable.
 """
 import math, os, shutil, subprocess, tempfile
 import numpy as np
@@ -11,9 +11,9 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "_generated")
 FPS, W, H, SS = 30, 540, 960, 2           # SS = supersampling for smooth edges
-NAVY, SLATE, ORANGE, SOFT = (15, 23, 42), (27, 42, 74), (255, 107, 44), (159, 179, 209)
-ANTON = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Anton-Regular.ttf"), s)
-LALEZAR = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Lalezar-Regular.ttf"), s)
+NAVY, SLATE, VIOLET, BLUE, SOFT = (20, 11, 52), (42, 27, 94), (139, 92, 246), (56, 189, 248), (196, 181, 253)   # palette C
+SORA = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Sora-ExtraBold.ttf"), int(s))
+READEX = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/ReadexPro-Bold.ttf"), int(s))
 ease = lambda t: 1 - (1 - min(max(t, 0), 1)) ** 3
 back = lambda t: (lambda x: 1 + 2.70158 * (x - 1) ** 3 + 1.70158 * (x - 1) ** 2)(min(max(t, 0), 1))  # overshoot
 
@@ -41,21 +41,21 @@ def background(t):
     im = Image.new("RGB", (W * SS, H * SS), NAVY)
     g = Image.new("RGBA", im.size, (0, 0, 0, 0))
     r = (0.55 + 0.05 * math.sin(t * 4)) * W * SS
-    ImageDraw.Draw(g).ellipse([W * SS / 2 - r, H * SS * .3 - r, W * SS / 2 + r, H * SS * .3 + r], fill=ORANGE + (55,))
+    ImageDraw.Draw(g).ellipse([W * SS / 2 - r, H * SS * .3 - r, W * SS / 2 + r, H * SS * .3 + r], fill=VIOLET + (60,))
     g = g.filter(ImageFilter.GaussianBlur(70 * SS))
     im.paste(g, (0, 0), g)
     # perspective floor grid for depth
     d = ImageDraw.Draw(im)
     hz = H * SS * .50
     for i in range(-8, 9):
-        d.line([(W * SS / 2 + i * 40 * SS, hz), (W * SS / 2 + i * 260 * SS, H * SS)], fill=(30, 45, 75), width=SS)
+        d.line([(W * SS / 2 + i * 40 * SS, hz), (W * SS / 2 + i * 260 * SS, H * SS)], fill=(52, 34, 110), width=SS)
     for j in range(1, 9):
         y = hz + (H * SS - hz) * (j / 8) ** 2
-        d.line([(0, y), (W * SS, y)], fill=(30, 45, 75), width=SS)
+        d.line([(0, y), (W * SS, y)], fill=(52, 34, 110), width=SS)
     return im
 
 
-def text3d(im, xy, text, font, face=(255, 255, 255), side=(150, 60, 20), depth=10, t_in=1.0):
+def text3d(im, xy, text, font, face=(255, 255, 255), side=(76, 29, 149), depth=10, t_in=1.0):
     """Extruded text: stacked darker copies give a solid 3D side."""
     d = ImageDraw.Draw(im)
     x, y = xy
@@ -109,8 +109,8 @@ def product3d(n_secs=1.7):
             sp, _ = project(np.array(stripe) * SS, cx, cy, f=900 * SS, z0=600 * SS)
             dr.polygon([tuple(p) for p in sp], fill=shade((225, 195, 140), -n))
         k2 = ease((t - 0.15) / 0.3)
-        text3d(im, (W * SS / 2, H * SS * .40 - 30 * SS * (1 - k2)), "PRODUIT", ANTON(96 * SS), depth=12 * SS, t_in=k2)
-        ImageDraw.Draw(im).text((W * SS / 2, H * SS * .50), "المنتوج في يدك", font=LALEZAR(56 * SS), fill=ORANGE, anchor="mm", direction="rtl")
+        text3d(im, (W * SS / 2, H * SS * .40 - 30 * SS * (1 - k2)), "PRODUIT", SORA(70 * SS), depth=12 * SS, t_in=k2)
+        ImageDraw.Draw(im).text((W * SS / 2, H * SS * .50), "المنتوج في يدك", font=READEX(50 * SS), fill=BLUE, anchor="mm", direction="rtl")
         im.resize((W, H), Image.LANCZOS).save(f"{d}/{f+1:04d}.png")
     return d
 
@@ -141,8 +141,8 @@ def trust3d(n_secs=1.7):
             if c < 0: e = e.transpose(Image.FLIP_LEFT_RIGHT)
             im.paste(e, (int(cx - e.width / 2), int(cy - e.height / 2)), e)
         k2 = ease((t - 0.3) / 0.35)
-        text3d(im, (W * SS / 2, H * SS * .41 - 30 * SS * (1 - k2)), "CONFIANCE", ANTON(92 * SS), depth=12 * SS, t_in=k2)
-        ImageDraw.Draw(im).text((W * SS / 2, H * SS * .505), "الثقة تاع البنادم", font=LALEZAR(54 * SS), fill=ORANGE, anchor="mm", direction="rtl")
+        text3d(im, (W * SS / 2, H * SS * .41 - 30 * SS * (1 - k2)), "CONFIANCE", SORA(58 * SS), depth=12 * SS, t_in=k2)
+        ImageDraw.Draw(im).text((W * SS / 2, H * SS * .505), "الثقة تاع البنادم", font=READEX(48 * SS), fill=BLUE, anchor="mm", direction="rtl")
         im.resize((W, H), Image.LANCZOS).save(f"{d}/{f+1:04d}.png")
     return d
 
@@ -160,7 +160,7 @@ def chat3d(n_secs=1.8):
     d = tempfile.mkdtemp()
     PW, PH = 300 * SS, 560 * SS
     msgs = [("السلام، المنتوج متوفر؟", 0.08, False), ("إيه خويا، متوفر", 0.33, True), ("نحب نكوموندي واحد", 0.58, False)]
-    font = LALEZAR(26 * SS)
+    font = READEX(23 * SS)
     for f in range(int(n_secs * FPS)):
         t = f / FPS
         ph = Image.new("RGBA", (PW, PH), (0, 0, 0, 0))
@@ -168,7 +168,7 @@ def chat3d(n_secs=1.8):
         pd.rounded_rectangle([0, 0, PW - 1, PH - 1], radius=46 * SS, fill=(20, 20, 24))
         pd.rounded_rectangle([10 * SS, 10 * SS, PW - 10 * SS, PH - 10 * SS], radius=38 * SS, fill=(11, 20, 26))
         pd.rectangle([10 * SS, 40 * SS, PW - 10 * SS, 90 * SS], fill=(0, 92, 75))
-        pd.text((PW / 2, 65 * SS), "WhatsApp", font=ANTON(30 * SS), fill=(255, 255, 255), anchor="mm")
+        pd.text((PW / 2, 65 * SS), "WhatsApp", font=SORA(26 * SS), fill=(255, 255, 255), anchor="mm")
         y = 115 * SS
         for txt, st, mine in msgs:
             k = back((t - st) / 0.2)

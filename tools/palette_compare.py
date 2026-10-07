@@ -8,7 +8,7 @@ T = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Tajawal-ExtraBo
 M = lambda s: ImageFont.truetype(os.path.join(ROOT, "tools/fonts/Montserrat-Bold.ttf"), s)
 for f in (M(10),):
     pass
-MARK = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_transparent_white.png")).convert("RGBA")
+MARK = Image.open(os.path.join(ROOT, "assets/brand/logo_mark_white.png")).convert("RGBA")
 
 PALETTES = [
     ("A  Noir + Lime", "#0B0B0F", "#16161D", "#C6F432", "#FFFFFF", "#0B0B0F"),
