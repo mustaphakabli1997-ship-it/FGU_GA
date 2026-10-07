@@ -148,7 +148,7 @@ ALIASES = {"sparks": "sparks_orange", "flash": "flash_white", "leak": "light_lea
 
 REMOTION = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "remotion")
 TITLED = {"rm_cube", "rm_funnel"}   # Remotion b-roll whose title = the caption words
-REMOTION_COMPS = {"rm_cube": "Cube3D", "rm_funnel": "Funnel", "rm_phone": "Phone3D", "rm_doc": "DocCard"}
+REMOTION_COMPS = {"rm_badge": "BrandBadge", "rm_cube": "Cube3D", "rm_funnel": "Funnel", "rm_phone": "Phone3D", "rm_doc": "DocCard"}
 
 
 def remotion_render(comp, out, props=None):
@@ -755,6 +755,7 @@ def main():
     ap.add_argument("--no-endcard", action="store_true")
     ap.add_argument("--no-zoom", action="store_true")
     ap.add_argument("--no-sfx", action="store_true")
+    ap.add_argument("--no-badge", action="store_true", help="hide the top-left @kabli_ms badge with the spinning 3D K+M coin")
     ap.add_argument("--layout", choices=["full", "cards"], default="cards", help="cards = After-Effects style: video in a rounded card on a light grid background with window shadows + a small face card")
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
     ap.add_argument("--accent", default="", help="hex colour for key words, e.g. FFD60A (yellow); default = brand orange")
@@ -959,6 +960,22 @@ def main():
         extra_inputs += ["-i", find_asset("flash", "flash")]
         fc += (f"[{n_in}:v]format=rgba,scale={W}:{H}[hfl];[{cur}][hfl]overlay=eof_action=pass:repeatlast=0[ovhf];")
         cur, n_in = "ovhf", n_in + 1
+
+    # BRAND BADGE (top-left): spinning 3D K+M coin + @kabli_ms pill, rendered by Remotion (ProRes 4444 alpha), looped
+    if not a.no_badge:
+        badge = os.path.join(ASSETS, "_generated", "rm_badge.mov")
+        if not os.path.exists(badge):
+            os.makedirs(os.path.dirname(badge), exist_ok=True)
+            run(["npx", "remotion", "render", "src/index.ts", "BrandBadge", badge, "--codec=prores", "--prores-profile=4444",
+                 "--pixel-format=yuva444p10le", "--image-format=png", "--log=error"] +
+                [f"--browser-executable={c}" for c in __import__("glob").glob("/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell")[:1]],
+                cwd=REMOTION)
+        t0 = 2.7 if a.hook else 0.3
+        extra_inputs += ["-stream_loop", "-1", "-i", badge]
+        by = 50 if a.layout == "cards" else 110
+        fc += (f"[{n_in}:v]format=yuva444p,scale=740:-1,setpts=PTS-STARTPTS+{t0}/TB,fade=t=in:st={t0}:d=0.35:alpha=1[bdg];"
+               f"[{cur}][bdg]overlay=x=20:y={by}:enable='between(t,{t0},{total:.2f})':shortest=0:eof_action=pass[ovbd];")
+        cur, n_in = "ovbd", n_in + 1
 
     # Arabic captions as images, on top of everything, slide-up + fade-in
     for i_ev, (ea, eb, t, _em, _tg) in enumerate(events):

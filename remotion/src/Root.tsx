@@ -4,6 +4,7 @@ import {Funnel} from './Funnel';
 import {DocCard} from './DocCard';
 import {Cube3D} from './Cube3D';
 import {Phone3D} from './Phone3D';
+import {BrandBadge} from './BrandBadge';
 
 // All clips: 540x960 (upscaled to 1080x1920 by edit_reel.py), 30 fps, brand palette B.
 export const Root: React.FC = () => (
@@ -15,5 +16,7 @@ export const Root: React.FC = () => (
     <Composition id="Cube3D" component={Cube3D} durationInFrames={60} fps={30} width={540} height={960}
       defaultProps={{title: 'PRODUIT', sub: 'المنتوج في يدك'}} />
     <Composition id="Phone3D" component={Phone3D} durationInFrames={60} fps={30} width={540} height={960} />
+    <Composition id="BrandBadge" component={BrandBadge} durationInFrames={120} fps={30} width={540} height={170}
+      defaultProps={{handle: '@kabli_ms', tag: 'E-COMMERCE • SPONSOR'}} />
   </>
 );
