@@ -16,7 +16,8 @@ BRAND = dict(navy="0F172A", blue="1B2A4A", green="FF6B2C",  # palette B: navy + 
 FONT = "Anton"  # bold condensed caption font (OFL), in tools/fonts; Arabic falls back to DejaVu Sans
 FONTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
 ACCENT = BRAND["green"]
-TEXT_COLOR = "FFFFFF"  # words wrapped as *word* in the .srt get this colour
+TEXT_COLOR = "FFFFFF"
+ACCENT_NEON = "FF6B2C"   # brand orange for the neon captions  # words wrapped as *word* in the .srt get this colour
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
@@ -186,35 +187,77 @@ def make_sfx(tmp):
 ARABIC_RE = re.compile(r"[\u0600-\u06ff]")
 
 
-def render_caption_png(text, path, font_file, size=106, maxw=860):
-    """Arabic caption as an image (Pillow+raqm shapes Arabic correctly with any font). *word* = accent colour."""
-    from PIL import Image, ImageDraw, ImageFont
-    f = ImageFont.truetype(os.path.join(FONTS_DIR, font_file), size)
-    words = [(w.strip("*"), w.startswith("*") or w.endswith("*")) for w in re.sub(r"\*([^*]+)\*", lambda m: "*" + m.group(1).replace(" ", "*\u00a0*") + "*", text).split()]
-    words = [(w.replace("*", "").replace("\u00a0", " "), acc) for w, acc in words]
-    tmp = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
-    space = tmp.textlength(" ", font=f)
-    lines, cur, curw = [], [], 0
-    for w, acc in words:
-        ww = tmp.textlength(w, font=f)
-        if cur and curw + space + ww > maxw:
-            lines.append((cur, curw)); cur, curw = [], 0
-        cur.append((w, acc, ww)); curw += (space if len(cur) > 1 else 0) + ww
-    if cur: lines.append((cur, curw))
-    lh = int(size * 1.35)
-    W2, H2 = maxw + 80, lh * len(lines) + 40
-    im = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    accent = "#" + ACCENT
-    for li, (ws, lw) in enumerate(lines):
-        x = W2 / 2 + lw / 2          # right edge: Arabic reads right -> left
-        y = 20 + li * lh + lh / 2
-        for w, acc, ww in ws:
-            d.text((x, y), w, font=f, fill=accent if acc else "#" + TEXT_COLOR, anchor="rm",
-                   stroke_width=max(4, size // 16), stroke_fill="#000000",
-                   direction="rtl" if ARABIC_RE.search(w) else "ltr")
-            x -= ww + space
-    im.save(path)
+def render_caption_png(text, path, font_file, size=118, maxw=860):
+    """NEON + SCRIPT caption (Mustafa's reference "Personal Branding"), brand colours:
+    first word(s) in a big bold sans with an orange neon glow, the last word in white handwriting script
+    overlapping its bottom-right with a soft white glow. One word -> bold neon only. Works for Arabic and French."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
+    clean = re.sub(r"\*", "", text).strip()
+    words = clean.split()
+    ar = bool(ARABIC_RE.search(clean))
+    bold_f = os.path.join(FONTS_DIR, "Tajawal-ExtraBold.ttf" if ar else "Montserrat-Bold.ttf")
+    scr_f = os.path.join(FONTS_DIR, "ArefRuqaa-Bold.ttf" if ar else "GreatVibes-Regular.ttf")
+    if len(words) >= 2:
+        k = max(1, len(words) - (2 if len(words) >= 4 else 1))
+        top, bottom = " ".join(words[:k]), " ".join(words[k:])
+    else:
+        top, bottom = clean, ""
+    def font(pth, sz):
+        f = ImageFont.truetype(pth, sz)
+        if "Montserrat" in pth:
+            f.set_variation_by_name("Black")
+        return f
+    tmpd = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+    bs = int(size * 1.05)
+    while bs > 50 and tmpd.textlength(top, font=font(bold_f, bs)) > maxw:
+        bs -= 6
+    bf = font(bold_f, bs)
+    ss = int(bs * (1.15 if ar else 0.95))
+    while bottom and ss > 40 and tmpd.textlength(bottom, font=font(scr_f, ss)) > maxw * 0.9:
+        ss -= 6
+    sf = font(scr_f, ss)
+    tw = tmpd.textlength(top, font=bf)
+    sw = tmpd.textlength(bottom, font=sf) if bottom else 0
+    pad = 60
+    W2 = int(max(tw, sw) + pad * 2 + 40)
+    H2 = int(bs * 1.25 + (ss * 0.95 if bottom else 0) + pad * 2)
+    cx = W2 / 2
+    ty = pad + bs * 0.62
+    accent = tuple(int(ACCENT_NEON[i:i + 2], 16) for i in (0, 2, 4))
+    lay = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
+    def draw(img, xy, t, f, fill, stroke=0, sfill=None):
+        ImageDraw.Draw(img).text(xy, t, font=f, fill=fill, anchor="mm", stroke_width=stroke, stroke_fill=sfill)
+    # neon glow (two blur radii) + crisp bold text with a lighter core
+    g = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(g, (cx, ty), top, bf, accent + (255,))
+    for _ in range(2):
+        lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(bs * 0.30)))
+    lay.alpha_composite(g.filter(ImageFilter.GaussianBlur(bs * 0.10)))
+    shadow = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(shadow, (cx + 4, ty + 6), top, bf, (0, 0, 0, 150))
+    lay.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(6)))
+    # bright outline halo, then a vertical gradient fill (light amber top -> brand orange -> deep orange bottom)
+    halo = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
+    draw(halo, (cx, ty), top, bf, (255, 214, 160, 255), stroke=max(3, bs // 40), sfill=(255, 214, 160, 255))
+    lay.alpha_composite(halo.filter(ImageFilter.GaussianBlur(1.2)))
+    m = Image.new("L", (W2, H2), 0); ImageDraw.Draw(m).text((cx, ty), top, font=bf, fill=255, anchor="mm")
+    grad = Image.new("RGBA", (W2, H2)); gd = ImageDraw.Draw(grad)
+    y0, y1 = ty - bs * 0.55, ty + bs * 0.45
+    for y in range(H2):
+        k = min(1, max(0, (y - y0) / (y1 - y0)))
+        c0, c1, c2 = (255, 196, 120), accent, (214, 66, 18)
+        col = [int(c0[i] + (c1[i] - c0[i]) * k * 2) if k < .5 else int(c1[i] + (c2[i] - c1[i]) * (k - .5) * 2) for i in range(3)]
+        gd.line([(0, y), (W2, y)], fill=tuple(col) + (255,))
+    lay.paste(grad, (0, 0), m)
+    top_half = Image.new("L", (W2, H2), 0); ImageDraw.Draw(top_half).rectangle([0, 0, W2, int(ty - bs * 0.05)], fill=60)
+    shine = Image.new("RGBA", (W2, H2), (255, 255, 255, 0))
+    shine.putalpha(ImageChops.multiply(m, top_half))                       # glossy top half, inside the letters only
+    lay.alpha_composite(shine)
+    if bottom:   # white script overlapping the bold line, shifted toward the reading end
+        sx = cx + (tw - sw) / 2 * (-0.6 if ar else 0.6)
+        sy = ty + bs * 0.55
+        wg = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(wg, (sx, sy), bottom, sf, (255, 255, 255, 255))
+        lay.alpha_composite(wg.filter(ImageFilter.GaussianBlur(ss * 0.12)))
+        draw(lay, (sx, sy), bottom, sf, (255, 255, 255, 255), stroke=2, sfill=(30, 30, 30, 180))
+    lay.save(path)
     return W2, H2
 
 
@@ -282,8 +325,8 @@ def caption_y(a, segs, ea, chh, tags):
     Face found with opencv at the cue's start; b-roll cues (face hidden) and no-face frames use the default spot."""
     cards = a.layout == "cards"
     default = int(H * (0.52 if cards else 0.60)) - chh // 2
-    if any(kd == "broll" for kd, _ in tags):
-        return default
+    if any(kd == "broll" for kd, _ in tags):   # b-roll text sits in the upper half: put the caption low
+        return int(H * (0.62 if cards else 0.66)) - chh // 2
     face = find_face(a.src, unmap(ea + 0.1, segs))
     if not face:
         return default
@@ -878,7 +921,7 @@ def main():
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
             y = f"{yc}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
-                   f"[{cur}][cp{k}]overlay=x=(W-w)/2-60:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+                   f"[{cur}][cp{k}]overlay=x='max(10,min(W-w-10,(W-w)/2-60))':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     fc += f"[{cur}]null[vm];"
 

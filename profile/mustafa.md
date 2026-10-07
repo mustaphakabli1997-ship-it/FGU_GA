@@ -10,6 +10,7 @@
 - Goal: grow his own brand and get better at editing Reels. Claude acts as his Reels editing + content copilot.
 
 ## CURRENT DEFAULT RECIPE (latest preferences — these win over older notes below)
+- Caption look (his reference "Personal Branding"): first word(s) in a big bold sans (Tajawal ExtraBold / Montserrat Black) in BRAND ORANGE with a strong neon glow, amber->orange->deep-orange gradient fill, light outline halo and glossy top half; last word in white handwriting script (Aref Ruqaa for Arabic, Great Vibes for Latin) overlapping it with a soft white glow. One-word captions = neon bold only. Captions stay inside the frame; on b-roll cues they sit lower.
 - Caption placement: NEVER on his face — each caption goes just below or just above the face, wherever there is room (auto face detection per cue, `caption_y`); in the cards layout it also stays clear of the small face card.
 - Icons (his chosen reference: neon app-icon tiles): dark navy glass squircle, glowing orange->amber gradient rim, warm inner glow, diagonal sheen, clean white glowing pictogram (check, cross, $, warning, flame, box, cart, chat, arrow), small sparkle; pops in, sways in 3D, floats, glow pulses; placed next to the caption. Code: `render_icon3d_mov` (old glass version kept as `render_icon_glass_mov`).
 - SAVED STYLE = reel3_v2_motion (Mustafa: "احفظ آخر تعديل وخدم بهذاك الأسلوب"). Run `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook"`; .srt template = subs/reel3.srt (key phrases starred, tags like [broll:chat3d], [broll:product3d], [circle], emoji).
