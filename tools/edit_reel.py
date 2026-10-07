@@ -579,7 +579,7 @@ def main():
             png = os.path.join(tmp, f"cap{k}.png")
             cw, chh = render_caption_png(t, png, a.ar_font, size=150 if a.keywords_only else 106)
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
-            y = f"{int(H * 0.60) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
+            y = f"{int(H * (0.52 if a.layout == 'cards' else 0.60)) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
                    f"[{cur}][cp{k}]overlay=x=(W-w)/2-60:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
