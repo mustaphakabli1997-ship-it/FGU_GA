@@ -22,6 +22,7 @@ ACCENT_NEON = "38BDF8"   # neon blue = middle of the neon caption gradient
 VIOLET, BLUE, NIGHT = (139, 92, 246), (56, 189, 248), (20, 11, 52)
 # neon caption (chosen variant B): ice-blue top -> neon blue -> violet bottom, ice halo, violet wide glow + blue tight glow
 CAP_TOP, CAP_DEEP, CAP_HALO, CAP_GLOW_WIDE, CAP_GLOW_TIGHT = (186, 230, 253), VIOLET, (224, 242, 254), VIOLET, BLUE
+SCRIPT_DY_AR = 0.76   # vertical offset (x bold size) of the Arabic script word under the bold line
 W, H, ENDCARD_SECS = 1080, 1920, 3.0
 # warm golden/orange look + soft vignette (style reference: nazih_motivation reels)
 GRADES = {
@@ -313,7 +314,7 @@ def render_caption_png(text, path, font_file, size=118, maxw=860):
     lay.alpha_composite(shine)
     if bottom:   # white script overlapping the bold line, shifted toward the reading end
         sx = cx + (tw - sw) / 2 * (-0.6 if ar else 0.6)
-        sy = ty + bs * 0.55
+        sy = ty + bs * (SCRIPT_DY_AR if ar else 0.55)   # Readex Pro has deep dots below: drop the Arabic script word a bit more
         wg = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); draw(wg, (sx, sy), bottom, sf, (255, 255, 255, 255))
         lay.alpha_composite(wg.filter(ImageFilter.GaussianBlur(ss * 0.12)))
         draw(lay, (sx, sy), bottom, sf, (255, 255, 255, 255), stroke=2, sfill=(30, 30, 30, 180))
@@ -387,31 +388,38 @@ def find_face(src, t_src):
     return int(x + w / 2), int(y + h / 2), int(max(w, h) * 0.75)
 
 
-def caption_y(a, segs, ea, chh, tags):
+def caption_y(a, segs, ea, chh, tags, vis=None, eb=None):
     """Top y of a caption image: just BELOW his face if there is room, else just ABOVE it, never on the face.
-    Face found with opencv at the cue's start; b-roll cues (face hidden) and no-face frames use the default spot."""
+    vis = (top, bottom) rows of the caption's opaque part (the rest of the image is glow padding).
+    Face found with opencv at the cue's start and middle (he moves); the caption avoids both positions.
+    B-roll cues (face hidden) and no-face frames use the default spot."""
     cards = a.layout == "cards"
+    vt, vb = vis or (0, chh)
     default = int(H * (0.52 if cards else 0.60)) - chh // 2
     if any(kd in ("broll", "doc") for kd, _ in tags):   # b-roll text sits in the upper half: caption just above the face card
         return (CARD_Y + CARD_H - 520 - 30 - chh) if cards else int(H * 0.66) - chh // 2
-    face = find_face(a.src, unmap(ea + 0.1, segs))
-    if not face:
+    times = [ea + 0.1] + ([(ea + eb) / 2] if eb and eb - ea > 0.6 else [])
+    faces = [f for f in (find_face(a.src, unmap(t, segs)) for t in times) if f]
+    if not faces:
         return default
-    fx, fy, fr = face
     if cards:   # content is shrunk into the card: map face coords to the final frame
         sc = CARD_W / W
-        fy, fr = CARD_Y + fy * sc, fr * sc
+        f_top = min(CARD_Y + (fy - fr) * sc for _, fy, fr in faces)
+        f_bot = max(CARD_Y + (fy + fr) * sc for _, fy, fr in faces)
         top_lim, bot_lim = CARD_Y + 30, CARD_Y + CARD_H - 520 - 20   # stay above the small face card
     else:
+        f_top = min(fy - fr for _, fy, fr in faces)
+        f_bot = max(fy + fr for _, fy, fr in faces)
         top_lim, bot_lim = int(H * 0.12), int(H * 0.80)              # IG top bar / bottom caption area
     gap = 25
-    below = int(fy + fr + gap)
-    if below + chh <= bot_lim:
+    below = int(f_bot + gap - vt)          # visible top just under his chin
+    if below + vb <= bot_lim:
         return below
-    above = int(fy - fr - gap - chh)
-    if above >= top_lim:
+    above = int(f_top - gap - vb)          # visible bottom just over his hair line
+    if above + vt >= top_lim:
         return above
-    return max(top_lim, min(default, bot_lim - chh))
+    # no clean spot: use the side with more room, so the caption covers as little of the face as possible
+    return int(top_lim - vt) if f_top - top_lim >= bot_lim - f_bot else int(bot_lim - vb)
 
 
 def render_circle_mov(path, r=230, n=14):
@@ -964,7 +972,9 @@ def main():
                 continue   # the graphic already shows these exact words as its title
             png = os.path.join(tmp, f"capimg{i_ev}.png")
             cw, chh = render_caption_png(t, png, a.ar_font, size=(105 if on_broll else 150) if a.keywords_only else 106)
-            caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg))
+            from PIL import Image
+            vis = Image.open(png).split()[3].point(lambda v: 255 if v > 40 else 0).getbbox() or (0, 0, cw, chh)
+            caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg, vis=(vis[1], vis[3]), eb=eb))
 
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
     if not a.no_emoji:
