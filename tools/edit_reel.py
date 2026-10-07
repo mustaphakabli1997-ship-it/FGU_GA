@@ -389,63 +389,257 @@ def render_card_assets(tmp):
     return bgp, mask, pipm, shadow
 
 
-ICON_COLORS = {"🔥": ((255, 140, 40), (230, 60, 20)), "🚨": ((255, 90, 90), (200, 20, 40)),
+ICON_COLORS_OLD = {"🔥": ((255, 140, 40), (230, 60, 20)), "🚨": ((255, 90, 90), (200, 20, 40)),
                "💸": ((90, 220, 140), (20, 150, 80)), "💰": ((255, 210, 80), (220, 150, 20)),
                "✅": ((90, 220, 140), (20, 150, 80)), "❌": ((250, 250, 252), (185, 190, 205)),
                "🤝": ((255, 210, 80), (220, 150, 20)), "👇": ((120, 170, 255), (40, 90, 220))}
 
 
-def render_icon3d_mov(ch, path, secs=2.0, size=200):
-    """Modern 3D icon: glossy badge with thickness, specular highlight, soft shadow; the emoji sits on it.
-    Pops in with overshoot, then floats and wobbles in 3D (Y-rotation squash). Alpha .mov (qtrle)."""
+GLASS_TINT = {"🔥": (255, 120, 40), "🚨": (255, 70, 80), "❌": (255, 70, 80), "💸": (60, 210, 130),
+              "💰": (255, 200, 60), "✅": (60, 210, 130), "🤝": (255, 200, 60), "👇": (90, 150, 255)}
+
+
+def _persp_coeffs(dst, src):
+    import numpy as np
+    A, B = [], []
+    for (x, y), (X, Y) in zip(dst, src):
+        A += [[x, y, 1, 0, 0, 0, -X * x, -X * y], [0, 0, 0, x, y, 1, -Y * x, -Y * y]]
+        B += [X, Y]
+    return np.linalg.solve(np.array(A, float), np.array(B, float)).tolist()
+
+
+def _glyph_layer(ch, size, tint):
+    """The symbol, extruded in 3D (stacked darker copies) with a white->tint face gradient."""
+    from PIL import Image, ImageDraw, ImageFont
+    S = size
+    mask = Image.new("L", (S, S), 0); d = ImageDraw.Draw(mask)
+    c = S / 2
+    if ch == "✅":
+        d.line([(c - S * .26, c + S * .02), (c - S * .07, c + S * .22), (c + S * .28, c - S * .22)], fill=255, width=int(S * .13), joint="curve")
+    elif ch == "❌":
+        w = int(S * .13)
+        d.line([(c - S * .23, c - S * .23), (c + S * .23, c + S * .23)], fill=255, width=w)
+        d.line([(c + S * .23, c - S * .23), (c - S * .23, c + S * .23)], fill=255, width=w)
+    elif ch in ("💸", "💰"):
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), int(S * .78))
+        d.text((c, c + S * .02), "$", font=f, fill=255, anchor="mm")
+    elif ch == "🚨":
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Anton-Regular.ttf"), int(S * .78))
+        d.text((c, c + S * .02), "!", font=f, fill=255, anchor="mm")
+    else:
+        return None
+    out = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    dark = tuple(int(v * 0.45) for v in tint)
+    for i in range(int(S * .06), 0, -1):     # extrusion depth
+        out.paste(Image.new("RGBA", (S, S), dark + (255,)), (i, i), mask)
+    grad = Image.new("RGBA", (S, S))
+    gd = ImageDraw.Draw(grad)
+    for y in range(S):
+        k = y / S
+        gd.line([(0, y), (S, y)], fill=tuple(int(255 * (1 - k) + tint[j] * k) for j in range(3)) + (255,))
+    out.paste(grad, (0, 0), mask)
+    return out
+
+
+def render_icon_glass_mov(ch, path, secs=2.0, size=210):
+    """NEW icon type: transparent 3D GLASS tile (frosted, see-through) with a glowing edge, a 3D extruded symbol
+    floating inside (parallax), rotating in 3D around Y, with a light streak sweeping across the glass.
+    Pops in with overshoot then floats. Alpha .mov (qtrle)."""
     from PIL import Image, ImageDraw, ImageFilter
     import math
-    top, bot = ICON_COLORS.get(ch, ((255, 140, 80), (255, 107, 44)))
-    S = int(size * 1.6)
-    # static parts drawn once at 2x for smooth edges
-    R = size // 2
-    base = Image.new("RGBA", (S * 2, S * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(base)
-    cx, cy, r = S, S - 12, R * 2
-    for i in range(22, 0, -1):          # thickness (extrusion) below the face
-        k = 0.55 + 0.02 * (22 - i)
-        d.ellipse([cx - r, cy - r + i * 2, cx + r, cy + r + i * 2], fill=tuple(int(c * k) for c in bot) + (255,))
-    face = Image.new("RGBA", base.size, (0, 0, 0, 0)); fd = ImageDraw.Draw(face)
-    for i in range(r, 0, -2):           # radial gradient face
-        t = i / r
-        col = tuple(int(top[j] * (1 - t * 0.55) + bot[j] * t * 0.55) for j in range(3))
-        fd.ellipse([cx - i, cy - i, cx + i, cy + i], fill=col + (255,))
-    base.alpha_composite(face)
-    hl = Image.new("RGBA", base.size, (0, 0, 0, 0))
-    ImageDraw.Draw(hl).ellipse([cx - r * 0.62, cy - r * 0.86, cx + r * 0.62, cy - r * 0.18], fill=(255, 255, 255, 120))
-    base.alpha_composite(hl.filter(ImageFilter.GaussianBlur(10)))
-    rim = Image.new("RGBA", base.size, (0, 0, 0, 0))
-    ImageDraw.Draw(rim).ellipse([cx - r, cy - r, cx + r, cy + r], outline=(255, 255, 255, 150), width=6)
-    base.alpha_composite(rim)
-    em = Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
-    em = em.resize((int(r * 1.1), int(r * 1.1 * em.height / em.width)), Image.LANCZOS)
-    esh = Image.new("RGBA", base.size, (0, 0, 0, 0))
-    esh.paste((0, 0, 0, 110), (cx - em.width // 2 + 6, cy - em.height // 2 + 12), em)
-    base.alpha_composite(esh.filter(ImageFilter.GaussianBlur(6)))
-    base.alpha_composite(em, (cx - em.width // 2, cy - em.height // 2))
-    badge = base.resize((S, S), Image.LANCZOS)
+    tint = GLASS_TINT.get(ch, (255, 107, 44))
+    T = size * 2                                   # draw at 2x
+    rad = int(T * .26)
+    tile = Image.new("RGBA", (T, T), (0, 0, 0, 0)); td = ImageDraw.Draw(tile)
+    td.rounded_rectangle([0, 0, T - 1, T - 1], radius=rad, fill=tint + (70,))                  # tinted glass
+    glow = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    for y in range(T // 2):
+        gd.line([(0, y), (T, y)], fill=(255, 255, 255, int(80 * (1 - y / (T / 2)))))          # top sheen
+    m = Image.new("L", (T, T), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, T - 1, T - 1], radius=rad, fill=255)
+    tile.paste(glow, (0, 0), Image.composite(glow.split()[3], Image.new("L", (T, T), 0), m))
+    td.rounded_rectangle([3, 3, T - 4, T - 4], radius=rad, outline=(255, 255, 255, 210), width=7)  # bright rim
+    td.rounded_rectangle([18, 18, T - 19, T - 19], radius=rad - 14, outline=tint + (150,), width=4)
+    glyph = _glyph_layer(ch, T, tint)
+    if glyph is None:   # complex emoji: use it as the symbol
+        em = Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
+        em = em.resize((int(T * .62), int(T * .62 * em.height / em.width)), Image.LANCZOS)
+        glyph = Image.new("RGBA", (T, T), (0, 0, 0, 0)); glyph.alpha_composite(em, ((T - em.width) // 2, (T - em.height) // 2))
+    gsh = Image.new("RGBA", (T, T), (0, 0, 0, 0)); gsh.paste((0, 0, 0, 120), (10, 22), glyph)
+    glyph_full = gsh.filter(ImageFilter.GaussianBlur(10)); glyph_full.alpha_composite(glyph)
+    tile_s = tile.resize((size, size), Image.LANCZOS)
+    glyph_s = glyph_full.resize((int(size * .78), int(size * .78)), Image.LANCZOS)
+    mask_s = m.resize((size, size), Image.LANCZOS)
+    OW, OH = int(size * 1.5), int(size * 1.6)
     d = os.path.join(os.path.dirname(path), os.path.basename(path) + "_f"); os.makedirs(d, exist_ok=True)
     n = int(secs * 30)
     for f in range(n):
         t = f / 30
-        pop = 1 + 2.70158 * (min(t / 0.35, 1) - 1) ** 3 + 1.70158 * (min(t / 0.35, 1) - 1) ** 2   # back-out
-        ang = 0.35 * math.sin(t * 3.2) * min(1, t / 0.35)
-        sx, sy = max(0.05, pop * (0.82 + 0.18 * math.cos(ang))), max(0.05, pop)
-        bob = 10 * math.sin(t * 4)
-        fr = Image.new("RGBA", (S, S + 40), (0, 0, 0, 0))
-        shd = Image.new("RGBA", fr.size, (0, 0, 0, 0))
-        w2 = int(S * 0.5 * sx)
-        ImageDraw.Draw(shd).ellipse([S // 2 - w2 // 2, S - 18, S // 2 + w2 // 2, S + 6], fill=(0, 0, 0, int(90 * min(1, pop))))
-        fr.alpha_composite(shd.filter(ImageFilter.GaussianBlur(8)))
-        b = badge.resize((max(1, int(S * sx)), max(1, int(S * sy))), Image.LANCZOS)
-        fr.alpha_composite(b, ((S - b.width) // 2, int((S - b.height) / 2 - 20 + bob)))
+        u = min(t / 0.38, 1)
+        pop = max(0.02, 1 + 2.70158 * (u - 1) ** 3 + 1.70158 * (u - 1) ** 2)
+        ang = (1 - u) * 1.2 + 0.42 * math.sin(t * 2.4) * u          # spins in, then sways in 3D
+        bob = 9 * math.sin(t * 3.6)
+        fr = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+        # shadow on the "floor"
+        sh = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+        sw = size * .42 * pop * (0.8 + 0.2 * abs(math.cos(ang)))
+        ImageDraw.Draw(sh).ellipse([OW / 2 - sw, OH - 46, OW / 2 + sw, OH - 22], fill=(0, 0, 0, int(80 * min(1, pop))))
+        fr.alpha_composite(sh.filter(ImageFilter.GaussianBlur(9)))
+        # shine streak inside the glass
+        tl = tile_s.copy()
+        if 0.35 < t < 1.1:
+            st = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            sx = (t - 0.35) / 0.75 * size * 1.8 - size * .4
+            ImageDraw.Draw(st).polygon([(sx, 0), (sx + size * .18, 0), (sx - size * .22, size), (sx - size * .4, size)], fill=(255, 255, 255, 120))
+            st.putalpha(Image.composite(st.split()[3], Image.new("L", (size, size), 0), mask_s))
+            tl.alpha_composite(st.filter(ImageFilter.GaussianBlur(3)))
+        def place(img, depth):
+            w, h = img.size
+            hw, hh = w * pop / 2, h * pop / 2
+            ca, sa = math.cos(ang), math.sin(ang)
+            pts = []
+            for (x, y) in ((-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh)):
+                X, Z = x * ca, x * sa + depth
+                p = 900 / (900 + Z)
+                pts.append((OW / 2 + X * p + depth * sa * 0.6, OH / 2 - 24 + y * p + bob))
+            co = _persp_coeffs(pts, [(0, 0), (w, 0), (w, h), (0, h)])
+            fr.alpha_composite(img.transform((OW, OH), Image.PERSPECTIVE, co, Image.BICUBIC))
+        place(tl, 0)
+        place(glyph_s, -40)          # symbol floats in front of the glass (parallax)
         fr.save(f"{d}/{f:03d}.png")
     run(["ffmpeg", "-v", "error", "-y", "-framerate", "30", "-i", f"{d}/%03d.png", "-c:v", "qtrle", "-pix_fmt", "argb", path])
-    return S, S + 40
+    return OW, OH
+
+
+def _neon_glyph_mask(ch, S):
+    """Clean flat white pictograms (modern app-icon style). Returns an L mask or None."""
+    from PIL import Image, ImageDraw, ImageFont
+    m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+    c = S / 2; u = S / 2
+    P = lambda pts: [(c + x * u, c + y * u) for x, y in pts]
+    w = int(S * .11)
+    if ch == "✅":
+        d.line(P([(-.45, .02), (-.12, .36), (.48, -.36)]), fill=255, width=w, joint="curve")
+        for x, y in ((-.45, .02), (.48, -.36)): d.ellipse([c + x * u - w / 2, c + y * u - w / 2, c + x * u + w / 2, c + y * u + w / 2], fill=255)
+    elif ch == "❌":
+        for a_, b_ in (((-.38, -.38), (.38, .38)), ((.38, -.38), (-.38, .38))):
+            d.line(P([a_, b_]), fill=255, width=w)
+            for x, y in (a_, b_): d.ellipse([c + x * u - w / 2, c + y * u - w / 2, c + x * u + w / 2, c + y * u + w / 2], fill=255)
+    elif ch in ("💸", "💰"):
+        f = ImageFont.truetype(os.path.join(FONTS_DIR, "Montserrat-Bold.ttf"), int(S * .78)); f.set_variation_by_name("Black")
+        d.text((c, c + S * .03), "$", font=f, fill=255, anchor="mm")
+    elif ch == "🚨":   # rounded warning triangle with "!"
+        d.polygon(P([(0, -.62), (.66, .5), (-.66, .5)]), fill=255)
+        m2 = Image.new("L", (S, S), 0); d2 = ImageDraw.Draw(m2)
+        d2.rounded_rectangle([c - S * .045, c - S * .17, c + S * .045, c + S * .1], radius=int(S * .04), fill=255)
+        d2.ellipse([c - S * .05, c + S * .15, c + S * .05, c + S * .25], fill=255)
+        m.paste(0, (0, 0), m2)
+    elif ch == "🔥":
+        pts = [(0, .9), (-.5, .72), (-.66, .32), (-.52, -.08), (-.3, -.3), (-.26, -.58), (-.02, -.92), (.08, -.6),
+               (.3, -.42), (.56, -.1), (.66, .3), (.5, .72)]
+        d.polygon(P(pts), fill=255)
+        inner = [(0, .78), (-.26, .62), (-.32, .34), (-.16, .08), (-.04, -.18), (.08, .06), (.28, .3), (.24, .62)]
+        d.polygon(P(inner), fill=0)
+        from PIL import ImageFilter
+        m = m.filter(ImageFilter.GaussianBlur(S * .035)).point(lambda v: 255 if v > 110 else 0)   # soften the corners
+    elif ch == "👇":
+        d.rounded_rectangle([c - S * .09, c - S * .45, c + S * .09, c + S * .12], radius=int(S * .06), fill=255)
+        d.polygon(P([(-.38, .02), (.38, .02), (0, .5)]), fill=255)
+    elif ch == "💬":
+        d.rounded_rectangle([c - S * .42, c - S * .34, c + S * .42, c + S * .22], radius=int(S * .16), fill=255)
+        d.polygon(P([(-.2, .18), (-.32, .5), (.06, .2)]), fill=255)
+    elif ch == "🛒":
+        d.line(P([(-.55, -.4), (-.38, -.4), (-.22, .22), (.4, .22), (.52, -.22), (-.3, -.22)]), fill=255, width=int(S * .08), joint="curve")
+        for x in (-.14, .32): d.ellipse([c + x * u - S * .065, c + .36 * u, c + x * u + S * .065, c + .36 * u + S * .13], fill=255)
+    elif ch == "📦":
+        d.polygon(P([(-.48, -.22), (0, -.48), (.48, -.22), (.48, .32), (0, .58), (-.48, .32)]), fill=255)
+        d.line(P([(-.48, -.22), (0, .04), (.48, -.22)]), fill=0, width=int(S * .035))
+        d.line(P([(0, .04), (0, .58)]), fill=0, width=int(S * .035))
+    else:
+        return None
+    return m
+
+
+def render_icon3d_mov(ch, path, secs=2.0, size=210):
+    """Modern neon app-icon (style chosen by Mustafa from his references), in his brand colours:
+    dark navy glass squircle, glowing orange->amber gradient rim, inner warm glow, diagonal light sheen,
+    clean white glowing pictogram, small sparkle. Pops in, sways in 3D, floats; glow pulses. Alpha .mov."""
+    from PIL import Image, ImageDraw, ImageFilter, ImageChops
+    import math
+    T = size * 2; rad = int(T * .27); pad = int(T * .22); C = T + 2 * pad
+    NAVY_T, NAVY_B, ORA, AMB = (34, 50, 86), (10, 16, 32), (255, 107, 44), (255, 184, 77)
+    sq = Image.new("L", (T, T), 0); ImageDraw.Draw(sq).rounded_rectangle([0, 0, T - 1, T - 1], radius=rad, fill=255)
+    # body: vertical navy gradient, slightly see-through
+    body = Image.new("RGBA", (T, T))
+    bd = ImageDraw.Draw(body)
+    for y in range(T):
+        k = y / T
+        bd.line([(0, y), (T, y)], fill=tuple(int(NAVY_T[j] * (1 - k) + NAVY_B[j] * k) for j in range(3)) + (238,))
+    glow_in = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+    ImageDraw.Draw(glow_in).ellipse([T * .05, -T * .2, T * .95, T * .7], fill=ORA + (70,))
+    body.alpha_composite(glow_in.filter(ImageFilter.GaussianBlur(T * .12)))
+    sheen = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+    ImageDraw.Draw(sheen).polygon([(T * .45, 0), (T, 0), (T, T * .55)], fill=(255, 255, 255, 34))
+    body.alpha_composite(sheen.filter(ImageFilter.GaussianBlur(T * .03)))
+    body.putalpha(ImageChops.multiply(body.split()[3], sq))
+    # gradient rim (orange top-left -> amber bottom-right)
+    ring = Image.new("L", (T, T), 0)
+    ImageDraw.Draw(ring).rounded_rectangle([3, 3, T - 4, T - 4], radius=rad, outline=255, width=int(T * .022))
+    gradc = Image.new("RGBA", (T, T)); gc = ImageDraw.Draw(gradc)
+    for i in range(2 * T):
+        k = min(1, i / (2 * T))
+        gc.line([(i, 0), (0, i)], fill=tuple(int(ORA[j] * (1 - k) + AMB[j] * k) for j in range(3)) + (255,))
+    rim = Image.new("RGBA", (T, T), (0, 0, 0, 0)); rim.paste(gradc, (0, 0), ring)
+    # pictogram
+    gm = _neon_glyph_mask(ch, int(T * .58))
+    glyph = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+    if gm is not None:
+        gx = (T - gm.width) // 2
+        glyph.paste((248, 246, 255, 255), (gx, gx), gm)
+    else:
+        em = Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
+        em = em.resize((int(T * .56), int(T * .56 * em.height / em.width)), Image.LANCZOS)
+        glyph.alpha_composite(em, ((T - em.width) // 2, (T - em.height) // 2))
+    # assemble on a canvas with room for glow / shadow
+    def frame_static(pulse):
+        cv = Image.new("RGBA", (C, C), (0, 0, 0, 0))
+        sh = Image.new("RGBA", (C, C), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle([pad + T * .06, pad + T * .14, pad + T * .94, pad + T * 1.06], radius=rad, fill=(0, 0, 0, 150))
+        cv.alpha_composite(sh.filter(ImageFilter.GaussianBlur(T * .07)))
+        og = Image.new("RGBA", (C, C), (0, 0, 0, 0)); og.alpha_composite(rim, (pad, pad))
+        cv.alpha_composite(og.filter(ImageFilter.GaussianBlur(T * .045 * pulse)))     # outer neon glow
+        cv.alpha_composite(body, (pad, pad))
+        gg = Image.new("RGBA", (C, C), (0, 0, 0, 0)); gg.alpha_composite(glyph, (pad, pad))
+        tinted = Image.new("RGBA", (C, C), AMB + (0,)); tinted.putalpha(gg.split()[3])
+        cv.alpha_composite(tinted.filter(ImageFilter.GaussianBlur(T * .03 * pulse)))  # glyph glow
+        cv.alpha_composite(gg)
+        cv.alpha_composite(rim, (pad, pad))
+        sp = ImageDraw.Draw(cv); sx, sy, r0 = pad + T * .8, pad + T * .18, T * .055   # sparkle
+        sp.polygon([(sx, sy - r0), (sx + r0 * .25, sy - r0 * .25), (sx + r0, sy), (sx + r0 * .25, sy + r0 * .25),
+                    (sx, sy + r0), (sx - r0 * .25, sy + r0 * .25), (sx - r0, sy), (sx - r0 * .25, sy - r0 * .25)], fill=(255, 236, 210, 230))
+        return cv.resize((C // 2, C // 2), Image.LANCZOS)
+    statics = {p: frame_static(p) for p in (0.8, 1.0, 1.2)}
+    OW, OH = C // 2 + 40, C // 2 + 40
+    d = os.path.join(os.path.dirname(path), os.path.basename(path) + "_f"); os.makedirs(d, exist_ok=True)
+    for f in range(int(secs * 30)):
+        t = f / 30
+        u = min(t / 0.38, 1)
+        pop = max(0.02, 1 + 2.70158 * (u - 1) ** 3 + 1.70158 * (u - 1) ** 2)
+        ang = (1 - u) * 0.9 + 0.28 * math.sin(t * 2.4) * u
+        bob = 7 * math.sin(t * 3.4)
+        img = statics[min(statics, key=lambda p: abs(p - (1 + 0.2 * math.sin(t * 5))))]
+        w, h = img.size; hw, hh = w * pop / 2, h * pop / 2
+        ca, sa = math.cos(ang), math.sin(ang)
+        pts = []
+        for (x, y) in ((-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh)):
+            X, Z = x * ca, x * sa
+            pz = 700 / (700 + Z)
+            pts.append((OW / 2 + X * pz, OH / 2 + y * pz + bob))
+        co = _persp_coeffs(pts, [(0, 0), (w, 0), (w, h), (0, h)])
+        fr = img.transform((OW, OH), Image.PERSPECTIVE, co, Image.BICUBIC)
+        fr.save(f"{d}/{f:03d}.png")
+    run(["ffmpeg", "-v", "error", "-y", "-framerate", "30", "-i", f"{d}/%03d.png", "-c:v", "qtrle", "-pix_fmt", "argb", path])
+    return OW, OH
 
 
 def render_emoji(ch, path, size=230):

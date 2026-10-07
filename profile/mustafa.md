@@ -11,7 +11,7 @@
 
 ## CURRENT DEFAULT RECIPE (latest preferences — these win over older notes below)
 - Caption placement: NEVER on his face — each caption goes just below or just above the face, wherever there is room (auto face detection per cue, `caption_y`); in the cards layout it also stays clear of the small face card.
-- Icons: modern 3D glossy badges (thickness, highlight, shadow) that pop in and float/wobble, placed right next to the caption (`render_icon3d_mov`); colours per emoji (🔥 orange, 🚨/❌ red-white, 💸/✅ green).
+- Icons (his chosen reference: neon app-icon tiles): dark navy glass squircle, glowing orange->amber gradient rim, warm inner glow, diagonal sheen, clean white glowing pictogram (check, cross, $, warning, flame, box, cart, chat, arrow), small sparkle; pops in, sways in 3D, floats, glow pulses; placed next to the caption. Code: `render_icon3d_mov` (old glass version kept as `render_icon_glass_mov`).
 - SAVED STYLE = reel3_v2_motion (Mustafa: "احفظ آخر تعديل وخدم بهذاك الأسلوب"). Run `tools/reel_mustafa.sh videos/reelN.mov subs/reelN.srt "hook"`; .srt template = subs/reel3.srt (key phrases starred, tags like [broll:chat3d], [broll:product3d], [circle], emoji).
 - Upload: always the original .mov/.mp4 via GitHub (`main`); the chat turns videos into stills/GIFs (no sound) — never edit from those.
 - Captions: KEY WORDS ONLY (`--keywords-only`), big, yellow `--accent FFD60A` with black outline, drawn as images (Lalezar). Star whole short phrases (`*البيع ما كاش*`) so small words are never dropped. French words he says are written in French (confiance, créative, cliente, messages).
