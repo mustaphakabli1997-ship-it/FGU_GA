@@ -186,3 +186,5 @@
 - Source: `1006 (1)(2).mov` uploaded to main (the chat converts videos to GIF — always upload the .mov via GitHub). Saved as videos/reel3.mov.
 - Story heard (Whisper large-v3, cleaned audio): a client had a good créative and messages were coming, but the problem was in selling; the fix = "اعرف وين تشري" (know where to buy / sourcing).
 - Mustafa asked to keep his filter: `--grade none`. Keywords-only neon captions (palette C); star whole short phrases (e.g. `*البيع ما كاش*`) so small words like "ما" are never dropped.
+
+- 2026-10-07: Mustafa asked to REMOVE the white grid background of the cards layout -> saved style now uses `--layout full` (video fills the screen; badge, captions, icons, b-roll, end card unchanged). reel3_v11 = this look.
