@@ -277,6 +277,33 @@ def find_face(src, t_src):
     return int(x + w / 2), int(y + h / 2), int(max(w, h) * 0.75)
 
 
+def caption_y(a, segs, ea, chh, tags):
+    """Top y of a caption image: just BELOW his face if there is room, else just ABOVE it, never on the face.
+    Face found with opencv at the cue's start; b-roll cues (face hidden) and no-face frames use the default spot."""
+    cards = a.layout == "cards"
+    default = int(H * (0.52 if cards else 0.60)) - chh // 2
+    if any(kd == "broll" for kd, _ in tags):
+        return default
+    face = find_face(a.src, unmap(ea + 0.1, segs))
+    if not face:
+        return default
+    fx, fy, fr = face
+    if cards:   # content is shrunk into the card: map face coords to the final frame
+        sc = CARD_W / W
+        fy, fr = CARD_Y + fy * sc, fr * sc
+        top_lim, bot_lim = CARD_Y + 30, CARD_Y + CARD_H - 520 - 20   # stay above the small face card
+    else:
+        top_lim, bot_lim = int(H * 0.12), int(H * 0.80)              # IG top bar / bottom caption area
+    gap = 25
+    below = int(fy + fr + gap)
+    if below + chh <= bot_lim:
+        return below
+    above = int(fy - fr - gap - chh)
+    if above >= top_lim:
+        return above
+    return max(top_lim, min(default, bot_lim - chh))
+
+
 def render_circle_mov(path, r=230, n=14):
     """Hand-drawn style ring that draws itself in ~0.45 s (alpha .mov)."""
     from PIL import Image, ImageDraw
@@ -360,6 +387,65 @@ def render_card_assets(tmp):
     ImageDraw.Draw(shp).rounded_rectangle([80, 95, CARD_W + 80, CARD_H + 95], radius=46, fill=(0, 0, 0, 120))
     shp = shp.filter(ImageFilter.GaussianBlur(30)); shadow = os.path.join(tmp, "card_shadow.png"); shp.save(shadow)
     return bgp, mask, pipm, shadow
+
+
+ICON_COLORS = {"🔥": ((255, 140, 40), (230, 60, 20)), "🚨": ((255, 90, 90), (200, 20, 40)),
+               "💸": ((90, 220, 140), (20, 150, 80)), "💰": ((255, 210, 80), (220, 150, 20)),
+               "✅": ((90, 220, 140), (20, 150, 80)), "❌": ((250, 250, 252), (185, 190, 205)),
+               "🤝": ((255, 210, 80), (220, 150, 20)), "👇": ((120, 170, 255), (40, 90, 220))}
+
+
+def render_icon3d_mov(ch, path, secs=2.0, size=200):
+    """Modern 3D icon: glossy badge with thickness, specular highlight, soft shadow; the emoji sits on it.
+    Pops in with overshoot, then floats and wobbles in 3D (Y-rotation squash). Alpha .mov (qtrle)."""
+    from PIL import Image, ImageDraw, ImageFilter
+    import math
+    top, bot = ICON_COLORS.get(ch, ((255, 140, 80), (255, 107, 44)))
+    S = int(size * 1.6)
+    # static parts drawn once at 2x for smooth edges
+    R = size // 2
+    base = Image.new("RGBA", (S * 2, S * 2), (0, 0, 0, 0)); d = ImageDraw.Draw(base)
+    cx, cy, r = S, S - 12, R * 2
+    for i in range(22, 0, -1):          # thickness (extrusion) below the face
+        k = 0.55 + 0.02 * (22 - i)
+        d.ellipse([cx - r, cy - r + i * 2, cx + r, cy + r + i * 2], fill=tuple(int(c * k) for c in bot) + (255,))
+    face = Image.new("RGBA", base.size, (0, 0, 0, 0)); fd = ImageDraw.Draw(face)
+    for i in range(r, 0, -2):           # radial gradient face
+        t = i / r
+        col = tuple(int(top[j] * (1 - t * 0.55) + bot[j] * t * 0.55) for j in range(3))
+        fd.ellipse([cx - i, cy - i, cx + i, cy + i], fill=col + (255,))
+    base.alpha_composite(face)
+    hl = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    ImageDraw.Draw(hl).ellipse([cx - r * 0.62, cy - r * 0.86, cx + r * 0.62, cy - r * 0.18], fill=(255, 255, 255, 120))
+    base.alpha_composite(hl.filter(ImageFilter.GaussianBlur(10)))
+    rim = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    ImageDraw.Draw(rim).ellipse([cx - r, cy - r, cx + r, cy + r], outline=(255, 255, 255, 150), width=6)
+    base.alpha_composite(rim)
+    em = Image.open(path.replace(".mov", "_flat.png")).convert("RGBA")
+    em = em.resize((int(r * 1.1), int(r * 1.1 * em.height / em.width)), Image.LANCZOS)
+    esh = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    esh.paste((0, 0, 0, 110), (cx - em.width // 2 + 6, cy - em.height // 2 + 12), em)
+    base.alpha_composite(esh.filter(ImageFilter.GaussianBlur(6)))
+    base.alpha_composite(em, (cx - em.width // 2, cy - em.height // 2))
+    badge = base.resize((S, S), Image.LANCZOS)
+    d = os.path.join(os.path.dirname(path), os.path.basename(path) + "_f"); os.makedirs(d, exist_ok=True)
+    n = int(secs * 30)
+    for f in range(n):
+        t = f / 30
+        pop = 1 + 2.70158 * (min(t / 0.35, 1) - 1) ** 3 + 1.70158 * (min(t / 0.35, 1) - 1) ** 2   # back-out
+        ang = 0.35 * math.sin(t * 3.2) * min(1, t / 0.35)
+        sx, sy = max(0.05, pop * (0.82 + 0.18 * math.cos(ang))), max(0.05, pop)
+        bob = 10 * math.sin(t * 4)
+        fr = Image.new("RGBA", (S, S + 40), (0, 0, 0, 0))
+        shd = Image.new("RGBA", fr.size, (0, 0, 0, 0))
+        w2 = int(S * 0.5 * sx)
+        ImageDraw.Draw(shd).ellipse([S // 2 - w2 // 2, S - 18, S // 2 + w2 // 2, S + 6], fill=(0, 0, 0, int(90 * min(1, pop))))
+        fr.alpha_composite(shd.filter(ImageFilter.GaussianBlur(8)))
+        b = badge.resize((max(1, int(S * sx)), max(1, int(S * sy))), Image.LANCZOS)
+        fr.alpha_composite(b, ((S - b.width) // 2, int((S - b.height) / 2 - 20 + bob)))
+        fr.save(f"{d}/{f:03d}.png")
+    run(["ffmpeg", "-v", "error", "-y", "-framerate", "30", "-i", f"{d}/%03d.png", "-c:v", "qtrle", "-pix_fmt", "argb", path])
+    return S, S + 40
 
 
 def render_emoji(ch, path, size=230):
@@ -545,20 +631,36 @@ def main():
                f"[wpb][pipc]overlay=x='40-500*(1-min(1,(t-1.0)/0.35))':y={CARD_Y + CARD_H - 520}:enable='gte(t,1.0)'[cardsout];")
         cur = "cardsout"
 
+    # caption images + positions (above/below the face) computed once, used by emoji and captions
+    caps = {}
+    for i_ev, (ea, eb, t, _em, _tg) in enumerate(events):
+        if t and (ARABIC_RE.search(t) or a.keywords_only):
+            png = os.path.join(tmp, f"capimg{i_ev}.png")
+            cw, chh = render_caption_png(t, png, a.ar_font, size=150 if a.keywords_only else 106)
+            caps[i_ev] = (png, cw, chh, caption_y(a, segs, ea, chh, _tg))
+
     # colour emoji: rendered to PNG and overlaid near the top (clear of the face and the caption) with a small slide-down
     if not a.no_emoji:
         cache = {}
-        for (ea, eb, _t, ems, _tg) in events:
+        for i_ev, (ea, eb, _t, ems, _tg) in enumerate(events):
             for j, ch in enumerate(ems[:2]):
                 if ch not in cache:
-                    cache[ch] = os.path.join(tmp, f"e{len(cache)}.png")
-                    render_emoji(ch, cache[ch])
-                extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", cache[ch]]
+                    mov = os.path.join(tmp, f"e{len(cache)}.mov")
+                    render_emoji(ch, mov.replace(".mov", "_flat.png"), size=230)
+                    cache[ch] = (mov, render_icon3d_mov(ch, mov))
+                mov, (iw_, ih_) = cache[ch]
+                extra_inputs += ["-i", mov]
                 n_em = len(ems[:2])
-                x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*260"
-                y = f"{int(H * 0.11)}-50*(1-min(1,(t-{ea:.2f})/0.18))"
-                fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.12:alpha=1[em{k}];"
-                       f"[{cur}][em{k}]overlay=x='{x}':y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
+                if i_ev in caps:   # right next to the caption (its image is centred at W/2-60), never on the face
+                    _p, cw, chh, yc = caps[i_ev]
+                    right = (W - cw) // 2 - 60 + cw - 40
+                    x = f"{min(right + j * (iw_ - 40), W - iw_ + 30)}"
+                    y = f"{yc + chh // 2 - ih_ // 2}"
+                else:
+                    x = f"(W-w)/2+({j}-{(n_em - 1) / 2})*{iw_}"
+                    y = f"{int(H * 0.11)}"
+                fc += (f"[{n_in}:v]format=rgba,setpts=PTS-STARTPTS+{ea:.2f}/TB[em{k}];"
+                       f"[{cur}][em{k}]overlay=x='{x}':y='{y}':eof_action=repeat:enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
                 cur, k, n_in = f"ov{k}", k + 1, n_in + 1
     # HOOK: big text card in the top safe zone for the first 2.6 s, flash at 0
     if a.hook:
@@ -574,12 +676,11 @@ def main():
         cur, n_in = "ovhf", n_in + 1
 
     # Arabic captions as images, on top of everything, slide-up + fade-in
-    for (ea, eb, t, _em, _tg) in events:
-        if t and (ARABIC_RE.search(t) or a.keywords_only):
-            png = os.path.join(tmp, f"cap{k}.png")
-            cw, chh = render_caption_png(t, png, a.ar_font, size=150 if a.keywords_only else 106)
+    for i_ev, (ea, eb, t, _em, _tg) in enumerate(events):
+        if i_ev in caps:
+            png, cw, chh, yc = caps[i_ev]   # above or below his face, wherever there is room
             extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
-            y = f"{int(H * (0.52 if a.layout == 'cards' else 0.60)) - chh // 2}+28*(1-min(1,(t-{ea:.2f})/0.15))"
+            y = f"{yc}+28*(1-min(1,(t-{ea:.2f})/0.15))"
             fc += (f"[{n_in}:v]format=rgba,fade=t=in:st={ea:.2f}:d=0.1:alpha=1[cp{k}];"
                    f"[{cur}][cp{k}]overlay=x=(W-w)/2-60:y='{y}':enable='between(t,{ea:.2f},{eb:.2f})'[ov{k}];")
             cur, k, n_in = f"ov{k}", k + 1, n_in + 1
