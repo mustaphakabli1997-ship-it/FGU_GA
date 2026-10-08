@@ -36,3 +36,15 @@ Voix : passe-haut 80 Hz (bruit voiture), débruitage léger, −14 LUFS ; les SF
 - Image : garder son filtre (`--grade none`) ; `pro` seulement si le visage est sombre ou le toit ouvrant brûle l'image. Jamais `cinema` (peau trop rose).
 - Peau naturelle, contraste léger, pas de teinte violette sur l'image : le violet / bleu néon reste dans les graphismes (captions, icônes, badge).
 - Ambiance : « conseil entre amis, sérieux » — lumière du jour, fond voiture, pas d'effets flashy pendant l'explication.
+
+## Prompts IA (b-roll) — anglais, 9:16, sans texte
+Style commun : `vertical 9:16, cinematic, deep night-violet background (#140B34), violet (#8B5CF6) and neon blue (#38BDF8) rim lighting, soft glow, shallow depth of field, premium, clean, no text, no logos, no watermark`
+Négatif : `text, letters, numbers, logo, watermark, brand names, distorted hands, extra fingers, blurry face, low quality`
+
+1. Scène 1 (créa jolie mais vide) — image/vidéo : "A stunning fashion product video playing on a smartphone screen held in one hand, glossy and beautiful, but the phone sits in an empty, silent room; a single violet spotlight, dust particles floating, feeling of beautiful but unnoticed, slow push-in, 4 seconds" + style commun
+2. Scène 5 (scroll) — vidéo : "Close-up of a thumb scrolling fast through a vertical social media feed on a smartphone, colorful posts blurring by in motion blur, one post flies past without stopping, neon blue reflections on the screen glass, 3 seconds" + style commun
+3. Scène 6 (clarté) — image : "Three floating glass icons in a row: a gift box, a person silhouette, a light bulb, frosted violet glass with neon blue edges, isometric, studio lighting" + style commun
+4. Scène 7 (prix / offre / confirmation) — image : "A price tag, a ribbon-wrapped offer box and a ringing phone floating above a dark violet surface, glossy 3D render, soft neon reflections" + style commun
+5. Scène 8 (les chiffres) — vidéo : "Abstract analytics dashboard made of glowing bars and line charts rising, holographic, floating in dark violet space, numbers unreadable and blurred, slow orbit camera, 4 seconds" + style commun
+6. Scène 9 (vidéo simple au téléphone) — vidéo : "Handheld smartphone filming a simple product in natural daylight on a wooden table, the phone screen shows the same shot, authentic, unpolished, warm daylight with a subtle violet rim light, 3 seconds" + style commun
+Règles : pas de faux clients, pas de faux résultats ni de faux chiffres lisibles, pas de logos de marques (Meta, Instagram…).
