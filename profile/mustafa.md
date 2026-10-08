@@ -196,3 +196,6 @@
 
 ## Series « E-COM TIP » (his idea 2026-10-07)
 - One small useful e-commerce tip per Reel, numbered (#01, #02…), fixed format + same cover each time. Plan, 20 episode ideas and script #01: profile/series_ecom_tip.md.
+
+## Shopify store (2026-10-08)
+- Women's clothing store, luxury, palette C + Sora/Readex. Name kept = **VIOLET Vogue** (his choice; the K+M / KABLI_MS logo stays for his personal account only). Kit: content/shopify/ (store_kit.md, logos, banners, favicon; `python3 tools/shopify_kit.py`). Connected Shopify shop is blocked for API access (billing/plan) until he fixes it; never invent prices/delivery fees/delays.
