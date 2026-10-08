@@ -14,3 +14,25 @@ Hook montage: `"ماشي كل فيديو *شباب* يبيع"`
 | 8 | 27–34 s | « احكم بالأرقام، ماشي بعينيك: شحال حبس يتفرج، شحال كليكا، شحال كلفك الميساج. » + sparkle | Caption *الأرقام* 📈 ; option : capture floue du Gestionnaire de pubs (sans chiffres lisibles) | Cut |
 | 9 | 34–38 s | « جرّب فيديو بسيط بالتليفون… ساعات البسيط هو اللي يبيع. » + pop | Caption *فيديو بسيط* 📱 ; option : 1 s filmée au téléphone (produit en main) | Cut |
 | 10 | 38–42 s | « تابعني باش ما تفوتكش المعلومة الجاية، وحاب تبدا الـ sponsor ابعثلي واتساب. » + chime | Face caméra, sourire ; badge WhatsApp bas-gauche (déjà là) | Fin nette (pas de carte de fin) |
+
+## Guide de montage (rythme · SFX · couleur)
+**Rythme**
+- 0–10 s (accroche) : rapide, un plan toutes les 1,5–2,5 s ; silences coupés serrés (~0,15 s).
+- 10–34 s (explication) : plus posé, plans de 3–5 s ; garder ~0,3 s de respiration entre les idées ; un mot-clé à l'écran à la fois.
+- 34–42 s (solution + CTA) : calme, plan continu, pas d'effet sur la dernière phrase.
+- Zoom : un seul (intro). Secousse : une seule (« ماشي ديما »). Swoosh : un seul (b-roll téléphone).
+
+**SFX (sfx_pro, pas de musique)**
+| Moment | Son | Niveau |
+|---|---|---|
+| 0 s hook | hit grave doux | −14 dB sous la voix |
+| chaque mot-clé | pop bulle | −20 dB |
+| icônes (❓ 📦 👤 💡 📈) | sparkle 3 notes | −22 dB |
+| entrée b-roll téléphone | swoosh | −16 dB |
+| fin (CTA) | chime | −20 dB |
+Voix : passe-haut 80 Hz (bruit voiture), débruitage léger, −14 LUFS ; les SFX ne doivent jamais couvrir un mot.
+
+**Couleur / ambiance**
+- Image : garder son filtre (`--grade none`) ; `pro` seulement si le visage est sombre ou le toit ouvrant brûle l'image. Jamais `cinema` (peau trop rose).
+- Peau naturelle, contraste léger, pas de teinte violette sur l'image : le violet / bleu néon reste dans les graphismes (captions, icônes, badge).
+- Ambiance : « conseil entre amis, sérieux » — lumière du jour, fond voiture, pas d'effets flashy pendant l'explication.
