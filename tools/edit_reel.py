@@ -335,6 +335,51 @@ def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False)
     return W2, H2
 
 
+def render_hook_title_png(text, path):
+    """Reference-reel hook (Mustafa 2026-10-09): big WHITE bold title, no plate, soft dark shadow; *word* = neon blue.
+    Up to 2 lines (split at ' / ' or after the 2nd word when long)."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    clean = text.replace("*", "")
+    lines = [l.strip() for l in (text.split(" / ") if " / " in text else [text])]
+    if len(lines) == 1 and len(clean.split()) > 3:
+        w = text.split(); lines = [" ".join(w[:2]), " ".join(w[2:])]
+    W2 = 1000
+    tmp = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+    def fnt(t, sz): return ImageFont.truetype(os.path.join(FONTS_DIR, AR_BOLD if ARABIC_RE.search(t) else LAT_BOLD), sz)
+    sizes = []
+    for l in lines:
+        sz = 118
+        while sz > 60 and tmp.textlength(l.replace("*", ""), font=fnt(l, sz)) > W2 - 60:
+            sz -= 4
+        sizes.append(sz)
+    H2 = int(sum(s_ * 1.3 for s_ in sizes) + 60)
+    lay = Image.new("RGBA", (W2, H2), (0, 0, 0, 0)); y = 30
+    for l, sz in zip(lines, sizes):
+        f = fnt(l, sz); parts = re.split(r"(\*[^*]+\*)", l)
+        full = l.replace("*", ""); tw = tmp.textlength(full, font=f)
+        sh = Image.new("RGBA", (W2, H2), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).text((W2 / 2 + 3, y + sz * 0.65 + 6), full, font=f, fill=(0, 0, 0, 200), anchor="mm")
+        lay.alpha_composite(sh.filter(ImageFilter.GaussianBlur(8)))
+        d = ImageDraw.Draw(lay)
+        if ARABIC_RE.search(full):    # RTL: draw the whole line white, then re-draw accent words in blue at their measured spot
+            d.text((W2 / 2, y + sz * 0.65), full, font=f, fill="white", anchor="mm", stroke_width=2, stroke_fill=(20, 11, 52))
+            for p in parts:
+                if p.startswith("*"):
+                    w = p.strip("*"); i = full.find(w)
+                    # position of the word inside an RTL line: measured from the right edge
+                    xr = W2 / 2 + tw / 2 - tmp.textlength(full[:i], font=f)
+                    d.text((xr, y + sz * 0.65), w, font=f, fill="#" + ACCENT_NEON, anchor="rm", stroke_width=2, stroke_fill=(20, 11, 52))
+        else:
+            x = W2 / 2 - tw / 2
+            for p in parts:
+                acc = p.startswith("*"); p = p.strip("*")
+                d.text((x, y + sz * 0.65), p, font=f, fill=("#" + ACCENT_NEON) if acc else "white", anchor="lm", stroke_width=2, stroke_fill=(20, 11, 52))
+                x += tmp.textlength(p, font=f)
+        y += int(sz * 1.3)
+    lay.crop(lay.getbbox()).save(path)
+    return Image.open(path).size
+
+
 def render_hook_png(text, path, font_file):
     """Hook card: huge text, accent words in the brand accent, on a rounded night-violet plate with a violet->blue neon rim."""
     from PIL import Image, ImageDraw
@@ -816,6 +861,8 @@ def main():
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
     ap.add_argument("--accent", default="", help="hex colour for key words, e.g. 38BDF8 (neon blue); default = brand violet")
     ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
+    ap.add_argument("--hook-style", choices=["card", "title"], default="card", help="card = night plate with neon rim; title = big white bold title, no plate (reference-reel look)")
+    ap.add_argument("--dump-timeline", default="", help="write the silence-cut segments as JSON (used by tools/ref_style.py to place overlays)")
     ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
     ap.add_argument("--music", default="", help="'beat' = generated royalty-free beat, or a path to your own audio file")
     ap.add_argument("--bpm", type=float, default=100)
@@ -834,6 +881,9 @@ def main():
     endcard = None if a.no_endcard else render_endcard(a.tagline)
     segs, dur = ([(0, probe_duration(a.src))], None) if a.no_silence_cut else keep_segments(a.src)
     total = sum(b - x for x, b in segs)
+    if a.dump_timeline:
+        import json
+        json.dump({"segs": segs, "total": total}, open(a.dump_timeline, "w"))
 
     events = []
     if a.srt:
@@ -1016,7 +1066,7 @@ def main():
     # HOOK: big text card in the top safe zone for the first 2.6 s, flash at 0
     if a.hook:
         hp = os.path.join(tmp, "hook.png")
-        hw, hh = render_hook_png(a.hook, hp, a.ar_font)
+        hw, hh = (render_hook_title_png(a.hook, hp) if a.hook_style == "title" else render_hook_png(a.hook, hp, a.ar_font))
         extra_inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", hp]
         y = f"{int(H * 0.075)}-60*(1-min(1,t/0.2))"
         fc += (f"[{n_in}:v]format=rgba,fade=t=out:st=2.4:d=0.25:alpha=1[hk];"

@@ -199,3 +199,7 @@
 
 ## Shopify store (2026-10-08)
 - Women's clothing store, luxury, palette C + Sora/Readex. Name kept = **VIOLET Vogue** (his choice; the K+M / KABLI_MS logo stays for his personal account only). Kit: content/shopify/ (store_kit.md, logos, banners, favicon; `python3 tools/shopify_kit.py`). Connected Shopify shop is blocked for API access (billing/plan) until he fixes it; never invent prices/delivery fees/delays.
+
+## "Reference reel" look (his choice 2026-10-09, reel4_v6)
+- From a reel he liked (studio creator): big WHITE bold hook title, no plate (`--hook-style title`, "line1 / line2", *word* = neon blue); full-frame split with tilted 3D phone + his face shrinking into a PIP + neon-blue label pill; glass card with a counter (only real figures he says); search bar that types itself; WhatsApp / Instagram / Partage pills at the end. No music, pro SFX (+ typing clicks).
+- How: edit_reel.py ... `--hook-style title --dump-timeline T.json` then `python3 tools/ref_style.py base.mp4 T.json plan.json out.mp4` (plan times = source timeline; Remotion comps in remotion/src/RefStyle.tsx). Analysis of the reference: content/scripts/ref_reel_1009_analysis.md.
