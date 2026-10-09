@@ -54,6 +54,9 @@
         .parallax-card-up { transform: translateY(var(--scroll-offset-up, 0px)); }
         .parallax-card-down { transform: translateY(var(--scroll-offset-down, 0px)); }
 
+        /* Nav sits on the video banner: light text until scrolled */
+        #main-nav:not(.scrolled) a:not(#nav-cta-link) { color: #fff; }
+
         .linen {
             background-color: #C4A78F;
             background-image:
@@ -87,10 +90,11 @@
 
         <!-- Hero -->
         <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20">
-            <div class="absolute inset-0 pointer-events-none select-none">
-                <div class="absolute -top-32 -left-32 w-[55vw] h-[55vw] max-w-[700px] max-h-[700px] rounded-full bg-[#F8DDE3] blur-3xl opacity-80 animate-float"></div>
-                <div class="absolute -bottom-40 -right-32 w-[50vw] h-[50vw] max-w-[650px] max-h-[650px] rounded-full bg-[#C4A78F]/40 blur-3xl animate-float" style="animation-delay: -4s;"></div>
-            </div>
+            <video class="absolute inset-0 w-full h-full object-cover object-center" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+                <source src="videos/banner.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+            <div class="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-[#FAF8F3] pointer-events-none"></div>
 
             <div class="container mx-auto px-6 relative z-10 text-center">
                 <div id="hero-content-wrapper" class="max-w-3xl mx-auto flex flex-col items-center">
@@ -107,13 +111,13 @@
                     </div>
 
                     <div class="reveal mt-12" style="transition-delay: 200ms;">
-                        <p class="text-base md:text-lg text-[#1A1A1A]/70 max-w-lg mx-auto font-light tracking-wide leading-relaxed">
+                        <p class="text-base md:text-lg text-white max-w-lg mx-auto font-light tracking-wide leading-relaxed">
                             Timeless pieces in linen, silk and soft neutrals — made to be worn, loved and kept.
                         </p>
                     </div>
 
                     <div class="reveal mt-10" style="transition-delay: 400ms;">
-                        <a href="#collections" id="hero-cta" class="inline-flex items-center gap-3 px-8 py-3 rounded-full border border-[#1A1A1A]/20 bg-white/60 backdrop-blur-sm text-xs md:text-sm uppercase tracking-widest hover:bg-white transition-colors duration-300">
+                        <a href="#collections" id="hero-cta" class="inline-flex items-center gap-3 px-8 py-3 rounded-full border border-white/40 bg-white/20 text-white backdrop-blur-sm text-xs md:text-sm uppercase tracking-widest hover:bg-white/30 transition-colors duration-300">
                             Discover the collection
                         </a>
                     </div>
@@ -285,10 +289,10 @@
         window.addEventListener('scroll', () => {
             const scrolled = window.scrollY;
             if (scrolled > 50) {
-                nav.classList.add(...navScrolled);
+                nav.classList.add(...navScrolled, 'scrolled');
                 nav.classList.remove('py-6');
             } else {
-                nav.classList.remove(...navScrolled);
+                nav.classList.remove(...navScrolled, 'scrolled');
                 nav.classList.add('py-6');
             }
             document.querySelectorAll('.parallax-card-up').forEach(el => {
