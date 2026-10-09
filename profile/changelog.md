@@ -30,7 +30,7 @@
 - غلاف الحلقة 01 (2026-10-09): `content/covers/tip01_cover.jpg` — E-COM TIP #01 + "الحلقة 01" + وجهك في كارت بإطار نيون + "فيديو شباب وما جابليش؟". الأداة: `python3 tools/make_cover.py frame.png out.jpg "E-COM TIP" "#02" "الحلقة 02" "سطر 1" "سطر 2"`.
 
 ## 📚 المحتوى
-- سلسلة E-COM TIP: 20 موضوع + سكريبتات #01–#10 (`profile/series_ecom_tip.md`) + جدول النشر Excel (`content/E-COM_TIP_planning.xlsx`).
+- سلسلة E-COM TIP: 20 موضوع + سكريبتات #01–#10 (`profile/series_ecom_tip.md`) + جدول النشر Excel (`content/E-COM_TIP_planning.xlsx`, #01 = فيديو شباب) + عناوين الحلقات 01–20 (`content/E-COM_TIP_titles.md`).
 - سكريبت "ماشي كل فيديو شباب يبيع" + جدول المونتاج + إرشادات الصوت والألوان + برومبتات الذكاء الاصطناعي (`content/scripts/creative_chaba_storyboard.md`).
 - مخطط إعلان فستان 30 ثانية (`content/scripts/violet_vogue_dress_ad.md`).
 - Ad copy لفيديو الـ ateliers (في الشات).
