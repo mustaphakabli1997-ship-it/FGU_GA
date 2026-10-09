@@ -20,7 +20,9 @@ EMOJI_ICON = {"✅": "check_circle", "✔": "check_circle", "❌": "cancel", "�
               "💬": "chat", "🛒": "shopping_cart", "📦": "inventory_2", "🤝": "handshake", "📈": "trending_up",
               "📱": "smartphone", "🏠": "home", "💡": "lightbulb", "📣": "campaign", "📢": "campaign",
               "🏪": "storefront", "👤": "person", "⭐": "star", "🚀": "rocket_launch", "🎯": "ads_click",
-              "🛍": "shopping_bag", "🚚": "local_shipping"}
+              "🛍": "shopping_bag", "🚚": "local_shipping",
+              "👥": "groups", "🔁": "autorenew", "👀": "visibility", "✋": "back_hand", "⏱": "timer", "🚫": "block",
+              "🎬": "movie", "😅": "sentiment_dissatisfied"}
 
 _CP = {}
 

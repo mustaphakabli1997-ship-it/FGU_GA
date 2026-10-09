@@ -50,6 +50,25 @@ def typing(dur, seed=3):
     return sfx_pro._norm(sfx_pro._stereo(x, 0, 0.3), 0.5)
 
 
+def series_pill(text, path):
+    """Neon pill (violet -> blue gradient, white Readex Pro text) for the series name, top-right of the frame."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    f = ImageFont.truetype(os.path.join(E.FONTS_DIR, E.AR_BOLD), 34)
+    tw = ImageDraw.Draw(Image.new("RGBA", (10, 10))).textlength(text, font=f)
+    w, h, pad = int(tw + 56), 66, 24
+    im = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    m = Image.new("L", im.size, 0); ImageDraw.Draw(m).rounded_rectangle([pad, pad, pad + w, pad + h], radius=h // 2, fill=255)
+    glow = Image.new("RGBA", im.size, (56, 189, 248, 0)); glow.putalpha(m.filter(ImageFilter.GaussianBlur(10)).point(lambda v: v * 0.6))
+    im.alpha_composite(glow)
+    g = Image.new("RGBA", im.size); gd = ImageDraw.Draw(g)
+    for x in range(im.width):
+        k = x / (im.width - 1)
+        gd.line([(x, 0), (x, im.height)], fill=tuple(int(a + (b - a) * k) for a, b in zip(E.VIOLET, E.BLUE)) + (255,))
+    im.paste(g, (0, 0), m)
+    ImageDraw.Draw(im).text((pad + w / 2, pad + h / 2 + 1), text, font=f, fill="white", anchor="mm")
+    im.save(path)
+
+
 def main(base, timeline, plan_path, out):
     tl = json.load(open(timeline)); segs = tl["segs"]; total = tl["total"]
     plan = json.load(open(plan_path))
@@ -84,6 +103,12 @@ def main(base, timeline, plan_path, out):
         tw = os.path.join(sfx_dir, f"typing{i}.wav"); sfx_pro.write(tw, typing(max(0.3, d - 0.2 - 14 / FPS)))
         sounds += [(snd["pop"], oa, -20), (tw, oa + 6 / FPS, -14)]
 
+    ser = plan.get("series")      # persistent series pill (top-right), e.g. "E-COM TIP • الحلقة 01"
+    if ser:
+        png = os.path.join(work, "series.png"); series_pill(ser["text"], png)
+        oa = ser.get("from", 2.7); ob = total
+        layers.append((png, oa, ob, "png"))
+
     cta = plan.get("cta")
     if cta:
         dur = cta.get("dur", 3.5); oa, ob = total - dur, total - 0.05
@@ -95,6 +120,11 @@ def main(base, timeline, plan_path, out):
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", base]
     fc, cur = "", "0:v"
     for k, (p, oa, ob, full) in enumerate(layers, 1):
+        if full == "png":
+            cmd += ["-loop", "1", "-t", f"{ob:.3f}", "-i", p]
+            fc += (f"[{k}:v]format=rgba,fade=t=in:st={oa:.3f}:d=0.3:alpha=1[l{k}];"
+                   f"[{cur}][l{k}]overlay=W-w-20:120:enable='between(t,{oa:.3f},{ob:.3f})'[v{k}];")
+            cur = f"v{k}"; continue
         cmd += ["-i", p]
         fmt = "format=yuv420p" if full else "format=yuva444p10le"
         fc += f"[{k}:v]{fmt},setpts=PTS-STARTPTS+{oa:.3f}/TB[l{k}];[{cur}][l{k}]overlay=0:0:eof_action=pass:enable='between(t,{oa:.3f},{ob:.3f})'[v{k}];"

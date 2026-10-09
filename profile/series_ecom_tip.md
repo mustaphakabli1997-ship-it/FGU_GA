@@ -63,3 +63,7 @@ Hook montage : `"ماشي كل فيديو *شباب* يبيع"`
 - Solution : « احكم على الكريياتيف بالأرقام، ماشي بعينيك: شحال من واحد حبس يشوف، شحال كليكا، شحال كلفك الميساج ولا الكوموند. وجرّب ساعات فيديو بسيط بالتليفون جنب الفيديو الشباب. »
 - CTA : « تابعني باش ما تفوتكش TIP الجاي. وحاب تبدا الـ sponsor؟ ابعثلي واتساب. »
 .srt (mots-clés) : `*شابة*` ✨ · `*ما جابتش*` ❌ · `*3 ثواني*` ⏱️ · `*ما تفهمش*` · `*السعر و العرض*` 💰 · `*الأرقام*` 📈 · `*فيديو بسيط*` 📱
+
+## Épisodes publiés
+- **#01 = « فيديو شباب وما جابليش »** (filmé 2026-10-09, `videos/tip01_v1.mp4`). Les scripts du tableau ci-dessus décalent d'un numéro (Confirmation devient #02, etc.).
+- Look de la série : hook `E-COM TIP #NN / phrase`, pastille « E-COM TIP • الحلقة NN » en haut à droite tout le long, CTA final « Abonne-toi · TIP #NN+1 قريب · WhatsApp » (`subs/tip01.plan.json` comme modèle).
