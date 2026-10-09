@@ -12,6 +12,11 @@ Aref Ruqaa / Great Vibes; new K+M logo (`tools/make_logo.py`, assets/brand/logo_
 (archived in assets/brand/archive_palette_b/). After any brand change bump `PALETTE_ID` in tools/edit_reel.py so the
 generated clips in assets/_generated are rebuilt.
 
+CHANGELOG for Mustafa (Darija): profile/changelog.md — update it whenever something new is made or a preference changes.
+REFERENCE-REEL LOOK (his choice 2026-10-09, = videos/reel4_v6.mp4): white title hook (`--hook-style title`), phone split + PIP, glass counter card,
+typewriter search bar, CTA pills — `edit_reel.py ... --hook-style title --dump-timeline T.json` then `tools/ref_style.py base.mp4 T.json plan.json out.mp4`.
+Content plans: profile/series_ecom_tip.md (E-COM TIP series), content/scripts/, Shopify kit content/shopify/ (store name VIOLET Vogue).
+
 Start of every session:
 1. Read `profile/mustafa.md` (who he is, tone, brand colors, contacts, audience, offer).
 2. Reply in Algerian Darija (Arabic script), short and practical. Mustafa is a beginner in video editing: explain what you did in simple words.
