@@ -27,6 +27,7 @@
 - reel4 (الـ ateliers): v1 → v6 — "80 commande"، فستان بلاصة الكرطونة، رقم الواتساب، بلا end card، الهوك "Les ateliers سرّاقين الموديلات"، v6 بستايل الريل اللي عجبك.
 - reel_motion1: فيديو موشن بلا وجه.
 - **E-COM TIP #01** (2026-10-09): "فيديو شباب وما جابليش" — كتيبة كثر (11 كلمة + أيقونة لكل وحدة)، "E-COM TIP • الحلقة 01" فوق على اليمين طول الفيديو، تليفون فيه سكرول (3 ثواني)، شريط بحث، وفي الآخر "Abonne-toi · TIP #02 قريب · WhatsApp" — `videos/tip01_v1.mp4`.
+- غلاف الحلقة 01 (2026-10-09): `content/covers/tip01_cover.jpg` — E-COM TIP #01 + "الحلقة 01" + وجهك في كارت بإطار نيون + "فيديو شباب وما جابليش؟". الأداة: `python3 tools/make_cover.py frame.png out.jpg "E-COM TIP" "#02" "الحلقة 02" "سطر 1" "سطر 2"`.
 
 ## 📚 المحتوى
 - سلسلة E-COM TIP: 20 موضوع + سكريبتات #01–#10 (`profile/series_ecom_tip.md`) + جدول النشر Excel (`content/E-COM_TIP_planning.xlsx`).
