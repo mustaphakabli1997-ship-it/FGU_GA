@@ -1,0 +1,318 @@
+# Pages
+
+## `/` — index.html (no local imports; assets: `videos/banner.mp4`)
+Full source:
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melina Mode</title>
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VL97BWWEF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-6VL97BWWEF');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #F8DDE3;
+            --black: #1A1A1A;
+            --beige: #C4A78F;
+            --white: #FFFFFF;
+            --cream: #FAF8F3;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: var(--black);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .font-script { font-family: 'Allura', cursive; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @keyframes float-soft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+        .animate-float { animation: float-soft 9s ease-in-out infinite; }
+
+        .parallax-card-up { transform: translateY(var(--scroll-offset-up, 0px)); }
+        .parallax-card-down { transform: translateY(var(--scroll-offset-down, 0px)); }
+
+        /* Nav sits on the video banner: light text until scrolled */
+        #main-nav:not(.scrolled) a:not(#nav-cta-link) { color: #fff; }
+
+        .linen {
+            background-color: #C4A78F;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px),
+                repeating-linear-gradient(90deg, rgba(0,0,0,.04) 0 1px, transparent 1px 3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen selection:bg-[#F8DDE3] selection:text-[#1A1A1A]">
+
+        <!-- Navigation -->
+        <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6">
+            <div class="container mx-auto px-6 flex items-center justify-between">
+                <a href="#" id="nav-logo-link" class="leading-none text-center">
+                    <span class="font-script text-4xl block">Melina</span>
+                    <span class="text-[10px] font-semibold tracking-[0.35em] block -mt-1">MODE</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" id="nav-about-link" class="text-sm text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors duration-300">About</a>
+                    <a href="#collections" id="nav-collections-link" class="text-sm text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors duration-300">Collections</a>
+                    <a href="#contact" id="nav-contact-link" class="text-sm text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors duration-300">Contact</a>
+                </div>
+
+                <a href="#contact" id="nav-cta-link" class="inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-medium bg-[#1A1A1A] text-white hover:scale-105 transition-all duration-300">
+                    Get in touch
+                </a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20">
+            <video class="absolute inset-0 w-full h-full object-cover object-center" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+                <source src="videos/banner.mp4" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-black/40 pointer-events-none"></div>
+            <div class="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-[#FAF8F3] pointer-events-none"></div>
+
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <div id="hero-content-wrapper" class="max-w-3xl mx-auto flex flex-col items-center">
+                    <!-- Logo badge -->
+                    <div class="reveal">
+                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-[#F8DDE3] border-[6px] border-[#E7BFC8] flex flex-col items-center justify-center shadow-xl">
+                            <div class="relative">
+                                <span class="font-script text-7xl md:text-8xl leading-none block">Melina</span>
+                                <iconify-icon icon="lucide:heart" class="absolute -top-1 -right-4 text-[#C4A78F] text-2xl" style="fill:#C4A78F"></iconify-icon>
+                            </div>
+                            <span class="text-xl md:text-2xl font-semibold tracking-[0.35em] -mt-1 pl-[0.35em]">MODE</span>
+                            <span class="block w-24 h-[3px] bg-[#C4A78F] mt-3"></span>
+                        </div>
+                    </div>
+
+                    <div class="reveal mt-12" style="transition-delay: 200ms;">
+                        <p class="text-base md:text-lg text-white max-w-lg mx-auto font-light tracking-wide leading-relaxed">
+                            Timeless pieces in linen, silk and soft neutrals — made to be worn, loved and kept.
+                        </p>
+                    </div>
+
+                    <div class="reveal mt-10" style="transition-delay: 400ms;">
+                        <a href="#collections" id="hero-cta" class="inline-flex items-center gap-3 px-8 py-3 rounded-full border border-white/40 bg-white/20 text-white backdrop-blur-sm text-xs md:text-sm uppercase tracking-widest hover:bg-white/30 transition-colors duration-300">
+                            Discover the collection
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section id="about" class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center reveal">
+                    <h2 class="font-script text-6xl md:text-8xl leading-none mb-10">Quiet elegance</h2>
+                    <p class="text-xl md:text-2xl text-[#1A1A1A]/60 leading-relaxed font-light">
+                        Natural fabrics, refined cuts and a palette of blush, sand and black. Elegance is simple — and made with care.
+                    </p>
+                </div>
+
+                <!-- Palette -->
+                <div class="mt-24 flex flex-wrap justify-center gap-8">
+                    <div class="reveal text-center">
+                        <div class="w-20 h-20 rounded-full bg-[#F8DDE3] border border-black/5 mx-auto"></div>
+                        <p class="mt-3 text-[11px] tracking-widest text-[#1A1A1A]/60">#F8DDE3</p>
+                    </div>
+                    <div class="reveal text-center" style="transition-delay: 100ms;">
+                        <div class="w-20 h-20 rounded-full bg-[#1A1A1A] mx-auto"></div>
+                        <p class="mt-3 text-[11px] tracking-widest text-[#1A1A1A]/60">#1A1A1A</p>
+                    </div>
+                    <div class="reveal text-center" style="transition-delay: 200ms;">
+                        <div class="w-20 h-20 rounded-full bg-[#C4A78F] mx-auto"></div>
+                        <p class="mt-3 text-[11px] tracking-widest text-[#1A1A1A]/60">#C4A78F</p>
+                    </div>
+                    <div class="reveal text-center" style="transition-delay: 300ms;">
+                        <div class="w-20 h-20 rounded-full bg-white border border-black/10 mx-auto"></div>
+                        <p class="mt-3 text-[11px] tracking-widest text-[#1A1A1A]/60">#FFFFFF</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Collections -->
+        <section id="collections" class="py-40 relative overflow-hidden">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="reveal mb-28 text-center">
+                    <h2 class="font-script text-6xl md:text-8xl leading-none">The collections</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <!-- Card 1 - Blush -->
+                    <div class="parallax-card-down">
+                        <div id="card-silk" class="reveal bg-[#F8DDE3] rounded-3xl p-8 md:p-12 aspect-[4/5] flex flex-col justify-between shadow-xl hover:shadow-[0_20px_50px_rgba(196,167,143,0.4)] transition-all duration-500 group cursor-pointer">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
+                                    <iconify-icon icon="lucide:heart" class="text-[#1A1A1A] text-2xl"></iconify-icon>
+                                </div>
+                                <span class="font-medium text-sm border border-black/20 px-3 py-1 rounded-full">01</span>
+                            </div>
+                            <div>
+                                <h3 class="font-script text-6xl md:text-7xl leading-none mb-4">Silk &amp; Blush</h3>
+                                <p class="text-[#1A1A1A]/70 text-lg leading-snug">
+                                    Fluid satin shirts and soft tones for effortless, everyday elegance.
+                                </p>
+                            </div>
+                            <div class="w-full h-px bg-black/10 mt-8"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 - Linen -->
+                    <div class="parallax-card-up md:mt-24">
+                        <div id="card-linen" class="reveal linen text-[#1A1A1A] rounded-3xl p-8 md:p-12 aspect-[4/5] flex flex-col justify-between shadow-xl group cursor-pointer hover:shadow-[0_20px_50px_rgba(26,26,26,0.25)] transition-all duration-500" style="transition-delay: 150ms;">
+                            <div class="flex justify-between items-start">
+                                <div class="w-12 h-12 rounded-full bg-white/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                    <iconify-icon icon="lucide:arrow-right" class="text-[#1A1A1A] text-2xl -rotate-45"></iconify-icon>
+                                </div>
+                                <span class="font-medium text-sm border border-black/20 px-3 py-1 rounded-full">02</span>
+                            </div>
+                            <div>
+                                <h3 class="font-script text-6xl md:text-7xl leading-none mb-4">Linen Edit</h3>
+                                <p class="text-[#1A1A1A]/75 text-lg leading-snug">
+                                    Tailored trousers and breathable linen in warm sand — made to last.
+                                </p>
+                            </div>
+                            <div class="w-full h-px bg-black/15 mt-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact (GA4 demo form + button) -->
+        <section id="contact" class="py-32 relative">
+            <div class="container mx-auto px-6">
+                <div class="max-w-xl mx-auto text-center reveal">
+                    <h2 class="font-script text-6xl md:text-7xl leading-none mb-6">Get in touch</h2>
+                    <p class="text-[#1A1A1A]/60 font-light mb-12">
+                        歡迎來到 GA4 示範網站 — 這裡是教學用網站，支援 GA4 數據追蹤。
+                    </p>
+
+                    <form id="myForm" class="flex flex-col sm:flex-row gap-4 justify-center items-stretch">
+                        <label class="sr-only" for="name-input">名字</label>
+                        <input id="name-input" name="name" placeholder="名字 / Your name"
+                               class="flex-1 bg-white border border-[#C4A78F]/50 rounded-full px-6 py-3 text-sm placeholder-[#1A1A1A]/35 focus:outline-none focus:border-[#C4A78F] transition-colors" />
+                        <button type="submit"
+                                class="px-6 py-3 rounded-full text-sm font-medium bg-[#1A1A1A] text-white hover:scale-105 transition-all duration-300">
+                            提交
+                        </button>
+                    </form>
+
+                    <button id="testButton" type="button"
+                            class="mt-6 px-6 py-2 rounded-full text-xs uppercase tracking-widest border border-[#1A1A1A]/20 bg-[#F8DDE3] hover:bg-[#f3cdd6] transition-colors duration-300">
+                        按我一下
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-20 border-t border-[#C4A78F]/30 bg-[#F8DDE3]/40 relative overflow-hidden">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
+                    <div>
+                        <span class="font-script text-8xl md:text-9xl leading-none block text-[#1A1A1A]/15 select-none">Melina</span>
+                        <span class="text-2xl font-semibold tracking-[0.4em] text-[#1A1A1A]/15 select-none">MODE</span>
+                    </div>
+
+                    <div class="flex flex-col gap-8 md:text-right">
+                        <div class="flex flex-col gap-4 text-[#1A1A1A]/60">
+                            <a href="#" id="footer-ig-link" class="hover:text-[#1A1A1A] transition-colors">Instagram</a>
+                            <a href="#" id="footer-tw-link" class="hover:text-[#1A1A1A] transition-colors">Twitter</a>
+                            <a href="#" id="footer-li-link" class="hover:text-[#1A1A1A] transition-colors">LinkedIn</a>
+                        </div>
+                        <p class="text-sm text-[#1A1A1A]/40">© 2024 Melina Mode. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // GA4 events (kept from the original demo page)
+        document.getElementById('myForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            gtag('event', 'form_submit', {form_id: 'myForm'});
+            alert('GA4 表單提交事件已發送');
+        });
+
+        document.getElementById('testButton').addEventListener('click', function(){
+            gtag('event', 'button_click', {button_id: 'testButton'});
+            alert('GA4 按鈕點擊事件已發送');
+        });
+
+        ['nav-cta-link', 'hero-cta', 'card-silk', 'card-linen'].forEach(function(id){
+            document.getElementById(id).addEventListener('click', function(){
+                gtag('event', 'button_click', {button_id: id});
+            });
+        });
+
+        // Reveal on scroll
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Navbar scroll effect + card parallax + hero fade
+        const nav = document.getElementById('main-nav');
+        const heroWrapper = document.getElementById('hero-content-wrapper');
+        const navScrolled = ['py-3', 'bg-[#FAF8F3]/85', 'backdrop-blur-md', 'border-b', 'border-[#C4A78F]/30'];
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            if (scrolled > 50) {
+                nav.classList.add(...navScrolled, 'scrolled');
+                nav.classList.remove('py-6');
+            } else {
+                nav.classList.remove(...navScrolled, 'scrolled');
+                nav.classList.add('py-6');
+            }
+            document.querySelectorAll('.parallax-card-up').forEach(el => {
+                el.style.setProperty('--scroll-offset-up', `${scrolled * -0.05}px`);
+            });
+            document.querySelectorAll('.parallax-card-down').forEach(el => {
+                el.style.setProperty('--scroll-offset-down', `${scrolled * 0.05}px`);
+            });
+            if (scrolled < 1000) {
+                heroWrapper.style.transform = `translateY(${scrolled * 0.3}px)`;
+                heroWrapper.style.opacity = Math.max(0, 1 - scrolled / 700);
+            }
+        });
+    </script>
+</body>
+</html>
+
+```
