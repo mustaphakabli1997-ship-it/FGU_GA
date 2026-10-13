@@ -205,3 +205,5 @@
 - How: edit_reel.py ... `--hook-style title --dump-timeline T.json` then `python3 tools/ref_style.py base.mp4 T.json plan.json out.mp4` (plan times = source timeline; Remotion comps in remotion/src/RefStyle.tsx). Analysis of the reference: content/scripts/ref_reel_1009_analysis.md.
 
 - Covers: always pick a frame with his MOUTH CLOSED, teeth not visible, neutral look (his rule 2026-10-09).
+
+- "Light" edits (his request 2026-10-13: «ما تكثرش من موشن ديزاين»): hook title + keyword captions + few icons + badges only, no phone split / cards / b-roll (= videos/reel5_v1.mp4).
