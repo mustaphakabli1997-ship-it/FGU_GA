@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Instagram Reel cover (1080x1920, all text inside the 1080x1440 centre crop the profile grid shows), identity C.
   python3 tools/make_cover.py frame.png out.png "E-COM TIP" "#01" "الحلقة 01" "فيديو شباب" "وما جابليش؟"
+  python3 tools/make_cover.py --plain frame.png out.png "نصيحة للتجار" "ما تجيكش" "ساهلة!" "حضّر السكريبت قبل ما تصوّر"
 """
 import os, sys
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
@@ -19,7 +20,7 @@ def face_card(frame, size=700):
     g = cv2.cvtColor(np.array(src), cv2.COLOR_RGB2GRAY)
     faces = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml").detectMultiScale(g, 1.1, 5, minSize=(60, 60))
     if len(faces):
-        x, y, w, h = max(faces, key=lambda f: f[2] * f[3]); cx, cy, side = x + w / 2, y + h * 0.62, w * 2.3
+        x, y, w, h = min(faces, key=lambda f: f[1]); cx, cy, side = x + w / 2, y + h * 0.62, w * 2.3   # top-most face (a printed face on a T-shirt sits lower)
     else:
         cx, cy, side = src.width / 2, src.height * 0.42, src.width * 0.8
     side = min(side, src.width, src.height)
@@ -41,6 +42,36 @@ def cover(frame, out, series, num, pill, line1, line2):
     card = face_card(frame)
     im.alpha_composite(card, ((W - card.width) // 2, 575))
     return finish(im, out, series, num, pill, line1, line2)
+
+
+def cover_plain(frame, out, kicker, title1, title2, sub):
+    """Cover for a reel outside the series: kicker pill, big 2-line title (line 2 in the gradient), face card, one sub line."""
+    im = M.bg(W, H).convert("RGBA")
+    pf = M.READ(44); d = ImageDraw.Draw(im); tw = d.textlength(kicker, font=pf)
+    pw, ph = tw + 80, 82; px, py = (W - pw) / 2, TOP + 40
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rounded_rectangle([px, py, px + pw, py + ph], radius=ph // 2, fill=255)
+    fill = Image.new("RGBA", (W, H), (0, 0, 0, 0)); M.paste_grad(fill, m); im.alpha_composite(fill)
+    ImageDraw.Draw(im).text((W / 2, py + ph / 2 + 2), kicker, font=pf, fill="white", anchor="mm")
+    ft = M.READ(150)
+    for txt, y, grad in ((title1, TOP + 225, False), (title2, TOP + 390, True)):
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).text((W / 2, y), txt, font=ft, fill=(139, 92, 246, 255) if grad else (0, 0, 0, 190), anchor="mm")
+        im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(20 if grad else 8)))
+        if grad:
+            M.grad_text(im, (W / 2, y), txt, ft, anchor="mm")
+        else:
+            ImageDraw.Draw(im).text((W / 2, y), txt, font=ft, fill="white", anchor="mm")
+    card = face_card(frame, 620)
+    im.alpha_composite(card, ((W - card.width) // 2, TOP + 470))
+    fs = M.READ(60)
+    ImageDraw.Draw(im).text((W / 2, BOT - 70), sub, font=fs, fill=(237, 233, 254), anchor="mm")
+    logo = M.ICON.resize((76, 76), Image.LANCZOS)
+    hf = M.SORAS(40); hw = ImageDraw.Draw(im).textlength("@kabli_ms", font=hf)
+    x0 = (W - (76 + 16 + hw)) / 2; y0 = BOT + 60
+    im.alpha_composite(logo, (int(x0), int(y0 - 38)))
+    ImageDraw.Draw(im).text((x0 + 92, y0), "@kabli_ms", font=hf, fill=(237, 233, 254), anchor="lm")
+    im.convert("RGB").save(out, quality=95)
+    print(out)
 
 
 def cover_full(frame, out, series, num, pill, line1, line2):
@@ -101,4 +132,7 @@ def finish(im, out, series, num, pill, line1, line2):
 
 
 if __name__ == "__main__":
-    cover(*sys.argv[1:8])
+    if sys.argv[1] == "--plain":     # make_cover.py --plain frame out "kicker" "title 1" "title 2" "sub line"
+        cover_plain(*sys.argv[2:8])
+    else:
+        cover(*sys.argv[1:8])
