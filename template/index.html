@@ -118,7 +118,7 @@ header{background:var(--white);border-bottom:1px solid color-mix(in srgb,var(--a
         <button class="send" id="send"></button>
       </div>
     </div>
-    <div class="thanks" id="thanks"><h2 id="tTitle"></h2><p id="tText"></p><button class="send" id="tClose"></button></div>
+    <div class="thanks" id="thanks"><h2 id="tTitle"></h2><p id="tText"></p><a class="send" id="waLink" target="_blank" rel="noopener" style="text-decoration:none;background:#25D366;color:#06210f"></a><button class="send" id="tClose"></button></div>
   </div>
 </div>
 
@@ -142,7 +142,7 @@ header{background:var(--white);border-bottom:1px solid color-mix(in srgb,var(--a
   $('lName').textContent=T.name;$('lWilaya').textContent=T.wilaya;$('lCommune').textContent=T.commune;$('lPhone').textContent=T.phone;
   $('sDel').textContent=T.delivery;$('sTot').textContent=T.total;$('cod').textContent=T.cod+' • '+T.delivery+' '+money(S.order.deliveryFee);
   $('send').textContent=T.confirm;$('tClose').textContent=T.close;$('tTitle').textContent=T.thanksTitle;$('tText').textContent=T.thanksText;
-  $('wa').textContent=T.contact;$('wa').href='https://wa.me/'+S.whatsapp;
+  $('waLink').textContent=T.openWa;$('wa').textContent=T.contact;$('wa').href='https://wa.me/'+S.whatsapp;
   $('fWilaya').innerHTML='<option value="">'+T.wilayaPick+'</option>'+S.wilayas.map(function(w,i){return '<option value="'+w+'">'+(i+1)+' - '+w+'</option>'}).join('');
 
   // grid
@@ -206,7 +206,8 @@ header{background:var(--white);border-bottom:1px solid color-mix(in srgb,var(--a
       T.cod,'',
       T.name+': '+n,T.wilaya+': '+w,T.commune+': '+c,T.phone+': '+ph].join('\n');
     track('purchase_intent',{item_id:cur.id,value:tot,currency:'DZD'});
-    window.open('https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg),'_blank');
+    var url='https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg);$('waLink').href=url;
+    try{window.open(url,'_blank')}catch(e){}
     $('form').style.display='none';$('thanks').style.display='flex';
   };
 })();
