@@ -4,7 +4,7 @@
   var data; try { data = JSON.parse(document.getElementById('pjson').textContent); } catch (e) { return; }
   var idInput = document.getElementById('variantId'),
       btn = document.getElementById('addBtn'),
-      price = document.getElementById('pprice'),
+      prices = document.querySelectorAll('.js-price'),
       soldOut = btn.getAttribute('data-sold'), addText = btn.getAttribute('data-add');
   function current() {
     var vals = [];
@@ -18,7 +18,7 @@
     var v = data.filter(function (x) { return x.opts.every(function (o, i) { return o === vals[i]; }); })[0];
     if (!v) { btn.disabled = true; btn.textContent = soldOut; return; }
     idInput.value = v.id;
-    if (price) price.textContent = v.price;
+    prices.forEach(function (el) { el.textContent = v.price; });
     btn.disabled = !v.available;
     btn.textContent = v.available ? addText : soldOut;
     if (history.replaceState) history.replaceState(null, '', location.pathname + '?variant=' + v.id);
