@@ -3,7 +3,7 @@
    Women's fashion store template — the only file you need to edit
    ============================================================ */
 window.STORE = {
-  brand: { name: "Melina", sub: "MODE", tagline: { ar: "أناقة هادئة", en: "Quiet elegance" } },
+  brand: { name: "Melina", sub: "MODE", logo: "images/logo.png", tagline: { ar: "أناقة هادئة", en: "Quiet elegance" } },
 
   // الألوان (غيّرها لتغيير مظهر المتجر كله)
   colors: {
@@ -86,8 +86,8 @@ window.STORE = {
 
   // المجموعات
   categories: [
-    { id: "linen", name: { ar: "كتان", en: "Linen" },  tone: "#C4A78F" },
-    { id: "silk",  name: { ar: "ساتان", en: "Satin" }, tone: "#F3CBD5" },
+    { id: "linen", name: { ar: "كتان", en: "Linen" },  tone: "#C4A78F", image: "images/linen.jpg" },
+    { id: "silk",  name: { ar: "ساتان", en: "Satin" }, tone: "#F3CBD5", image: "images/satin.jpg" },
     { id: "sets",  name: { ar: "أطقم", en: "Sets" },   tone: "#E4D6C8" }
   ],
 

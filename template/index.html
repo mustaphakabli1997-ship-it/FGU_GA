@@ -28,6 +28,8 @@ a{color:inherit;text-decoration:none}
 header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px}
 .logo{display:flex;flex-direction:column;align-items:center;line-height:1}
+.logoimg{width:56px;height:56px;border-radius:50%;object-fit:cover;display:none}
+.logo.hasimg b,.logo.hasimg small{display:none}.logo.hasimg .logoimg{display:block}
 .logo b{font:400 38px 'Allura',cursive}
 .logo small{font:600 10px 'Montserrat';letter-spacing:.38em;margin-top:-2px;padding-inline-start:.38em}
 nav{display:flex;gap:26px;font-size:14px}
@@ -135,7 +137,7 @@ html[dir=rtl] .drawer{transform:translateX(-105%)}
 
 <header>
   <div class="wrap bar">
-    <a href="#top" class="logo"><b class="script" id="logoName"></b><small id="logoSub"></small></a>
+    <a href="#top" class="logo"><img id="logoImg" alt="" class="logoimg"><b class="script" id="logoName"></b><small id="logoSub"></small></a>
     <nav id="nav"></nav>
     <div class="tools">
       <button class="chip" id="langBtn" aria-label="language">EN</button>
@@ -156,7 +158,7 @@ html[dir=rtl] .drawer{transform:translateX(-105%)}
         <p id="heroText"></p>
         <a class="btn" id="heroCta" href="#shop"></a>
       </div>
-      <div class="heroimg" id="heroImg">
+      <div class="heroimg" id="heroImg"><img id="heroLogo" alt="" style="display:none;width:62%;border-radius:50%;box-shadow:0 20px 50px #0002">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a2 2 0 1 1 2 2c-1 .3-2 1-2 2v1"/><path d="M12 10 3 17h18z"/></svg>
       </div>
     </div>
@@ -181,7 +183,7 @@ html[dir=rtl] .drawer{transform:translateX(-105%)}
 </main>
 
 <footer><div class="wrap foot">
-  <div><span class="script" id="fName"></span></div>
+  <div><img id="fLogo" alt="" style="display:none;width:72px;height:72px;border-radius:50%"><span class="script" id="fName"></span></div>
   <div id="rights"></div>
   <a id="ig" target="_blank" rel="noopener">Instagram</a>
 </div></footer>
@@ -226,6 +228,7 @@ html[dir=rtl] .drawer{transform:translateX(-105%)}
     var t=T();
     document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
     document.title=S.brand.name+' '+S.brand.sub;
+    if(S.brand.logo){var li=$('logoImg');li.src=S.brand.logo;li.alt=S.brand.name;document.querySelector('.logo').classList.add('hasimg');var hl=$('heroLogo');hl.src=S.brand.logo;hl.style.display='block';hl.alt=S.brand.name;document.querySelector('#heroImg svg').style.display='none';var fl=$('fLogo');fl.src=S.brand.logo;fl.style.display='inline-block';$('fName').style.display='none';var ic=document.querySelector('link[rel=icon]')||document.head.appendChild(Object.assign(document.createElement('link'),{rel:'icon'}));ic.href=S.brand.logo}
     $('announce').textContent=t.announce;
     $('logoName').textContent=S.brand.name;$('logoSub').textContent=S.brand.sub;$('fName').textContent=S.brand.name+' '+S.brand.sub;
     var ids=['#top','#collections','#shop','#contact'];
@@ -241,7 +244,7 @@ html[dir=rtl] .drawer{transform:translateX(-105%)}
     $('cartTitle').textContent=t.cart;$('totLabel').textContent=t.total;
     $('fName2').placeholder=t.name;$('fPhone').placeholder=t.phone;$('fAddr').placeholder=t.address;$('send').textContent=t.order;
     $('langBtn').textContent=lang==='ar'?'EN':'عربي';
-    $('cats').innerHTML=S.categories.map(function(c){return '<a class="cat" href="#shop" data-cat="'+c.id+'" style="background:linear-gradient(160deg,'+c.tone+',color-mix(in srgb,'+c.tone+' 60%,#fff))"><span>'+L(c.name)+'</span></a>'}).join('');
+    $('cats').innerHTML=S.categories.map(function(c){return '<a class="cat" href="#shop" data-cat="'+c.id+'" style="background:'+(c.image?'url('+c.image+') center/cover':'linear-gradient(160deg,'+c.tone+',color-mix(in srgb,'+c.tone+' 60%,#fff))')+'"><span>'+L(c.name)+'</span></a>'}).join('');
     var fl='<button class="chip'+(cat==='all'?' on':'')+'" data-f="all">'+t.all+'</button>'+S.categories.map(function(c){return '<button class="chip'+(cat===c.id?' on':'')+'" data-f="'+c.id+'">'+L(c.name)+'</button>'}).join('');
     $('filters').innerHTML=fl;
   }
