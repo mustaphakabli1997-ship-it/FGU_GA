@@ -1,0 +1,37 @@
+{%- assign menu = section.settings.menu -%}
+{%- if section.settings.announce != blank -%}<div class="announce">{{ section.settings.announce }}</div>{%- endif -%}
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+      {%- if settings.logo != blank -%}
+        <img class="logoimg" src="{{ settings.logo | image_url: width: 120 }}" alt="{{ shop.name }}" width="56" height="56">
+      {%- else -%}
+        <img class="logoimg" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" width="56" height="56">
+      {%- endif -%}
+    </a>
+    <nav class="site-nav">
+      {%- if menu != blank and menu.links.size > 0 -%}
+        {%- for link in menu.links -%}<a href="{{ link.url }}">{{ link.title }}</a>{%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.root_url }}">{{ 'general.view' | t }}</a>
+        <a href="{{ routes.all_products_collection_url }}">{{ 'general.all_products' | t }}</a>
+      {%- endif -%}
+    </nav>
+    <div class="tools">
+      <a class="chip" href="{{ routes.search_url }}">{{ 'general.search' | t }}</a>
+      <a class="cartbtn" href="{{ routes.cart_url }}" aria-label="{{ 'general.cart' | t }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+        <span class="count">{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "text", "id": "announce", "label": "Announcement", "default": "اطلبي الآن — توصيل لكل الولايات" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

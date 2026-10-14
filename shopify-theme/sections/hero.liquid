@@ -1,0 +1,35 @@
+<section class="hero">
+  <div class="wrap">
+    <div>
+      {%- if section.settings.eyebrow != blank -%}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{%- endif -%}
+      <h1>{{ section.settings.heading }}</h1>
+      <p>{{ section.settings.text }}</p>
+      {%- if section.settings.button_label != blank -%}
+        <a class="btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+    <div class="heroimg">
+      {%- if section.settings.image != blank -%}
+        <img class="cover" src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.heading | escape }}" width="1000" height="1250">
+      {%- elsif settings.logo != blank -%}
+        <img class="logo" src="{{ settings.logo | image_url: width: 600 }}" alt="{{ shop.name }}" width="600" height="600">
+      {%- else -%}
+        <img class="logo" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" width="600" height="600">
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small text", "default": "أناقة هادئة" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "أناقة تلبسينها كل يوم" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "قطع من الكتان والساتان بألوان هادئة، مفصّلة لتدوم." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "تسوّقي الآن" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "image_picker", "id": "image", "label": "Image (optional, default: logo)" }
+  ],
+  "presets": [ { "name": "Hero" } ]
+}
+{% endschema %}

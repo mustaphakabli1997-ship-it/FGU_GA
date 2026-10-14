@@ -1,0 +1,20 @@
+<section>
+  <div class="wrap">
+    <div class="cta">
+      <h2>{{ section.settings.heading }}</h2>
+      {%- if settings.whatsapp != blank -%}
+        <a class="btn wa" href="https://wa.me/{{ settings.whatsapp }}" target="_blank" rel="noopener">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "WhatsApp banner",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "عندك سؤال؟ كلّمينا على واتساب" },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "ابدئي المحادثة" }
+  ],
+  "presets": [ { "name": "WhatsApp banner" } ]
+}
+{% endschema %}

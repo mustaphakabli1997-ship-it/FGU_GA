@@ -1,0 +1,8 @@
+{
+  "general": {
+    "cart": "السلة", "add_to_cart": "أضيفي للسلة", "sold_out": "نفد المخزون", "view": "عرض", "all_products": "كل المنتجات",
+    "empty_cart": "سلتك فارغة", "continue": "متابعة التسوق", "subtotal": "المجموع", "checkout": "إتمام الطلب",
+    "update": "تحديث", "remove": "حذف", "order_whatsapp": "اطلبي عبر واتساب", "search": "بحث", "no_results": "لا توجد نتائج",
+    "not_found": "الصفحة غير موجودة", "back_home": "العودة للرئيسية", "rights": "جميع الحقوق محفوظة", "from": "ابتداءً من"
+  }
+}

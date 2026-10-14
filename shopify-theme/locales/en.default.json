@@ -1,0 +1,8 @@
+{
+  "general": {
+    "cart": "Bag", "add_to_cart": "Add to bag", "sold_out": "Sold out", "view": "View", "all_products": "All products",
+    "empty_cart": "Your bag is empty", "continue": "Continue shopping", "subtotal": "Subtotal", "checkout": "Checkout",
+    "update": "Update", "remove": "Remove", "order_whatsapp": "Order on WhatsApp", "search": "Search", "no_results": "No results",
+    "not_found": "Page not found", "back_home": "Back to home", "rights": "All rights reserved", "from": "From"
+  }
+}

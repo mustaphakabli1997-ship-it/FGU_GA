@@ -1,0 +1,16 @@
+<section>
+  <div class="wrap">
+    <div class="title"><h2>{{ 'general.all_products' | t }}</h2></div>
+    <div class="cats">
+      {%- for c in collections -%}
+        <a class="cat" href="{{ c.url }}">
+          {%- if c.image != blank -%}<img src="{{ c.image | image_url: width: 800 }}" alt="{{ c.title | escape }}" loading="lazy" width="800" height="1000">{%- endif -%}
+          <span>{{ c.title }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

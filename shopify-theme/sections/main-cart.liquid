@@ -1,0 +1,41 @@
+<section>
+  <div class="wrap">
+    <div class="title"><h2>{{ 'general.cart' | t }}</h2></div>
+    {%- if cart.item_count == 0 -%}
+      <div class="center"><p>{{ 'general.empty_cart' | t }}</p><a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.continue' | t }}</a></div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post">
+        {%- for item in cart.items -%}
+          <div class="cartitem">
+            <a class="pimg" href="{{ item.url }}">
+              {%- if item.image -%}<img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | escape }}" width="200" height="250" loading="lazy">{%- endif -%}
+            </a>
+            <div>
+              <a href="{{ item.url }}"><b>{{ item.product.title }}</b></a>
+              {%- unless item.product.has_only_default_variant -%}<div style="opacity:.6;font-size:14px">{{ item.variant.title }}</div>{%- endunless -%}
+              <div style="margin-top:8px"><input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="qty"> <a class="chip" href="{{ item.url_to_remove }}">{{ 'general.remove' | t }}</a></div>
+            </div>
+            <div class="price">{{ item.final_line_price | money }}</div>
+          </div>
+        {%- endfor -%}
+        <div class="tot"><span>{{ 'general.subtotal' | t }}</span><span>{{ cart.total_price | money }}</span></div>
+        <div class="actions">
+          <button type="submit" name="update" class="btn soft">{{ 'general.update' | t }}</button>
+          <button type="submit" name="checkout" class="btn">{{ 'general.checkout' | t }}</button>
+          {%- if settings.whatsapp != blank -%}
+            {%- capture nl %}
+{% endcapture -%}
+            {%- capture wa_msg -%}
+              {%- for item in cart.items -%}• {{ item.product.title }}{% unless item.product.has_only_default_variant %} — {{ item.variant.title }}{% endunless %} × {{ item.quantity }} = {{ item.final_line_price | money }}{{ nl }}{%- endfor -%}
+              {{ nl }}{{ 'general.subtotal' | t }}: {{ cart.total_price | money }}
+            {%- endcapture -%}
+            <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/{{ settings.whatsapp }}?text={{ wa_msg | url_encode }}">{{ 'general.order_whatsapp' | t }}</a>
+          {%- endif -%}
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

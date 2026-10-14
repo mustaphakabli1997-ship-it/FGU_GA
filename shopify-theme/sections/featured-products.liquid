@@ -1,0 +1,24 @@
+{%- assign col = section.settings.collection | default: collections.all -%}
+<section>
+  <div class="wrap">
+    <div class="title"><h2>{{ section.settings.heading }}</h2><a class="chip" href="{{ col.url }}">{{ 'general.all_products' | t }}</a></div>
+    <div class="grid">
+      {%- for product in col.products limit: section.settings.count -%}
+        {% render 'product-card', product: product %}
+      {%- else -%}
+        <p>{{ 'general.no_results' | t }}</p>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Featured products",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "وصل حديثًا" },
+    { "type": "collection", "id": "collection", "label": "Collection (default: all products)" },
+    { "type": "range", "id": "count", "min": 2, "max": 24, "step": 1, "label": "Products to show", "default": 8 }
+  ],
+  "presets": [ { "name": "Featured products" } ]
+}
+{% endschema %}
