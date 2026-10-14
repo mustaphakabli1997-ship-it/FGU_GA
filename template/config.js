@@ -3,7 +3,7 @@
    Women's fashion store template — the only file you need to edit
    ============================================================ */
 window.STORE = {
-  brand: { name: "Melina", sub: "MODE", logo: "images/logo.png", tagline: "أناقة هادئة" },
+  brand: { name: "Melina", sub: "MODE", logo: "images/logo.png", tagline: "Élégance discrète" },
 
   // الألوان (غيّرها لتغيير مظهر المتجر كله)
   colors: {
@@ -15,7 +15,7 @@ window.STORE = {
   },
 
   whatsapp: "213550000000",          // رقم واتساب لاستقبال الطلبات (دولي بدون +) — غيّريه!
-  currency: "دج",
+  currency: "DA",
   instagram: "https://instagram.com/",
   ga4: "",                           // مثال: "G-XXXXXXXXXX" (اتركه فارغًا إن لم تستعمله)
 
@@ -25,61 +25,62 @@ window.STORE = {
     payment: "الدفع عند الاستلام"
   },
 
-  // كل النصوص (عربي)
+  // Tous les textes (français)
+  lang: "fr", locale: "fr-FR", dir: "ltr",
   t: {
-    announce: "الدفع عند الاستلام — توصيل لباب المنزل 600 دج",
-    heroTitle: "اختاري موديلك واطلبي بسهولة",
-    heroText: "اضغطي على الموديل، اختاري اللون والمقاس، واكتبي معلوماتك. الدفع عند الاستلام.",
-    all: "الكل",
-    price: "السعر",
-    color: "اللون",
-    size: "المقاس",
-    qty: "الكمية",
-    orderNow: "اطلبي الآن",
-    orderTitle: "معلومات الطلب",
-    name: "الاسم الكامل",
-    wilaya: "الولاية",
-    wilayaPick: "اختاري الولاية",
-    commune: "البلدية",
-    phone: "رقم الهاتف",
-    phoneBad: "اكتبي رقم هاتف صحيح (مثال: 0550123456)",
-    required: "من فضلك املئي كل الخانات",
-    cod: "الدفع عند الاستلام",
-    delivery: "التوصيل لباب المنزل",
-    productsTotal: "ثمن المنتج",
-    total: "المجموع",
-    confirm: "تأكيد الطلب",
-    orderIntro: "طلب جديد:",
-    thanksTitle: "تم إرسال طلبك",
-    openWa: "إن لم يفتح واتساب تلقائيًا، اضغطي هنا لإرسال الطلب",
-    thanksText: "سنتواصل معك قريبًا لتأكيد الطلب.",
-    close: "إغلاق",
-    contact: "تواصلي معنا على واتساب"
+    announce: "Paiement à la livraison — Livraison à domicile 600 DA",
+    heroTitle: "Choisissez votre modèle et commandez facilement",
+    heroText: "Touchez un modèle, choisissez la couleur et la taille, puis remplissez vos informations. Paiement à la livraison.",
+    all: "Tout",
+    price: "Prix",
+    color: "Couleur",
+    size: "Taille",
+    qty: "Quantité",
+    orderNow: "Commander",
+    orderTitle: "Informations de commande",
+    name: "Nom complet",
+    wilaya: "Wilaya",
+    wilayaPick: "Choisissez la wilaya",
+    commune: "Commune",
+    phone: "Numéro de téléphone",
+    phoneBad: "Entrez un numéro valide (ex : 0550123456)",
+    required: "Veuillez remplir tous les champs",
+    cod: "Paiement à la livraison",
+    delivery: "Livraison à domicile",
+    productsTotal: "Prix du produit",
+    total: "Total",
+    confirm: "Confirmer la commande",
+    orderIntro: "Nouvelle commande :",
+    openWa: "Si WhatsApp ne s'ouvre pas, touchez ici pour envoyer la commande",
+    thanksTitle: "Votre commande est prête",
+    thanksText: "Nous vous contacterons bientôt pour la confirmer.",
+    close: "Fermer",
+    contact: "Contactez-nous sur WhatsApp"
   },
 
   // أسماء الألوان (تظهر في رسالة الطلب). أضيفي لونك هنا إن أضفتِ لونًا جديدًا
   colorNames: {
-    "#C4A78F": "بيج", "#EDE3D6": "كريمي", "#F3CBD5": "وردي", "#D9C5B0": "رملي",
-    "#1A1A1A": "أسود", "#F8DDE3": "وردي فاتح", "#FFFFFF": "أبيض"
+    "#C4A78F": "Beige", "#EDE3D6": "Crème", "#F3CBD5": "Rose", "#D9C5B0": "Sable",
+    "#1A1A1A": "Noir", "#F8DDE3": "Rose clair", "#FFFFFF": "Blanc"
   },
 
   // المجموعات
   categories: [
-    { id: "linen", name: "كتان",  tone: "#C4A78F", image: "images/linen.jpg" },
-    { id: "silk",  name: "ساتان", tone: "#F3CBD5", image: "images/satin.jpg" },
-    { id: "sets",  name: "أطقم",   tone: "#E4D6C8" }
+    { id: "linen", name: "Lin",  tone: "#C4A78F", image: "images/linen.jpg" },
+    { id: "silk",  name: "Satin", tone: "#F3CBD5", image: "images/satin.jpg" },
+    { id: "sets",  name: "Ensembles",   tone: "#E4D6C8" }
   ],
 
   // المنتجات: أضيفي منتجاتك هنا. image اختياري (مثال: "images/p1.jpg")
   products: [
-    { id: "p1", cat: "linen", name: "بنطلون كتان واسع", price: 4200, sizes: ["S","M","L","XL"], colors: ["#C4A78F","#EDE3D6"], tone: "#D9C5B0", image: "" },
-    { id: "p2", cat: "silk",  name: "قميص ساتان",                price: 3800, sizes: ["S","M","L"],      colors: ["#F3CBD5","#EFE6DA"], tone: "#F3CBD5", image: "" },
-    { id: "p3", cat: "sets",  name: "طقم كتان قطعتين",   price: 7500, sizes: ["M","L","XL"],     colors: ["#D9C5B0","#1A1A1A"], tone: "#E4D6C8", image: "" },
-    { id: "p4", cat: "silk",  name: "فستان ساتان طويل",     price: 6900, sizes: ["S","M","L"],      colors: ["#F8DDE3","#C4A78F"], tone: "#F8DDE3", image: "" },
-    { id: "p5", cat: "linen", name: "جاكيت كتان خفيف",    price: 5600, sizes: ["M","L"],          colors: ["#C4A78F"],           tone: "#CDB59C", image: "" },
-    { id: "p6", cat: "sets",  name: "طقم ساتان للمنزل",     price: 4900, sizes: ["S","M","L","XL"], colors: ["#F3CBD5","#FFFFFF"], tone: "#F6D5DC", image: "" }
+    { id: "p1", cat: "linen", name: "Pantalon large en lin", price: 4200, sizes: ["S","M","L","XL"], colors: ["#C4A78F","#EDE3D6"], tone: "#D9C5B0", image: "" },
+    { id: "p2", cat: "silk",  name: "Chemise en satin",                price: 3800, sizes: ["S","M","L"],      colors: ["#F3CBD5","#EFE6DA"], tone: "#F3CBD5", image: "" },
+    { id: "p3", cat: "sets",  name: "Ensemble deux pièces en lin",   price: 7500, sizes: ["M","L","XL"],     colors: ["#D9C5B0","#1A1A1A"], tone: "#E4D6C8", image: "" },
+    { id: "p4", cat: "silk",  name: "Robe longue en satin",     price: 6900, sizes: ["S","M","L"],      colors: ["#F8DDE3","#C4A78F"], tone: "#F8DDE3", image: "" },
+    { id: "p5", cat: "linen", name: "Veste légère en lin",    price: 5600, sizes: ["M","L"],          colors: ["#C4A78F"],           tone: "#CDB59C", image: "" },
+    { id: "p6", cat: "sets",  name: "Ensemble satin d'intérieur",     price: 4900, sizes: ["S","M","L","XL"], colors: ["#F3CBD5","#FFFFFF"], tone: "#F6D5DC", image: "" }
   ]
 
   ,
-  wilayas: ["أدرار", "الشلف", "الأغواط", "أم البواقي", "باتنة", "بجاية", "بسكرة", "بشار", "البليدة", "البويرة", "تمنراست", "تبسة", "تلمسان", "تيارت", "تيزي وزو", "الجزائر", "الجلفة", "جيجل", "سطيف", "سعيدة", "سكيكدة", "سيدي بلعباس", "عنابة", "قالمة", "قسنطينة", "المدية", "مستغانم", "المسيلة", "معسكر", "ورقلة", "وهران", "البيض", "إليزي", "برج بوعريريج", "بومرداس", "الطارف", "تندوف", "تيسمسيلت", "الوادي", "خنشلة", "سوق أهراس", "تيبازة", "ميلة", "عين الدفلى", "النعامة", "عين تموشنت", "غرداية", "غليزان", "تيميمون", "برج باجي مختار", "أولاد جلال", "بني عباس", "عين صالح", "عين قزام", "توقرت", "جانت", "المغير", "المنيعة"]
+  wilayas: ["Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Béjaïa", "Biskra", "Béchar", "Blida", "Bouira", "Tamanrasset", "Tébessa", "Tlemcen", "Tiaret", "Tizi Ouzou", "Alger", "Djelfa", "Jijel", "Sétif", "Saïda", "Skikda", "Sidi Bel Abbès", "Annaba", "Guelma", "Constantine", "Médéa", "Mostaganem", "M'Sila", "Mascara", "Ouargla", "Oran", "El Bayadh", "Illizi", "Bordj Bou Arréridj", "Boumerdès", "El Tarf", "Tindouf", "Tissemsilt", "El Oued", "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", "Naâma", "Aïn Témouchent", "Ghardaïa", "Relizane", "Timimoun", "Bordj Badji Mokhtar", "Ouled Djellal", "Béni Abbès", "In Salah", "In Guezzam", "Touggourt", "Djanet", "El M'Ghair", "El Meniaa"]
 };
