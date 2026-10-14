@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melina Mode</title>
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+:root{--primary:#F8DDE3;--ink:#1A1A1A;--accent:#C4A78F;--bg:#FAF8F3;--white:#fff;--r:22px}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Montserrat','Cairo',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.wrap{width:min(1100px,100% - 28px);margin-inline:auto}
+.announce{background:var(--ink);color:#fff;text-align:center;font-size:14px;padding:8px 12px}
+header{background:var(--white);border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+.bar{display:flex;align-items:center;justify-content:center;padding:12px 0}
+.bar img{width:84px;height:84px;border-radius:50%}
+.intro{text-align:center;padding:34px 0 10px}
+.intro h1{font-size:clamp(26px,5vw,42px);font-weight:800}
+.intro p{opacity:.7;margin-top:6px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.chip{border:1px solid color-mix(in srgb,var(--ink) 22%,transparent);border-radius:999px;padding:7px 18px;font-weight:600;background:var(--white);transition:.2s}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;padding-bottom:60px}
+.card{background:var(--white);border-radius:var(--r);overflow:hidden;box-shadow:0 8px 28px color-mix(in srgb,var(--accent) 22%,transparent);text-align:start;display:flex;flex-direction:column;transition:.25s}
+.card:hover{transform:translateY(-5px)}
+.pimg{aspect-ratio:4/5;display:grid;place-items:center;overflow:hidden}
+.pimg img{width:100%;height:100%;object-fit:cover}
+.pimg svg{width:30%;opacity:.4}
+.pbody{padding:14px 16px 18px}
+.pname{font-weight:700;font-size:17px}
+.price{font:600 18px 'Montserrat','Cairo';color:#8a6f58;margin-top:2px}
+.pbody .go{margin-top:10px;display:block;text-align:center;background:var(--primary);border:1px solid var(--accent);border-radius:999px;padding:9px;font-weight:700}
+.wa{position:fixed;bottom:18px;inset-inline-start:18px;z-index:20;background:#25D366;color:#06210f;border-radius:999px;padding:12px 20px;font-weight:700;box-shadow:0 8px 24px #0003}
+
+/* modal */
+.shade{position:fixed;inset:0;background:#000a;z-index:40;display:none;align-items:flex-end;justify-content:center}
+.shade.on{display:flex}
+.modal{background:var(--bg);width:min(980px,100%);max-height:94vh;overflow:auto;border-radius:28px 28px 0 0;position:relative}
+@media(min-width:760px){.shade{align-items:center;padding:20px}.modal{border-radius:28px}}
+.x{position:absolute;top:12px;inset-inline-end:12px;width:40px;height:40px;border-radius:50%;background:var(--white);box-shadow:0 2px 10px #0003;z-index:2;font-size:18px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:759px){.mgrid{grid-template-columns:1fr}}
+.mimg{min-height:260px}
+.mimg .pimg{height:100%;aspect-ratio:auto;min-height:320px}
+.mbody{padding:24px 22px 28px;display:flex;flex-direction:column;gap:14px}
+.mbody h2{font-size:26px;font-weight:800;padding-inline-end:46px}
+.big{font:700 28px 'Montserrat','Cairo';color:#8a6f58}
+.lab{font-weight:700;font-size:15px;margin-bottom:6px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.dot{width:36px;height:36px;border-radius:50%;border:3px solid var(--white);box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 30%,transparent)}
+.dot.on{box-shadow:0 0 0 3px var(--ink)}
+.sz{min-width:48px;height:42px;border-radius:12px;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);font-weight:700;background:var(--white)}
+.sz.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.qty{display:flex;align-items:center;gap:14px}
+.qty button{width:40px;height:40px;border-radius:50%;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);font-size:20px;background:var(--white)}
+.qty b{min-width:24px;text-align:center;font-size:18px}
+.sep{height:1px;background:color-mix(in srgb,var(--accent) 40%,transparent)}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-weight:700;font-size:14px}
+.fld input,.fld select{padding:12px 16px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 70%,transparent);background:var(--white);width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sum{background:var(--white);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.sum div{display:flex;justify-content:space-between}
+.sum .t{font-weight:800;font-size:19px;border-top:1px dashed color-mix(in srgb,var(--accent) 60%,transparent);padding-top:8px;margin-top:2px}
+.badge{background:color-mix(in srgb,var(--primary) 70%,#fff);border:1px solid var(--accent);border-radius:12px;padding:8px 12px;font-weight:700;text-align:center;font-size:14px}
+.err{color:#b00020;font-size:14px;min-height:20px;font-weight:600}
+.send{background:var(--ink);color:#fff;border-radius:999px;padding:16px;font-weight:800;font-size:18px}
+.thanks{padding:60px 24px;text-align:center;display:none;flex-direction:column;gap:12px;align-items:center}
+.thanks h2{font-size:28px}
+.thanks .send{padding:12px 36px;font-size:16px}
+</style>
+</head>
+<body>
+<div class="announce" id="announce"></div>
+<header><div class="wrap bar"><img src="images/logo.png" alt="Melina Mode"></div></header>
+
+<main class="wrap">
+  <div class="intro"><h1 id="h1"></h1><p id="sub"></p></div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<a class="wa" id="wa" target="_blank" rel="noopener"></a>
+
+<div class="shade" id="shade" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <button class="x" id="x" aria-label="close">✕</button>
+    <div class="mgrid" id="form">
+      <div class="mimg" id="mimg"></div>
+      <div class="mbody">
+        <h2 id="mname"></h2>
+        <div class="big" id="mprice"></div>
+        <div><div class="lab" id="lColor"></div><div class="opts" id="colors"></div></div>
+        <div><div class="lab" id="lSize"></div><div class="opts" id="sizes"></div></div>
+        <div class="qty"><span class="lab" id="lQty" style="margin:0"></span><button id="minus" aria-label="-">−</button><b id="q">1</b><button id="plus" aria-label="+">+</button></div>
+        <div class="sep"></div>
+        <div class="lab" id="lOrder" style="font-size:18px;margin:0"></div>
+        <div class="fld"><label for="fName" id="lName"></label><input id="fName" autocomplete="name"></div>
+        <div class="two">
+          <div class="fld"><label for="fWilaya" id="lWilaya"></label><select id="fWilaya"></select></div>
+          <div class="fld"><label for="fCommune" id="lCommune"></label><input id="fCommune"></div>
+        </div>
+        <div class="fld"><label for="fPhone" id="lPhone"></label><input id="fPhone" inputmode="tel" autocomplete="tel" dir="ltr" ></div>
+        <div class="sum">
+          <div><span id="sLine"></span><span id="sLineV"></span></div>
+          <div><span id="sDel"></span><span id="sDelV"></span></div>
+          <div class="t"><span id="sTot"></span><span id="sTotV"></span></div>
+        </div>
+        <div class="badge" id="cod"></div>
+        <div class="err" id="err"></div>
+        <button class="send" id="send"></button>
+      </div>
+    </div>
+    <div class="thanks" id="thanks"><h2 id="tTitle"></h2><p id="tText"></p><a class="send" id="waLink" target="_blank" rel="noopener" style="text-decoration:none;background:#25D366;color:#06210f"></a><button class="send" id="tClose"></button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var S=window.STORE,T=S.t,$=function(i){return document.getElementById(i)};
+  document.documentElement.lang=S.lang||'ar';document.documentElement.dir=S.dir||'rtl';
+  var r=document.documentElement.style;
+  r.setProperty('--primary',S.colors.primary);r.setProperty('--ink',S.colors.ink);r.setProperty('--accent',S.colors.accent);r.setProperty('--bg',S.colors.bg);r.setProperty('--white',S.colors.white);
+  window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
+  if(S.ga4){var sc=document.createElement('script');sc.async=1;sc.src='https://www.googletagmanager.com/gtag/js?id='+S.ga4;document.head.appendChild(sc);gtag('js',new Date());gtag('config',S.ga4)}
+  function track(n,p){try{gtag('event',n,p||{})}catch(e){}}
+  function cname(c){return (S.colorNames&&S.colorNames[c])||c}
+  function money(n){return n.toLocaleString(S.locale||'fr-FR')+' '+S.currency}
+  var hanger='<svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a2 2 0 1 1 2 2c-1 .3-2 1-2 2v1"/><path d="M12 10 3 17h18z"/></svg>';
+  function bg(t){return 'linear-gradient(160deg,'+t+',color-mix(in srgb,'+t+' 55%,#fff))'}
+  function imgBox(p){return '<div class="pimg" style="background:'+bg(p.tone)+'">'+(p.image?'<img src="'+p.image+'" alt="" loading="lazy">':hanger)+'</div>'}
+
+  // static text
+  $('announce').textContent=T.announce;$('h1').textContent=T.heroTitle;$('sub').textContent=T.heroText;
+  $('lColor').textContent=T.color;$('lSize').textContent=T.size;$('lQty').textContent=T.qty;$('lOrder').textContent=T.orderTitle;
+  $('lName').textContent=T.name;$('lWilaya').textContent=T.wilaya;$('lCommune').textContent=T.commune;$('lPhone').textContent=T.phone;
+  $('sDel').textContent=T.delivery;$('sTot').textContent=T.total;$('cod').textContent=T.cod+' • '+T.delivery+' '+money(S.order.deliveryFee);
+  $('send').textContent=T.confirm;$('tClose').textContent=T.close;$('tTitle').textContent=T.thanksTitle;$('tText').textContent=T.thanksText;
+  $('waLink').textContent=T.openWa;$('wa').textContent=T.contact;$('wa').href='https://wa.me/'+S.whatsapp;
+  $('fWilaya').innerHTML='<option value="">'+T.wilayaPick+'</option>'+S.wilayas.map(function(w,i){return '<option value="'+w+'">'+(i+1)+' - '+w+'</option>'}).join('');
+
+  // grid
+  var cat='all';
+  function renderFilters(){
+    $('filters').innerHTML='<button class="chip'+(cat==='all'?' on':'')+'" data-f="all">'+T.all+'</button>'+S.categories.map(function(c){return '<button class="chip'+(cat===c.id?' on':'')+'" data-f="'+c.id+'">'+c.name+'</button>'}).join('');
+  }
+  function renderGrid(){
+    $('grid').innerHTML=S.products.filter(function(p){return cat==='all'||p.cat===cat}).map(function(p){
+      return '<button class="card" data-id="'+p.id+'">'+imgBox(p)+'<div class="pbody"><div class="pname">'+p.name+'</div><div class="price">'+money(p.price)+'</div><span class="go">'+T.orderNow+'</span></div></button>';
+    }).join('');
+  }
+  renderFilters();renderGrid();
+
+  // modal state
+  var cur=null,st={color:null,size:null,qty:1};
+  function renderModal(){
+    var p=cur;
+    $('mimg').innerHTML=imgBox(p);$('mname').textContent=p.name;$('mprice').textContent=money(p.price);
+    $('colors').innerHTML=p.colors.map(function(c){return '<button class="dot'+(st.color===c?' on':'')+'" data-c="'+c+'" style="background:'+c+'" aria-label="'+cname(c)+'" title="'+cname(c)+'"></button>'}).join('');
+    $('sizes').innerHTML=p.sizes.map(function(z){return '<button class="sz'+(st.size===z?' on':'')+'" data-s="'+z+'">'+z+'</button>'}).join('');
+    $('q').textContent=st.qty;
+    var line=p.price*st.qty,fee=S.order.deliveryFee;
+    $('sLine').textContent=T.productsTotal+(st.qty>1?' × '+st.qty:'');$('sLineV').textContent=money(line);$('sDelV').textContent=money(fee);$('sTotV').textContent=money(line+fee);
+  }
+  function open(id){
+    cur=S.products.filter(function(p){return p.id===id})[0];
+    st={color:cur.colors[0],size:cur.sizes[0],qty:1};
+    $('form').style.display='';$('thanks').style.display='none';$('err').textContent='';
+    renderModal();$('shade').classList.add('on');document.body.style.overflow='hidden';$('modal').scrollTop=0;
+    track('view_item',{item_id:cur.id,value:cur.price,currency:'DZD'});
+  }
+  function close(){$('shade').classList.remove('on');document.body.style.overflow=''}
+
+  document.addEventListener('click',function(e){
+    var el=e.target.closest('button');if(!el)return;
+    if(el.dataset.f){cat=el.dataset.f;renderFilters();renderGrid();return}
+    if(el.classList.contains('card')){open(el.dataset.id);return}
+    if(el.dataset.c){st.color=el.dataset.c;renderModal();return}
+    if(el.dataset.s){st.size=el.dataset.s;renderModal();return}
+  });
+  $('plus').onclick=function(){if(st.qty<10){st.qty++;renderModal()}};
+  $('minus').onclick=function(){if(st.qty>1){st.qty--;renderModal()}};
+  $('x').onclick=close;$('tClose').onclick=close;
+  $('shade').addEventListener('click',function(e){if(e.target===$('shade'))close()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+
+  $('send').onclick=function(){
+    var n=$('fName').value.trim(),w=$('fWilaya').value,c=$('fCommune').value.trim(),ph=$('fPhone').value.replace(/[\s.\-]/g,'');
+    if(!n||!w||!c||!ph){$('err').textContent=T.required;return}
+    if(!/^0[567]\d{8}$/.test(ph)){$('err').textContent=T.phoneBad;return}
+    $('err').textContent='';
+    var line=cur.price*st.qty,fee=S.order.deliveryFee,tot=line+fee;
+    var msg=[T.orderIntro,'',
+      '• '+cur.name,
+      T.color+': '+cname(st.color)+'   |   '+T.size+': '+st.size+'   |   '+T.qty+': '+st.qty,
+      '',
+      T.productsTotal+': '+money(line),
+      T.delivery+': '+money(fee),
+      T.total+': '+money(tot),
+      T.cod,'',
+      T.name+': '+n,T.wilaya+': '+w,T.commune+': '+c,T.phone+': '+ph].join('\n');
+    track('purchase_intent',{item_id:cur.id,value:tot,currency:'DZD'});
+    var url='https://wa.me/'+S.whatsapp+'?text='+encodeURIComponent(msg);$('waLink').href=url;
+    try{window.open(url,'_blank')}catch(e){}
+    $('form').style.display='none';$('thanks').style.display='flex';
+  };
+})();
+</script>
+</body>
+</html>

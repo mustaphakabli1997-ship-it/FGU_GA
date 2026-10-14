@@ -1,0 +1,26 @@
+<section>
+  <div class="wrap">
+    <div class="title"><h2>{{ collection.title }}</h2></div>
+    {%- if collection.description != blank -%}<div class="rte desc">{{ collection.description }}</div>{%- endif -%}
+    {%- paginate collection.products by 12 -%}
+      <div class="grid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product %}
+        {%- else -%}
+          <p>{{ 'general.no_results' | t }}</p>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <div class="pagination">
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}<a class="chip" href="{{ part.url }}">{{ part.title }}</a>
+            {%- else -%}<span class="chip on">{{ part.title }}</span>{%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Collection page", "settings": [] }
+{% endschema %}

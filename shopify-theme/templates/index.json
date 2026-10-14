@@ -1,0 +1,10 @@
+{
+  "sections": {
+    "hero": { "type": "hero", "settings": {} },
+    "categories": { "type": "categories", "blocks": { "c1": { "type": "category", "settings": {} }, "c2": { "type": "category", "settings": {} }, "c3": { "type": "category", "settings": {} } }, "block_order": ["c1", "c2", "c3"], "settings": {} },
+    "featured": { "type": "featured-products", "settings": {} },
+    "features": { "type": "features", "blocks": { "f1": { "type": "feature", "settings": {} }, "f2": { "type": "feature", "settings": { "title": "Paiement à la livraison" } }, "f3": { "type": "feature", "settings": { "title": "Échange de taille" } } }, "block_order": ["f1", "f2", "f3"], "settings": {} },
+    "cta": { "type": "cta", "settings": {} }
+  },
+  "order": ["hero", "categories", "featured", "features", "cta"]
+}

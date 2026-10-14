@@ -1,0 +1,24 @@
+[
+  { "name": "theme_info", "theme_name": "Melina Mode", "theme_version": "1.0.0", "theme_author": "KABLI_MS", "theme_documentation_url": "https://help.shopify.com/", "theme_support_url": "https://help.shopify.com/" },
+  {
+    "name": "Marque",
+    "settings": [
+      { "type": "header", "content": "Couleurs" },
+      { "type": "color", "id": "color_primary", "label": "Principale", "default": "#F8DDE3" },
+      { "type": "color", "id": "color_ink", "label": "Texte et boutons", "default": "#1A1A1A" },
+      { "type": "color", "id": "color_accent", "label": "Accent", "default": "#C4A78F" },
+      { "type": "color", "id": "color_bg", "label": "Arrière-plan", "default": "#FAF8F3" },
+      { "type": "header", "content": "Logo" },
+      { "type": "image_picker", "id": "logo", "label": "Logo (optional, default: Melina)" },
+      { "type": "header", "content": "Direction du texte" },
+      { "type": "select", "id": "direction", "label": "Text direction", "default": "ltr", "options": [ { "value": "rtl", "label": "Right to left (Arabic)" }, { "value": "ltr", "label": "Left to right" } ] }
+    ]
+  },
+  {
+    "name": "Contact",
+    "settings": [
+      { "type": "text", "id": "whatsapp", "label": "WhatsApp number (international, no +)", "info": "e.g. 213550000000", "default": "213550000000" },
+      { "type": "url", "id": "instagram", "label": "Instagram URL" }
+    ]
+  }
+]

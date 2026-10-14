@@ -1,0 +1,22 @@
+{
+  "general": {
+    "cart": "Panier",
+    "add_to_cart": "Ajouter au panier",
+    "sold_out": "Épuisé",
+    "view": "Voir",
+    "all_products": "Tous les produits",
+    "empty_cart": "Votre panier est vide",
+    "continue": "Continuer vos achats",
+    "subtotal": "Sous-total",
+    "checkout": "Passer la commande",
+    "update": "Mettre à jour",
+    "remove": "Supprimer",
+    "order_whatsapp": "Commander sur WhatsApp",
+    "search": "Rechercher",
+    "no_results": "Aucun résultat",
+    "not_found": "Page introuvable",
+    "back_home": "Retour à l'accueil",
+    "rights": "Tous droits réservés",
+    "from": "À partir de"
+  }
+}

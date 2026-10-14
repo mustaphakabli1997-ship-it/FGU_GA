@@ -1,0 +1,17 @@
+<footer class="site-footer">
+  <div class="foot">
+    {%- if settings.logo != blank -%}
+      <img class="logoimg" src="{{ settings.logo | image_url: width: 160 }}" alt="{{ shop.name }}" width="64" height="64">
+    {%- else -%}
+      <img class="logoimg" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" width="64" height="64">
+    {%- endif -%}
+    <div class="links">
+      {%- if settings.whatsapp != blank -%}<a class="chip" href="https://wa.me/{{ settings.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>{%- endif -%}
+      {%- if settings.instagram != blank -%}<a class="chip" href="{{ settings.instagram }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+    </div>
+    <small>© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'general.rights' | t }}</small>
+  </div>
+</footer>
+{% schema %}
+{ "name": "Footer", "settings": [] }
+{% endschema %}
