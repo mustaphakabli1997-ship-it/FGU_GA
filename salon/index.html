@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Melina Mode — Réservation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="logo"><span class="script">Melina</span><span class="mode">MODE</span><i></i></div>
+  <p id="tagline"></p>
+  <a class="btn" href="#book">Réserver</a>
+</header>
+
+<main id="book">
+  <ol class="steps" id="steps"><li>Services</li><li>Date &amp; heure</li><li>Vos infos</li></ol>
+
+  <section id="s1" class="step"><div id="services"></div></section>
+
+  <section id="s2" class="step" hidden>
+    <label>Date <input type="date" id="date"></label>
+    <div id="slots" class="slots"></div>
+    <p id="slotMsg" class="muted"></p>
+  </section>
+
+  <section id="s3" class="step" hidden>
+    <label>Nom complet <input id="name" autocomplete="name"></label>
+    <label>Téléphone <input id="phone" type="tel" autocomplete="tel"></label>
+    <label>Remarque (facultatif) <textarea id="note" rows="2"></textarea></label>
+    <div id="recap" class="recap"></div>
+  </section>
+
+  <section id="done" class="step" hidden>
+    <h2 class="script big">Merci !</h2>
+    <p>Votre demande est prête. Envoyez-la sur WhatsApp pour confirmer le rendez-vous.</p>
+    <a class="btn" id="wa" target="_blank" rel="noopener">Confirmer sur WhatsApp</a>
+  </section>
+</main>
+
+<footer class="bar" id="bar">
+  <div><b id="total">0 DH</b><span id="dur" class="muted"></span></div>
+  <div>
+    <button class="ghost" id="back" hidden>Retour</button>
+    <button class="btn" id="next" disabled>Continuer</button>
+  </div>
+</footer>
+<footer class="foot"><span id="addr"></span></footer>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
