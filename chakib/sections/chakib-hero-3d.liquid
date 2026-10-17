@@ -1,7 +1,7 @@
 {{ 'chakib.css' | asset_url | stylesheet_tag }}
 
-<section class="ck-hero" data-ck-hero data-mannequin="{{ section.settings.show_mannequin }}" lang="fr">
-  <div class="ck-hero__fallback" style="background-image: url('{{ 'chakib-logo.jpg' | asset_url }}')"></div>
+<section class="ck-hero" data-ck-hero lang="fr">
+  <div class="ck-hero__fallback" data-name="{{ shop.name }}"></div>
   <canvas class="ck-hero__canvas" aria-hidden="true"></canvas>
   {%- if section.settings.model_image != blank -%}
     {{ section.settings.model_image | image_url: width: 1200 | image_tag: class: 'ck-hero__model', loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200', sizes: '(max-width: 749px) 100vw, 46vw', alt: section.settings.model_image.alt | default: shop.name }}
@@ -35,8 +35,7 @@
 {
   "name": "Chakib 3D Hero",
   "settings": [
-    { "type": "checkbox", "id": "show_mannequin", "label": "Afficher le mannequin 3D (si aucune photo)", "default": true },
-    { "type": "image_picker", "id": "model_image", "label": "Photo du mannequin (portrait, fond sombre)" },
+    { "type": "image_picker", "id": "model_image", "label": "Photo du mannequin (portrait 3:4)" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CHAKIB" },
     { "type": "text", "id": "title", "label": "Title", "default": "Un monde d'élégance masculine" },
     { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "L'art du style gentleman" },
