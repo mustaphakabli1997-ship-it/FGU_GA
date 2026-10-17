@@ -36,6 +36,7 @@
 - سكريبت "ماشي كل فيديو شباب يبيع" + جدول المونتاج + إرشادات الصوت والألوان + برومبتات الذكاء الاصطناعي (`content/scripts/creative_chaba_storyboard.md`).
 - مخطط إعلان فستان 30 ثانية (`content/scripts/violet_vogue_dress_ad.md`).
 - Ad copy لفيديو الـ ateliers (في الشات).
+- Ad copy لـ reel6 "حط le prix" (طويل + قصير + عنوان + hashtags): `content/scripts/reel6_ad_copy.md`.
 
 ## 🛍️ ستور Shopify — VIOLET Vogue
 - لوغو، بانيرات PC + تليفون، favicon، والنصوص كاملة بالفرنسية (`content/shopify/`).
