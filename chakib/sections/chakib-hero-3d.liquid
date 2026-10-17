@@ -1,6 +1,6 @@
 {{ 'chakib.css' | asset_url | stylesheet_tag }}
 
-<section class="ck-hero" data-ck-hero lang="fr">
+<section class="ck-hero" data-ck-hero data-mannequin="{{ section.settings.show_mannequin }}" lang="fr">
   <div class="ck-hero__fallback" style="background-image: url('{{ 'chakib-logo.jpg' | asset_url }}')"></div>
   <canvas class="ck-hero__canvas" aria-hidden="true"></canvas>
   {%- if section.settings.model_image != blank -%}
@@ -35,6 +35,7 @@
 {
   "name": "Chakib 3D Hero",
   "settings": [
+    { "type": "checkbox", "id": "show_mannequin", "label": "Afficher le mannequin 3D (si aucune photo)", "default": true },
     { "type": "image_picker", "id": "model_image", "label": "Photo du mannequin (portrait, fond sombre)" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CHAKIB" },
     { "type": "text", "id": "title", "label": "Title", "default": "Un monde d'élégance masculine" },
