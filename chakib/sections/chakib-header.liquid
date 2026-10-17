@@ -1,6 +1,6 @@
 <header class="ck-header" lang="fr">
   <a class="ck-header__logo" href="{{ routes.root_url }}">
-    <img src="{{ 'chakib-logo.jpg' | asset_url }}" alt="{{ shop.name }}" height="44">
+    {{ shop.name }}
   </a>
   <nav class="ck-header__nav" aria-label="Navigation principale">
     {%- for link in linklists[section.settings.menu].links -%}

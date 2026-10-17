@@ -29,30 +29,47 @@ function init() {
 
   // Crown goes opposite the text: left on RTL pages, right on LTR pages.
   const side = getComputedStyle(root).direction === "rtl" ? -1 : 1;
-  // Gold crown, built from primitives so no model file is needed.
-  const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 0.9, roughness: 0.35, emissive: 0x3d2b06 });
+    const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 0.9, roughness: 0.35, emissive: 0x3d2b06 });
   const emblem = new THREE.Group();
   const crown = new THREE.Group();
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.85, 0.5, 48, 1, true), gold);
-  band.material.side = THREE.DoubleSide;
+  const crownGold = gold.clone();
+  crownGold.emissive.set(0xb08720);
+  crownGold.metalness = 0.15;
+  crownGold.color.set(0xf0c85a);
+  crownGold.roughness = 0.3;
+  // Classic 3-point crown: flat silhouette extruded, ball tips and a cross on the centre peak.
+  const sh = new THREE.Shape();
+  sh.moveTo(-1, 0);
+  sh.lineTo(-1, 0.4);
+  sh.lineTo(-1, 0.95);
+  sh.quadraticCurveTo(-0.8, 0.8, -0.55, 0.5);
+  sh.quadraticCurveTo(-0.3, 0.8, 0, 1.4);
+  sh.quadraticCurveTo(0.3, 0.8, 0.55, 0.5);
+  sh.quadraticCurveTo(0.8, 0.8, 1, 0.95);
+  sh.lineTo(1, 0);
+  sh.closePath();
+  const body = new THREE.Mesh(
+    new THREE.ExtrudeGeometry(sh, { depth: 0.25, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 3, curveSegments: 16 }),
+    crownGold
+  );
+  body.position.z = -0.125;
+  crown.add(body);
+  const band = new THREE.Mesh(new THREE.BoxGeometry(2.14, 0.16, 0.4), crownGold);
+  band.position.y = 0.08;
   crown.add(band);
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(1, 0.06, 16, 64), gold);
-  rim.rotation.x = Math.PI / 2;
-  rim.position.y = -0.25;
-  crown.add(rim);
-  const points = 5;
-  for (let i = 0; i < points; i++) {
-    const a = (i / points) * Math.PI * 2;
-    const tall = i % 2 === 0;
-    const h = tall ? 1.1 : 0.8;
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.22, h, 24), gold);
-    cone.position.set(Math.cos(a) * 0.93, 0.25 + h / 2, Math.sin(a) * 0.93);
-    crown.add(cone);
-    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.1, 24, 16), gold);
-    ball.position.set(cone.position.x, 0.25 + h + 0.08, cone.position.z);
+  for (const [x, y] of [[-1, 1.02], [0, 1.52], [1, 1.02]]) {
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 16), crownGold);
+    ball.position.set(x, y, 0);
     crown.add(ball);
   }
-  crown.scale.setScalar(0.28);
+  const cross = new THREE.Group();
+  cross.add(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.1), crownGold));
+  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.1), crownGold);
+  arm.position.y = 0.06;
+  cross.add(arm);
+  cross.position.set(0, 1.8, 0);
+  crown.add(cross);
+  crown.scale.setScalar(0.38);
   emblem.position.set(side * 1.9, 0.5, 0);
   scene.add(emblem);
 
@@ -69,7 +86,7 @@ function init() {
       const w = max.x - min.x;
       geo.translate(-min.x - w / 2, -min.y, -0.14);
       emblem.add(new THREE.Mesh(geo, gold));
-      crown.position.set(w * 0.3, max.y - min.y + 0.45, 0);
+      crown.position.set(w * 0.3, max.y - min.y + 0.12, 0);
       emblem.add(crown);
     }
   );
@@ -141,7 +158,7 @@ function init() {
     emblem.rotation.x = mouse.y * 0.1;
     const baseY = innerWidth < 750 ? 1.4 : -0.3;
     emblem.position.y += (Math.sin(t) * 0.1 + baseY - emblem.position.y) * 0.05;
-    crown.rotation.y = t * 0.8;
+    crown.rotation.y = Math.sin(t * 0.8) * 0.6;
     particles.rotation.y = t * 0.03;
     camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.04;
     camera.lookAt(0, 0, 0);
