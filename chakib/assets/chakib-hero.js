@@ -1,0 +1,133 @@
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const root = document.querySelector("[data-ck-hero]");
+const canvas = root?.querySelector("canvas");
+
+function init() {
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.set(0, 0.4, 9);
+
+  const key = new THREE.DirectionalLight(0xffe2a0, 2.2);
+  key.position.set(3, 4, 5);
+  scene.add(key);
+
+  // Crown sits on the left because the page is RTL (text on the right).
+  // Gold crown, built from primitives so no model file is needed.
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 1, roughness: 0.22 });
+  const crown = new THREE.Group();
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.85, 0.5, 48, 1, true), gold);
+  band.material.side = THREE.DoubleSide;
+  crown.add(band);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(1, 0.06, 16, 64), gold);
+  rim.rotation.x = Math.PI / 2;
+  rim.position.y = -0.25;
+  crown.add(rim);
+  const points = 5;
+  for (let i = 0; i < points; i++) {
+    const a = (i / points) * Math.PI * 2;
+    const tall = i % 2 === 0;
+    const h = tall ? 1.1 : 0.8;
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.22, h, 24), gold);
+    cone.position.set(Math.cos(a) * 0.93, 0.25 + h / 2, Math.sin(a) * 0.93);
+    crown.add(cone);
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.1, 24, 16), gold);
+    ball.position.set(cone.position.x, 0.25 + h + 0.08, cone.position.z);
+    crown.add(ball);
+  }
+  crown.scale.setScalar(1.15);
+  crown.position.set(-1.9, 0.5, 0);
+  scene.add(crown);
+
+  // Charcoal fabric that ripples behind the crown.
+  const seg = 80;
+  const fabricGeo = new THREE.PlaneGeometry(22, 12, seg, seg);
+  const fabric = new THREE.Mesh(
+    fabricGeo,
+    new THREE.MeshStandardMaterial({ color: 0x15171c, metalness: 0.3, roughness: 0.6, envMapIntensity: 0.25, side: THREE.DoubleSide })
+  );
+  fabric.position.z = -4;
+  scene.add(fabric);
+  const base = fabricGeo.attributes.position.array.slice();
+
+  // Gold dust.
+  const n = 500;
+  const dust = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    dust[i * 3] = (Math.random() - 0.5) * 18;
+    dust[i * 3 + 1] = (Math.random() - 0.5) * 10;
+    dust[i * 3 + 2] = (Math.random() - 0.5) * 8;
+  }
+  const dustGeo = new THREE.BufferGeometry();
+  dustGeo.setAttribute("position", new THREE.BufferAttribute(dust, 3));
+  const particles = new THREE.Points(
+    dustGeo,
+    new THREE.PointsMaterial({ color: 0xf0d68a, size: 0.04, transparent: true, opacity: 0.7, depthWrite: false })
+  );
+  scene.add(particles);
+
+  const mouse = { x: 0, y: 0 };
+  addEventListener("pointermove", (e) => {
+    mouse.x = (e.clientX / innerWidth - 0.5) * 2;
+    mouse.y = (e.clientY / innerHeight - 0.5) * 2;
+  });
+
+  function resize() {
+    const { clientWidth: w, clientHeight: h } = root;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    // Phones: centre the crown, since the text sits at the bottom.
+    crown.position.x = w < 750 ? 0 : -1.9;
+    crown.position.y = w < 750 ? 1.2 : 0.5;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(root);
+  resize();
+
+  let visible = true;
+  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(root);
+
+  const clock = new THREE.Clock();
+  function frame() {
+    requestAnimationFrame(frame);
+    if (!visible) return;
+    const t = reduced ? 0 : clock.getElapsedTime();
+
+    const pos = fabricGeo.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = base[i * 3];
+      const y = base[i * 3 + 1];
+      pos.setZ(i, Math.sin(x * 0.45 + t * 0.6) * 0.5 + Math.cos(y * 0.6 + t * 0.4) * 0.35);
+    }
+    pos.needsUpdate = true;
+    fabricGeo.computeVertexNormals();
+
+    crown.rotation.y = t * 0.5 + mouse.x * 0.4;
+    crown.rotation.x = mouse.y * 0.15;
+    crown.position.y += (Math.sin(t) * 0.12 + (innerWidth < 750 ? 1.2 : 0.5) - crown.position.y) * 0.05;
+    particles.rotation.y = t * 0.03;
+    camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.04;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+  frame();
+}
+
+if (root && canvas) {
+  try {
+    init();
+  } catch (err) {
+    console.warn("Chakib 3D hero unavailable, showing fallback", err);
+    root.classList.add("is-fallback");
+  }
+}

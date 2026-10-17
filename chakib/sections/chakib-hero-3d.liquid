@@ -1,0 +1,45 @@
+{{ 'chakib.css' | asset_url | stylesheet_tag }}
+
+<section class="ck-hero" data-ck-hero dir="rtl" lang="ar">
+  <div class="ck-hero__fallback" style="background-image: url('{{ 'chakib-logo.jpg' | asset_url }}')"></div>
+  <canvas class="ck-hero__canvas" aria-hidden="true"></canvas>
+  <div class="ck-hero__content">
+    <p class="ck-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="ck-hero__title">{{ section.settings.title }}</h1>
+    <p class="ck-hero__sub">{{ section.settings.subtitle }}</p>
+    <div class="ck-hero__actions">
+      {%- if section.settings.cta_link != blank -%}
+        <a class="ck-btn ck-btn--gold" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+      {%- if section.settings.cta2_link != blank -%}
+        <a class="ck-btn" href="{{ section.settings.cta2_link }}">{{ section.settings.cta2_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module" src="{{ 'chakib-hero.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Chakib 3D Hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CHAKIB" },
+    { "type": "text", "id": "title", "label": "Title", "default": "عالم من الأناقة الرجالية" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "The Art of Gentlemen Style" },
+    { "type": "text", "id": "cta_label", "label": "Primary button", "default": "تسوق الآن" },
+    { "type": "url", "id": "cta_link", "label": "Primary link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button", "default": "اكتشف المجموعة" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary link" }
+  ],
+  "presets": [{ "name": "Chakib 3D Hero" }]
+}
+{% endschema %}

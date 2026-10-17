@@ -1,0 +1,100 @@
+:root {
+  --ck-black: #0d0f14;
+  --ck-ink: #14171e;
+  --ck-gold: #c9a24b;
+  --ck-gold-light: #f0d68a;
+  --ck-charcoal: #4a4d54;
+  --ck-ivory: #f4efe6;
+  --ck-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --ck-sans: "Tajawal", "Montserrat", system-ui, sans-serif;
+}
+
+.ck-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: radial-gradient(120% 90% at 70% 40%, #1b1f29 0%, var(--ck-black) 60%);
+  color: var(--ck-ivory);
+  overflow: hidden;
+  font-family: var(--ck-sans);
+}
+.ck-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ck-hero__content {
+  position: relative;
+  z-index: 2;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 clamp(20px, 6vw, 96px);
+  max-width: 720px;
+  pointer-events: none;
+}
+.ck-hero__content a { pointer-events: auto; }
+.ck-hero__eyebrow {
+  font-family: var(--ck-serif);
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--ck-gold);
+  font-size: .85rem;
+  margin: 0;
+}
+.ck-hero__title {
+  font-size: clamp(2.2rem, 6vw, 4.6rem);
+  line-height: 1.15;
+  margin: 0;
+  font-weight: 700;
+}
+.ck-hero__title span { color: var(--ck-gold-light); }
+.ck-hero__sub {
+  font-family: var(--ck-serif);
+  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
+  color: var(--ck-ivory);
+  opacity: .8;
+  margin: 0;
+}
+.ck-hero__actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1rem; }
+.ck-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  min-height: 48px;
+  border: 1px solid var(--ck-gold);
+  color: var(--ck-ivory);
+  text-decoration: none;
+  letter-spacing: .08em;
+  transition: background .25s, color .25s, transform .25s;
+}
+.ck-btn--gold {
+  background: linear-gradient(135deg, var(--ck-gold-light), var(--ck-gold));
+  color: var(--ck-black);
+  font-weight: 700;
+}
+.ck-btn:hover { transform: translateY(-2px); }
+.ck-btn:not(.ck-btn--gold):hover { background: var(--ck-gold); color: var(--ck-black); }
+.ck-btn:focus-visible { outline: 2px solid var(--ck-gold-light); outline-offset: 3px; }
+
+.ck-hero__fallback {
+  position: absolute;
+  inset: 0;
+  background: url("chakib-logo.jpg") center / min(70vw, 720px) no-repeat;
+  opacity: .25;
+  display: none;
+}
+.ck-hero.is-fallback .ck-hero__fallback { display: block; }
+.ck-hero.is-fallback .ck-hero__canvas { display: none; }
+
+@media (max-width: 749px) {
+  .ck-hero__content { justify-content: flex-end; padding-bottom: 14vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ck-btn { transition: none; }
+}
