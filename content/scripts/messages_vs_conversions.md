@@ -6,3 +6,5 @@ Hook: "ميساجات… ولا *كوموندات*؟"
 3. Conversion + site: الكليان يشوف المنتوج، السعر، الصور، الآراء، ويكوموندي وحدو ليل ونهار. Meta تتعلم من اللي يشريو (Pixel) وتجيبلك ناس كيفهم.
 4. Conclusion: الميساج يجيبلك ناس تسقسي، الـ conversion يجيبلك ناس تشري. إذا راك تبيع كل يوم، الموقع ماشي مصروف، استثمار.
 CTA: حاب موقع + حملة conversion؟ ابعثلي واتساب 0550 20 54 64.
+
+Note (Mustafa 2026-10-17): say/write « campagne » (French, Latin letters), never « حملة »: campagne messages / campagne conversion.

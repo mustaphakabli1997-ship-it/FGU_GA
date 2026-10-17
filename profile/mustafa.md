@@ -207,3 +207,5 @@
 - Covers: always pick a frame with his MOUTH CLOSED, teeth not visible, neutral look (his rule 2026-10-09).
 
 - "Light" edits (his request 2026-10-13: «ما تكثرش من موشن ديزاين»): hook title + keyword captions + few icons + badges only, no phone split / cards / b-roll (= videos/reel5_v1.mp4).
+
+- Word choice: « campagne » (French) instead of « حملة » in scripts and captions (his request 2026-10-17).
