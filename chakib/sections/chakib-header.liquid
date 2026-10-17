@@ -1,7 +1,7 @@
 <header class="ck-header" lang="fr">
   <a class="ck-header__logo" href="{{ routes.root_url }}">{{ shop.name }}</a>
   <nav class="ck-header__nav" aria-label="Navigation principale">
-    {%- for link in linklists[section.settings.menu].links -%}
+    {%- for link in section.settings.menu.links -%}
       <a href="{{ link.url }}">{{ link.title }}</a>
     {%- endfor -%}
   </nav>
@@ -10,7 +10,7 @@
     <details class="ck-menu">
       <summary aria-label="Menu"><span></span><span></span><span></span></summary>
       <nav class="ck-menu__panel" aria-label="Menu mobile">
-        {%- for link in linklists[section.settings.menu].links -%}
+        {%- for link in section.settings.menu.links -%}
           <a href="{{ link.url }}">{{ link.title }}</a>
         {%- endfor -%}
       </nav>
