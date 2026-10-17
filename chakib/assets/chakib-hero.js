@@ -8,8 +8,10 @@ const canvas = root?.querySelector("canvas");
 
 function init() {
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const phone = matchMedia("(max-width: 749px)").matches;
+  const lowEnd = (navigator.hardwareConcurrency || 4) <= 4 || navigator.connection?.saveData;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, phone ? 1.5 : 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
 
@@ -92,7 +94,7 @@ function init() {
   );
 
   // Charcoal fabric that ripples behind the crown.
-  const seg = 80;
+  const seg = phone ? 36 : 80;
   const fabricGeo = new THREE.PlaneGeometry(22, 12, seg, seg);
   const fabric = new THREE.Mesh(
     fabricGeo,
@@ -103,7 +105,7 @@ function init() {
   const base = fabricGeo.attributes.position.array.slice();
 
   // Gold dust.
-  const n = 500;
+  const n = phone ? 180 : 500;
   const dust = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) {
     dust[i * 3] = (Math.random() - 0.5) * 18;
@@ -140,19 +142,25 @@ function init() {
   new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(root);
 
   const clock = new THREE.Clock();
+  let tick = 0;
   function frame() {
     requestAnimationFrame(frame);
-    if (!visible) return;
+    if (!visible || document.hidden) return;
+    tick++;
     const t = reduced ? 0 : clock.getElapsedTime();
 
+    // Ripple the fabric every frame on desktop, every 3rd on phones, never on low-end devices.
+    const rippleNow = !lowEnd && (!phone || tick % 3 === 0);
     const pos = fabricGeo.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
+    if (rippleNow) for (let i = 0; i < pos.count; i++) {
       const x = base[i * 3];
       const y = base[i * 3 + 1];
       pos.setZ(i, Math.sin(x * 0.45 + t * 0.6) * 0.5 + Math.cos(y * 0.6 + t * 0.4) * 0.35);
     }
-    pos.needsUpdate = true;
-    fabricGeo.computeVertexNormals();
+    if (rippleNow) {
+      pos.needsUpdate = true;
+      fabricGeo.computeVertexNormals();
+    }
 
     emblem.rotation.y = Math.sin(t * 0.6) * 0.45 + mouse.x * 0.3;
     emblem.rotation.x = mouse.y * 0.1;

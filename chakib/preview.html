@@ -2,25 +2,22 @@
 <html lang="fr" dir="ltr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chakib | Mode homme</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/chakib.css">
-<style>
-  body { margin: 0; background: var(--ck-black); }
-  .ck-header { position: absolute; z-index: 5; inset: 0 0 auto 0; display: flex; align-items: center;
-    justify-content: space-between; padding: 18px clamp(20px, 6vw, 96px); font-family: var(--ck-sans); }
-  .ck-header nav { display: flex; gap: 28px; }
-  .ck-header a { color: var(--ck-ivory); text-decoration: none; font-size: .95rem; }
-  .ck-header a:hover { color: var(--ck-gold-light); }
-  @media (max-width: 749px) { .ck-header nav { display: none; } }
-</style>
+<style>body { margin: 0; background: var(--ck-black); }</style>
 </head>
-<body>
+<body class="ck-body">
 <header class="ck-header">
   <a class="ck-header__logo" href="#">Chakib</a>
-  <nav><a href="#">Costumes</a><a href="#">Chemises</a><a href="#">Manteaux</a><a href="#">Accessoires</a></nav>
+  <nav class="ck-header__nav"><a href="#">Costumes</a><a href="#">Chemises</a><a href="#">Manteaux</a><a href="#">Accessoires</a></nav>
+  <div class="ck-header__actions">
+    <a class="ck-header__cart" href="#">Panier (0)</a>
+    <details class="ck-menu"><summary aria-label="Menu"><span></span><span></span><span></span></summary>
+      <nav class="ck-menu__panel"><a href="#">Costumes</a><a href="#">Chemises</a><a href="#">Manteaux</a><a href="#">Accessoires</a></nav></details>
+  </div>
 </header>
 
 <section class="ck-hero" data-ck-hero>

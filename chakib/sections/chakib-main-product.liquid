@@ -7,12 +7,12 @@
   </div>
   <div class="ck-product__info">
     <h1>{{ product.title }}</h1>
-    <p class="ck-product__price">{{ current.price | money }}</p>
-    {%- form 'product', product -%}
+    <p class="ck-product__price" data-ck-price>{{ current.price | money }}</p>
+    {%- form 'product', product, id: 'ck-product-form' -%}
       {%- unless product.has_only_default_variant -%}
         <select name="id" aria-label="Variante">
           {%- for variant in product.variants -%}
-            <option value="{{ variant.id }}" {% if variant == current %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+            <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" {% if variant == current %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
               {{ variant.title }}{% unless variant.available %} — Épuisé{% endunless %}
             </option>
           {%- endfor -%}
@@ -20,13 +20,30 @@
       {%- else -%}
         <input type="hidden" name="id" value="{{ current.id }}">
       {%- endunless -%}
-      <button type="submit" class="ck-btn ck-btn--gold" {% unless current.available %}disabled{% endunless %}>
+      <button type="submit" class="ck-btn ck-btn--gold ck-product__buy-inline" {% unless current.available %}disabled{% endunless %}>
         {%- if current.available -%}Ajouter au panier{%- else -%}Épuisé{%- endif -%}
       </button>
     {%- endform -%}
     <div class="ck-product__desc">{{ product.description }}</div>
   </div>
 </section>
+
+<div class="ck-sticky-cart">
+  <div>
+    <strong>{{ product.title }}</strong>
+    <span data-ck-price>{{ current.price | money }}</span>
+  </div>
+  <button type="submit" form="ck-product-form" class="ck-btn ck-btn--gold" {% unless current.available %}disabled{% endunless %}>
+    {%- if current.available -%}Ajouter{%- else -%}Épuisé{%- endif -%}
+  </button>
+</div>
+
+<script>
+  document.querySelector('#ck-product-form select[name="id"]')?.addEventListener('change', (e) => {
+    const price = e.target.selectedOptions[0].dataset.price;
+    document.querySelectorAll('[data-ck-price]').forEach((el) => (el.textContent = price));
+  });
+</script>
 
 {% schema %}
 { "name": "Chakib Produit" }
