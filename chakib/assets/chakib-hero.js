@@ -29,53 +29,14 @@ function init() {
   front.position.set(0, 1, 7);
   scene.add(front);
 
-  // Crown goes opposite the text: left on RTL pages, right on LTR pages.
+  // The lettering goes opposite the text: left on RTL pages, right on LTR pages.
   const side = getComputedStyle(root).direction === "rtl" ? -1 : 1;
-    const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 0.9, roughness: 0.35, emissive: 0x3d2b06 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 0.9, roughness: 0.35, emissive: 0x3d2b06 });
   const emblem = new THREE.Group();
-  const crown = new THREE.Group();
-  const crownGold = gold.clone();
-  crownGold.emissive.set(0xb08720);
-  crownGold.metalness = 0.15;
-  crownGold.color.set(0xf0c85a);
-  crownGold.roughness = 0.3;
-  // Classic 3-point crown: flat silhouette extruded, ball tips and a cross on the centre peak.
-  const sh = new THREE.Shape();
-  sh.moveTo(-1, 0);
-  sh.lineTo(-1, 0.4);
-  sh.lineTo(-1, 0.95);
-  sh.quadraticCurveTo(-0.8, 0.8, -0.55, 0.5);
-  sh.quadraticCurveTo(-0.3, 0.8, 0, 1.4);
-  sh.quadraticCurveTo(0.3, 0.8, 0.55, 0.5);
-  sh.quadraticCurveTo(0.8, 0.8, 1, 0.95);
-  sh.lineTo(1, 0);
-  sh.closePath();
-  const body = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(sh, { depth: 0.25, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 3, curveSegments: 16 }),
-    crownGold
-  );
-  body.position.z = -0.125;
-  crown.add(body);
-  const band = new THREE.Mesh(new THREE.BoxGeometry(2.14, 0.16, 0.4), crownGold);
-  band.position.y = 0.08;
-  crown.add(band);
-  for (const [x, y] of [[-1, 1.02], [0, 1.52], [1, 1.02]]) {
-    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 16), crownGold);
-    ball.position.set(x, y, 0);
-    crown.add(ball);
-  }
-  const cross = new THREE.Group();
-  cross.add(new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 0.1), crownGold));
-  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.1), crownGold);
-  arm.position.y = 0.06;
-  cross.add(arm);
-  cross.position.set(0, 1.8, 0);
-  crown.add(cross);
-  crown.scale.setScalar(0.38);
   emblem.position.set(side * 1.9, 0.5, 0);
   scene.add(emblem);
 
-  // "Chakib" in extruded gold letters, with the small crown over the "i" like the logo.
+  // "Chakib" in extruded gold letters.
   new FontLoader().load(
     "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/droid/droid_serif_bold.typeface.json",
     (font) => {
@@ -88,12 +49,10 @@ function init() {
       const w = max.x - min.x;
       geo.translate(-min.x - w / 2, -min.y, -0.14);
       emblem.add(new THREE.Mesh(geo, gold));
-      crown.position.set(w * 0.3, max.y - min.y + 0.12, 0);
-      emblem.add(crown);
     }
   );
 
-  // Charcoal fabric that ripples behind the crown.
+  // Charcoal fabric that ripples behind the lettering.
   const seg = phone ? 36 : 80;
   const fabricGeo = new THREE.PlaneGeometry(22, 12, seg, seg);
   const fabric = new THREE.Mesh(
@@ -126,12 +85,14 @@ function init() {
     mouse.y = (e.clientY / innerHeight - 0.5) * 2;
   });
 
+  const hasModel = () => !!root.querySelector(".ck-hero__model");
+
   function resize() {
     const { clientWidth: w, clientHeight: h } = root;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // Phones: centre the emblem, since the text sits at the bottom.
-    emblem.position.x = w < 750 ? 0 : side * 1.9;
+    emblem.position.x = w < 750 ? 0 : side * (hasModel() ? 0.9 : 1.9);
     emblem.scale.setScalar(w < 750 ? 0.36 : 0.62);
     camera.updateProjectionMatrix();
   }
@@ -164,9 +125,8 @@ function init() {
 
     emblem.rotation.y = Math.sin(t * 0.6) * 0.45 + mouse.x * 0.3;
     emblem.rotation.x = mouse.y * 0.1;
-    const baseY = innerWidth < 750 ? 1.4 : -0.3;
+    const baseY = innerWidth < 750 ? (hasModel() ? 2.1 : 1.4) : -0.3;
     emblem.position.y += (Math.sin(t) * 0.1 + baseY - emblem.position.y) * 0.05;
-    crown.rotation.y = Math.sin(t * 0.8) * 0.6;
     particles.rotation.y = t * 0.03;
     camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.04;
     camera.lookAt(0, 0, 0);

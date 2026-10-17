@@ -3,6 +3,9 @@
 <section class="ck-hero" data-ck-hero lang="fr">
   <div class="ck-hero__fallback" style="background-image: url('{{ 'chakib-logo.jpg' | asset_url }}')"></div>
   <canvas class="ck-hero__canvas" aria-hidden="true"></canvas>
+  {%- if section.settings.model_image != blank -%}
+    {{ section.settings.model_image | image_url: width: 1200 | image_tag: class: 'ck-hero__model', loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200', sizes: '(max-width: 749px) 100vw, 46vw', alt: section.settings.model_image.alt | default: shop.name }}
+  {%- endif -%}
   <div class="ck-hero__content">
     <p class="ck-hero__eyebrow">{{ section.settings.eyebrow }}</p>
     <h1 class="ck-hero__title">{{ section.settings.title }}</h1>
@@ -32,6 +35,7 @@
 {
   "name": "Chakib 3D Hero",
   "settings": [
+    { "type": "image_picker", "id": "model_image", "label": "Photo du mannequin (portrait, fond sombre)" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "CHAKIB" },
     { "type": "text", "id": "title", "label": "Title", "default": "Un monde d'élégance masculine" },
     { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "L'art du style gentleman" },
