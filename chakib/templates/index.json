@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "hero": { "type": "chakib-hero-3d" },
+    "featured": { "type": "chakib-featured-collection" }
+  },
+  "order": ["hero", "featured"]
+}

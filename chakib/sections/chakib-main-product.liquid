@@ -1,0 +1,33 @@
+{%- assign current = product.selected_or_first_available_variant -%}
+<section class="ck-product">
+  <div class="ck-product__gallery">
+    {%- for media in product.media -%}
+      {{ media | media_tag: image_size: '1000x', loading: 'lazy' }}
+    {%- endfor -%}
+  </div>
+  <div class="ck-product__info">
+    <h1>{{ product.title }}</h1>
+    <p class="ck-product__price">{{ current.price | money }}</p>
+    {%- form 'product', product -%}
+      {%- unless product.has_only_default_variant -%}
+        <select name="id" aria-label="Variante">
+          {%- for variant in product.variants -%}
+            <option value="{{ variant.id }}" {% if variant == current %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+              {{ variant.title }}{% unless variant.available %} — Épuisé{% endunless %}
+            </option>
+          {%- endfor -%}
+        </select>
+      {%- else -%}
+        <input type="hidden" name="id" value="{{ current.id }}">
+      {%- endunless -%}
+      <button type="submit" class="ck-btn ck-btn--gold" {% unless current.available %}disabled{% endunless %}>
+        {%- if current.available -%}Ajouter au panier{%- else -%}Épuisé{%- endif -%}
+      </button>
+    {%- endform -%}
+    <div class="ck-product__desc">{{ product.description }}</div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Chakib Produit" }
+{% endschema %}

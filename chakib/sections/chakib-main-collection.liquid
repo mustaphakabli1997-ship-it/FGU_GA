@@ -1,0 +1,17 @@
+<section class="ck-section">
+  <h1 class="ck-section__title">{{ collection.title }}</h1>
+  <div class="ck-grid">
+    {%- paginate collection.products by 12 -%}
+      {%- for product in collection.products -%}
+        {% render 'chakib-product-card', product: product %}
+      {%- else -%}
+        <p>Aucun produit dans cette collection.</p>
+      {%- endfor -%}
+      <div class="ck-pagination">{{ paginate | default_pagination }}</div>
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Chakib Collection" }
+{% endschema %}

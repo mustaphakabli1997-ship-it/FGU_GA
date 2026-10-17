@@ -1,0 +1,26 @@
+<section class="ck-section">
+  <h1 class="ck-section__title">Votre panier</h1>
+  {%- if cart.item_count == 0 -%}
+    <p>Votre panier est vide.</p>
+    <a class="ck-btn ck-btn--gold" href="{{ routes.all_products_collection_url }}">Continuer vos achats</a>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      <ul class="ck-cart">
+        {%- for item in cart.items -%}
+          <li>
+            <a href="{{ item.url }}">{{ item.product.title }}{% unless item.variant.title contains 'Default' %} — {{ item.variant.title }}{% endunless %}</a>
+            <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Quantité">
+            <span>{{ item.final_line_price | money }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <p class="ck-cart__total">Total : {{ cart.total_price | money }}</p>
+      <button type="submit" name="update" class="ck-btn">Mettre à jour</button>
+      <button type="submit" name="checkout" class="ck-btn ck-btn--gold">Passer la commande</button>
+    </form>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Chakib Panier" }
+{% endschema %}

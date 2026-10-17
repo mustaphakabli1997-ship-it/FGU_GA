@@ -1,0 +1,18 @@
+<header class="ck-header" lang="fr">
+  <a class="ck-header__logo" href="{{ routes.root_url }}">
+    <img src="{{ 'chakib-logo.jpg' | asset_url }}" alt="{{ shop.name }}" height="44">
+  </a>
+  <nav class="ck-header__nav" aria-label="Navigation principale">
+    {%- for link in linklists[section.settings.menu].links -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {%- endfor -%}
+  </nav>
+  <a class="ck-header__cart" href="{{ routes.cart_url }}">Panier ({{ cart.item_count }})</a>
+</header>
+
+{% schema %}
+{
+  "name": "Chakib Header",
+  "settings": [{ "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" }]
+}
+{% endschema %}

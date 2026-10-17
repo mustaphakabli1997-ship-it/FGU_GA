@@ -1,0 +1,10 @@
+<a class="ck-card" href="{{ product.url }}">
+  <div class="ck-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', alt: product.title }}
+    {%- endif -%}
+    {%- unless product.available -%}<span class="ck-card__badge">Épuisé</span>{%- endunless -%}
+  </div>
+  <h3 class="ck-card__title">{{ product.title }}</h3>
+  <p class="ck-card__price">{{ product.price | money }}</p>
+</a>

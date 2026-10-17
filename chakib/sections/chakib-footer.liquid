@@ -1,0 +1,20 @@
+<footer class="ck-footer">
+  <p class="ck-footer__brand">{{ shop.name }}</p>
+  <p>{{ section.settings.tagline }}</p>
+  <nav aria-label="Pied de page">
+    {%- for link in linklists[section.settings.menu].links -%}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {%- endfor -%}
+  </nav>
+  <small>© {{ 'now' | date: '%Y' }} {{ shop.name }}</small>
+</footer>
+
+{% schema %}
+{
+  "name": "Chakib Footer",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Slogan", "default": "L'art du style gentleman" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+  ]
+}
+{% endschema %}
