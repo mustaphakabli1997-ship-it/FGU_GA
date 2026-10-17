@@ -22,7 +22,8 @@ function init() {
   key.position.set(3, 4, 5);
   scene.add(key);
 
-  // Crown sits on the left because the page is RTL (text on the right).
+  // Crown goes opposite the text: left on RTL pages, right on LTR pages.
+  const side = getComputedStyle(root).direction === "rtl" ? -1 : 1;
   // Gold crown, built from primitives so no model file is needed.
   const gold = new THREE.MeshStandardMaterial({ color: 0xc9a24b, metalness: 1, roughness: 0.22 });
   const crown = new THREE.Group();
@@ -46,7 +47,7 @@ function init() {
     crown.add(ball);
   }
   crown.scale.setScalar(1.15);
-  crown.position.set(-1.9, 0.5, 0);
+  crown.position.set(side * 1.9, 0.5, 0);
   scene.add(crown);
 
   // Charcoal fabric that ripples behind the crown.
@@ -87,7 +88,7 @@ function init() {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // Phones: centre the crown, since the text sits at the bottom.
-    crown.position.x = w < 750 ? 0 : -1.9;
+    crown.position.x = w < 750 ? 0 : side * 1.9;
     crown.position.y = w < 750 ? 1.2 : 0.5;
     camera.updateProjectionMatrix();
   }
