@@ -116,6 +116,10 @@ def main(base, timeline, plan_path, out):
         layers.append((o, oa, ob, False))
         sounds += [(snd["pop"], oa + k * 9 / FPS, -18) for k in range(len(cta["items"]))]
 
+    # extra one-shot sounds at source times: "sfx": [[t, "swoosh", -18], ...]
+    for t, name, g in plan.get("sfx", []):
+        sounds.append((snd[name], om(t), g))
+
     # composite
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", base]
     fc, cur = "", "0:v"
@@ -137,7 +141,12 @@ def main(base, timeline, plan_path, out):
         fc += f"[{n0 + j}:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={g}dB,adelay={ms}|{ms}[s{j}];"
         mix.append(f"[s{j}]")
     fc += "".join(mix) + f"amix=inputs={len(mix)}:duration=first:normalize=0,alimiter=limit=0.95[am]"
-    cmd += ["-filter_complex", fc, "-map", f"[{cur}]", "-map", "[am]", "-c:v", "libx264", "-crf", "18", "-preset", "medium",
+    flashes = [om(t) for t in plan.get("flash", [])]   # soft light flash on each cut / punch-in (source times)
+    if flashes:
+        expr = "+".join(f"0.10*between(t,{c - 0.02:.3f},{c + 0.10:.3f})*(1-(t-{c - 0.02:.3f})/0.12)" for c in flashes)
+        fc += f";[{cur}]eq=brightness='{expr}':eval=frame[vfl]"; cur = "vfl"
+    crf = str(plan.get("crf", 18))
+    cmd += ["-filter_complex", fc, "-map", f"[{cur}]", "-map", "[am]", "-c:v", "libx264", "-crf", crf, "-preset", "slow" if crf != "18" else "medium",
             "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out]
     run(cmd)
     shutil.rmtree(PUB, ignore_errors=True)        # temp clips for Remotion (not part of the repo)
