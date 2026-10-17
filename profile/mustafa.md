@@ -209,3 +209,6 @@
 - "Light" edits (his request 2026-10-13: «ما تكثرش من موشن ديزاين»): hook title + keyword captions + few icons + badges only, no phone split / cards / b-roll (= videos/reel5_v1.mp4).
 
 - Word choice: « campagne » (French) instead of « حملة » in scripts and captions (his request 2026-10-17).
+
+- Transitions he asked for (2026-10-17): punch-zoom on every jump cut + a soft light flash (`tools/punch_zoom.py` + plan "zoom"/"flash" in ref_style), one swoosh on the key line. Captions = keywords only, each timed to the real word start (whisper word timings). Deliver an upload master (`--crf 14`, plan "crf": 14) + a < 30 MB 2-pass copy for the chat.
+- French words inside Arabic captions: join with NBSP ("le\u00a0prix") so they stay one group; Latin script word uses Great Vibes.

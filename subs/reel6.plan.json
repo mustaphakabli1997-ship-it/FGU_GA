@@ -2,5 +2,5 @@
  "flash": [1.16,4.11,5.53,8.26,10.47,18.25,24.33,30.38,35.6,38.0,43.1,47.9],
  "sfx": [[30.38, "swoosh", -18]],
  "card": [[17.95, 20.65, "MESSAGES", 100, "شحال؟", 60, 1130]],
- "cta": {"items": ["Abonne-toi", "Partage", "WhatsApp"], "dur": 2.2, "y": 1330},
+ "cta": {"items": ["Abonne-toi", "Partage", "WhatsApp"], "dur": 1.95, "y": 1330},
  "crf": 14}

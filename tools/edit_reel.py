@@ -82,7 +82,7 @@ def srt_to_events(srt_text, offset_map=None):
         tags = [(m.group(1).lower(), (m.group(2) or "").strip()) for m in TAG_RE.finditer(text)]
         text = TAG_RE.sub("", text)
         emojis = EMOJI_RE.findall(text)  # libass can't draw colour emoji: strip from text, overlay as PNG instead
-        text = re.sub(r"\s+", " ", EMOJI_RE.sub("", text).replace("\ufe0f", "")).strip()
+        text = re.sub(r"[ \t\r\n]+", " ", EMOJI_RE.sub("", text).replace("\ufe0f", "")).strip()   # keeps NBSP: "le\u00a0prix" stays one word
         ev.append((a, b, text, emojis, tags))
     return ev
 
@@ -264,7 +264,7 @@ def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False)
     Works for Arabic and French."""
     from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops
     clean = re.sub(r"\*", "", text).strip()
-    words = clean.split()
+    words = [w for w in clean.split(" ") if w]   # NBSP-joined groups ("le\u00a0prix") stay one word
     ar = bool(ARABIC_RE.search(clean))
     bold_f = os.path.join(FONTS_DIR, AR_BOLD if ar else LAT_BOLD)
     scr_f = os.path.join(FONTS_DIR, "ArefRuqaa-Bold.ttf" if ar else "GreatVibes-Regular.ttf")
@@ -273,6 +273,9 @@ def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False)
         top, bottom = " ".join(words[:k]), " ".join(words[k:])
     else:
         top, bottom = clean, ""
+    bottom_ar = bool(ARABIC_RE.search(bottom))   # a French script word ("le prix") inside an Arabic caption: Great Vibes, normal size
+    if ar and bottom and not bottom_ar:
+        scr_f = os.path.join(FONTS_DIR, "GreatVibes-Regular.ttf")
     def font(pth, sz):
         return ImageFont.truetype(pth, sz)
     tmpd = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
@@ -280,7 +283,7 @@ def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False)
     while bs > 50 and tmpd.textlength(top, font=font(bold_f, bs)) > maxw:
         bs -= 6
     bf = font(bold_f, bs)
-    ss = int(bs * (1.15 if ar else 0.95))
+    ss = int(bs * (1.15 if (ar and bottom_ar) else 0.95))
     while bottom and ss > 40 and tmpd.textlength(bottom, font=font(scr_f, ss)) > maxw * 0.9:
         ss -= 6
     sf = font(scr_f, ss)
@@ -325,6 +328,7 @@ def render_caption_png(text, path, font_file, size=118, maxw=860, stacked=False)
     lay.alpha_composite(shine)
     if bottom:   # white script overlapping the bold line, shifted toward the reading end
         sx = cx + (tw - sw) / 2 * (-0.6 if ar else 0.6)
+        sx = min(max(sx, pad + sw / 2), W2 - pad - sw / 2)   # never clipped at the image edge
         sy = ty + bs * (SCRIPT_DY_AR if ar else 0.55)   # Readex Pro has deep dots below: drop the Arabic script word a bit more
         if stacked:
             sx, sy = cx, ty + bb[3] + bs * 0.10 - sb[1]
@@ -861,6 +865,7 @@ def main():
     ap.add_argument("--keywords-only", action="store_true", help="show only the *starred* key words, big, instead of full sentences")
     ap.add_argument("--accent", default="", help="hex colour for key words, e.g. 38BDF8 (neon blue); default = brand violet")
     ap.add_argument("--text-color", default="FFFFFF", help="hex colour for the other words")
+    ap.add_argument("--crf", type=int, default=21, help="x264 quality (lower = better/bigger); 14-16 for an upload master")
     ap.add_argument("--hook-style", choices=["card", "title"], default="card", help="card = night plate with neon rim; title = big white bold title, no plate (reference-reel look)")
     ap.add_argument("--dump-timeline", default="", help="write the silence-cut segments as JSON (used by tools/ref_style.py to place overlays)")
     ap.add_argument("--hook", default="", help="big hook text shown 0-2.6s (top safe zone) with flash + impact sound; *word* = accent")
@@ -1180,8 +1185,8 @@ def main():
         fc += (f"[vm]format=yuv420p,setsar=1[vms];[vms][card]concat=n=2:v=1:a=0[vv];[am][csil]concat=n=2:v=0:a=1[aout];"
                f"[vv]subtitles={ass}:fontsdir={FONTS_DIR}[vout]")
     run(["ffmpeg", "-v", "error", "-y", "-i", a.src, *extra_inputs, "-filter_complex", fc,
-         "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", "21",
-         "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
+         "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-crf", str(a.crf),
+         "-preset", "slow" if a.crf < 21 else "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k" if a.crf < 21 else "160k",
          "-movflags", "+faststart", out])
     print(f"OK -> {out}  (kept {total:.1f}s of {sum(b-x for x,b in segs):.1f}s segments, {n} segment(s))")
 
