@@ -66,4 +66,5 @@ Hook montage : `"ماشي كل فيديو *شباب* يبيع"`
 
 ## Épisodes publiés
 - **#01 = « فيديو شباب وما جابليش »** (filmé 2026-10-09, `videos/tip01_v1.mp4`). Les scripts du tableau ci-dessus décalent d'un numéro (Confirmation devient #02, etc.).
+- **#04 = « حط le prix… ولا لا؟ »** (filmé 2026-10-17, `videos/reel6_v2.mp4`, couverture `content/covers/tip04_cover.jpg`). Le thème prévu « الربح الحقيقي » passe en #21. (#02 et #03 : pas montés ici — sujets à confirmer avec Mustafa.)
 - Look de la série : hook `E-COM TIP #NN / phrase`, pastille « E-COM TIP • الحلقة NN » en haut à droite tout le long, CTA final « Abonne-toi · TIP #NN+1 قريب · WhatsApp » (`subs/tip01.plan.json` comme modèle).
