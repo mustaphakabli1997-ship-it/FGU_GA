@@ -11,11 +11,24 @@
   --ck-sans: "Montserrat", "Tajawal", system-ui, sans-serif;
 }
 
+/* Dark scope (black + gold): header, hero, newsletter, footer. Everything else stays white. */
+.ck-dark {
+  --ck-bg: #0d0f14;
+  --ck-bg-soft: #14171e;
+  --ck-text: #f4efe6;
+  --ck-muted: #b5b8c0;
+  --ck-line: rgba(255, 255, 255, .14);
+  --ck-gold-deep: #e3c26b;
+  --ck-header-bg: rgba(13, 15, 20, .94);
+  background: var(--ck-bg);
+  color: var(--ck-text);
+}
+
 .ck-hero {
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
-  background: radial-gradient(120% 90% at 70% 40%, #ffffff 0%, #f1ebdf 100%);
+  background: radial-gradient(120% 90% at 70% 40%, #1b1f29 0%, #0d0f14 60%);
   color: var(--ck-text);
   overflow: hidden;
   font-family: var(--ck-sans);
@@ -95,7 +108,7 @@
   width: min(40%, 520px);
   object-fit: cover;
   object-position: center top;
-  box-shadow: 0 20px 60px rgba(20, 23, 30, .18);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
   pointer-events: none;
 }
 .ck-hero__fallback {
@@ -129,7 +142,7 @@
 /* ---- Theme pages ---- */
 .ck-body { margin: 0; background: var(--ck-bg); color: var(--ck-text); font-family: var(--ck-sans); }
 .ck-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between;
-  gap: 24px; padding: 12px clamp(20px, 6vw, 96px); background: rgba(255,255,255,.94); backdrop-filter: blur(8px);
+  gap: 24px; padding: 12px clamp(20px, 6vw, 96px); background: var(--ck-header-bg, rgba(255,255,255,.94)); backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--ck-line); }
 .ck-header .ck-header__logo { font-size: 1.9rem; }
 .ck-header__logo { font-family: var(--ck-serif); font-weight: 600; letter-spacing: .02em;
@@ -237,10 +250,11 @@ button.ck-btn { cursor: pointer; font: inherit; }
 .ck-trust__item span { color: var(--ck-muted); font-size: .9rem; }
 
 .ck-newsletter { text-align: center; display: grid; justify-items: center; }
+.ck-newsletter .ck-section__title { color: var(--ck-gold-deep); }
 .ck-newsletter p { color: var(--ck-muted); margin: 0 0 8px; }
 .ck-form { display: grid; gap: 8px; max-width: 560px; width: 100%; }
 .ck-form label { font-size: .85rem; color: var(--ck-muted); margin-top: 8px; }
-.ck-form input, .ck-form textarea { background: var(--ck-bg); color: var(--ck-text); border: 1px solid var(--ck-line); padding: 12px; min-height: 48px; width: 100%; box-sizing: border-box; font: inherit; }
+.ck-form input, .ck-form textarea { background: var(--ck-bg-soft); color: var(--ck-text); border: 1px solid var(--ck-line); padding: 12px; min-height: 48px; width: 100%; box-sizing: border-box; font: inherit; }
 .ck-form--inline { grid-template-columns: 1fr; }
 .ck-form__ok { color: var(--ck-gold-deep); margin: 0; }
 .ck-form__err { color: #b3261e; margin: 0; }

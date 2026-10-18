@@ -52,12 +52,12 @@ function init() {
     }
   );
 
-  // Ivory satin that ripples behind the lettering.
+  // Charcoal satin that ripples behind the lettering.
   const seg = phone ? 36 : 80;
   const fabricGeo = new THREE.PlaneGeometry(22, 12, seg, seg);
   const fabric = new THREE.Mesh(
     fabricGeo,
-    new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0, roughness: 0.9, envMapIntensity: 1.3, side: THREE.DoubleSide })
+    new THREE.MeshStandardMaterial({ color: 0x15171c, metalness: 0.3, roughness: 0.6, envMapIntensity: 0.25, side: THREE.DoubleSide })
   );
   fabric.position.z = -4;
   scene.add(fabric);
@@ -77,7 +77,7 @@ function init() {
   dustGeo.setAttribute("position", new THREE.BufferAttribute(dust, 3));
   const particles = new THREE.Points(
     dustGeo,
-    new THREE.PointsMaterial({ color: 0xc9a24b, size: 0.05, transparent: true, opacity: 0.85, depthWrite: false })
+    new THREE.PointsMaterial({ color: 0xf0d68a, size: 0.04, transparent: true, opacity: 0.7, depthWrite: false })
   );
   scene.add(particles);
 
