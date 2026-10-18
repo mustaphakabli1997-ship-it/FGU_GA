@@ -1,0 +1,21 @@
+<section class="ck-section ck-page">
+  {%- form 'contact', class: 'ck-form' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="ck-form__ok">Merci pour votre message, nous vous répondons rapidement.</p>
+    {%- endif -%}
+    {%- if form.errors -%}<p class="ck-form__err">{{ form.errors | default_errors }}</p>{%- endif -%}
+    <label for="ck-c-name">Nom</label>
+    <input id="ck-c-name" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+    <label for="ck-c-email">E-mail</label>
+    <input id="ck-c-email" type="email" name="contact[email]" required autocomplete="email" value="{{ form.email }}">
+    <label for="ck-c-phone">Téléphone</label>
+    <input id="ck-c-phone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+    <label for="ck-c-body">Message</label>
+    <textarea id="ck-c-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+    <button type="submit" class="ck-btn ck-btn--gold">Envoyer</button>
+  {%- endform -%}
+</section>
+
+{% schema %}
+{ "name": "Chakib Contact", "presets": [{ "name": "Chakib Contact" }] }
+{% endschema %}

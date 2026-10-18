@@ -6,6 +6,9 @@
     {%- endfor -%}
   </nav>
   <div class="ck-header__actions">
+    <a class="ck-header__search" href="{{ routes.search_url }}" aria-label="Rechercher">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </a>
     <a class="ck-header__cart" href="{{ routes.cart_url }}" aria-label="Panier">Panier ({{ cart.item_count }})</a>
     <details class="ck-menu">
       <summary aria-label="Menu"><span></span><span></span><span></span></summary>

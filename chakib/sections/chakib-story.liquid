@@ -1,0 +1,32 @@
+<section class="ck-story">
+  <div class="ck-story__media">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '500, 800, 1000', sizes: '(max-width: 749px) 100vw, 50vw', alt: section.settings.heading }}
+    {%- else -%}
+      <div class="ck-cat__ph"></div>
+    {%- endif -%}
+  </div>
+  <div class="ck-story__text">
+    <p class="ck-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="ck-section__title">{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.text }}</p>
+    {%- if section.settings.button_link != blank -%}
+      <a class="ck-btn" href="{{ section.settings.button_link }}">{{ section.settings.button_label }}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Chakib Histoire",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "NOTRE ESPRIT" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "L'art du style gentleman" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Des pièces choisies avec soin, des coupes précises et des matières nobles pour l'homme qui soigne sa présence." },
+    { "type": "text", "id": "button_label", "label": "Bouton", "default": "Découvrir la collection" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton" }
+  ],
+  "presets": [{ "name": "Chakib Histoire" }]
+}
+{% endschema %}

@@ -1,0 +1,19 @@
+<section class="ck-section">
+  <h1 class="ck-section__title">Collections</h1>
+  <div class="ck-cats">
+    {%- for collection in collections -%}
+      <a class="ck-cat" href="{{ collection.url }}">
+        {%- if collection.featured_image -%}
+          {{ collection.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', alt: collection.title }}
+        {%- else -%}
+          <div class="ck-cat__ph"></div>
+        {%- endif -%}
+        <span class="ck-cat__title">{{ collection.title }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Chakib Collections" }
+{% endschema %}

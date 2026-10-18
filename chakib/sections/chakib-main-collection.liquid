@@ -1,5 +1,15 @@
 <section class="ck-section">
   <h1 class="ck-section__title">{{ collection.title }}</h1>
+  <div class="ck-bar">
+    <span class="ck-muted">{{ collection.products_count }} produit(s)</span>
+    {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+    <label class="ck-sr" for="ck-sort">Trier par</label>
+    <select id="ck-sort" onchange="window.location.search = 'sort_by=' + this.value">
+      {%- for option in collection.sort_options -%}
+        <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
+      {%- endfor -%}
+    </select>
+  </div>
   <div class="ck-grid">
     {%- paginate collection.products by 12 -%}
       {%- for product in collection.products -%}

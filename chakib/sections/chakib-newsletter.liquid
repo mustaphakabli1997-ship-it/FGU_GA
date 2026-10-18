@@ -1,0 +1,26 @@
+<section class="ck-section ck-newsletter">
+  <h2 class="ck-section__title">{{ section.settings.title }}</h2>
+  <p>{{ section.settings.text }}</p>
+  {%- form 'customer', id: 'ck-newsletter', class: 'ck-form ck-form--inline' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    {%- if form.posted_successfully? -%}
+      <p class="ck-form__ok">Merci ! Vous êtes bien inscrit(e).</p>
+    {%- else -%}
+      <label class="ck-sr" for="ck-nl-email">E-mail</label>
+      <input id="ck-nl-email" type="email" name="contact[email]" required autocomplete="email" placeholder="Votre adresse e-mail">
+      <button type="submit" class="ck-btn ck-btn--gold">S'inscrire</button>
+    {%- endif -%}
+    {%- if form.errors -%}<p class="ck-form__err">{{ form.errors | default_errors }}</p>{%- endif -%}
+  {%- endform -%}
+</section>
+
+{% schema %}
+{
+  "name": "Chakib Newsletter",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Rejoignez le cercle Chakib" },
+    { "type": "text", "id": "text", "label": "Texte", "default": "Recevez nos nouveautés et offres en avant-première." }
+  ],
+  "presets": [{ "name": "Chakib Newsletter" }]
+}
+{% endschema %}

@@ -25,8 +25,31 @@
       </button>
     {%- endform -%}
     <div class="ck-product__desc">{{ product.description }}</div>
+    <details class="ck-acc">
+      <summary>Livraison et retours</summary>
+      <p>{{ section.settings.shipping_text }}</p>
+    </details>
   </div>
 </section>
+
+{%- if product.collections.size > 0 -%}
+  <section class="ck-section">
+    <h2 class="ck-section__title">{{ section.settings.related_title }}</h2>
+    <div class="ck-grid">
+      {%- liquid
+        assign shown = 0
+        for item in product.collections.first.products
+          if item.id != product.id and shown < 4
+            render 'chakib-product-card', product: item
+            assign shown = shown | plus: 1
+          endif
+        endfor
+      -%}
+    </div>
+  </section>
+{%- endif -%}
+
+<script type="application/ld+json">{{ product | structured_data }}</script>
 
 <div class="ck-sticky-cart">
   <div>
@@ -46,5 +69,11 @@
 </script>
 
 {% schema %}
-{ "name": "Chakib Produit" }
+{
+  "name": "Chakib Produit",
+  "settings": [
+    { "type": "textarea", "id": "shipping_text", "label": "Livraison et retours", "default": "Les frais et délais de livraison sont calculés à la commande. Consultez notre politique de retour pour plus de détails." },
+    { "type": "text", "id": "related_title", "label": "Titre des suggestions", "default": "Vous aimerez aussi" }
+  ]
+}
 {% endschema %}

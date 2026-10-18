@@ -1,0 +1,26 @@
+<section class="ck-section">
+  <h1 class="ck-section__title">Recherche</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="ck-form ck-form--inline">
+    <label class="ck-sr" for="ck-q">Rechercher</label>
+    <input id="ck-q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Costume, chemise, manteau…">
+    <input type="hidden" name="type" value="product">
+    <button type="submit" class="ck-btn ck-btn--gold">Rechercher</button>
+  </form>
+  {%- if search.performed -%}
+    {%- paginate search.results by 12 -%}
+      <p class="ck-muted">{{ search.results_count }} résultat(s) pour « {{ search.terms | escape }} »</p>
+      <div class="ck-grid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}
+            {% render 'chakib-product-card', product: item %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="ck-pagination">{{ paginate | default_pagination }}</div>
+    {%- endpaginate -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Chakib Recherche" }
+{% endschema %}

@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "chakib-main-page"
+    },
+    "form": {
+      "type": "chakib-contact-form"
+    }
+  },
+  "order": [
+    "main",
+    "form"
+  ]
+}

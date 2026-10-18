@@ -1,0 +1,36 @@
+<section class="ck-trust">
+  {%- for block in section.blocks -%}
+    <div class="ck-trust__item" {{ block.shopify_attributes }}>
+      <strong>{{ block.settings.title }}</strong>
+      <span>{{ block.settings.text }}</span>
+    </div>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Chakib Engagements",
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Engagement",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Livraison soignée" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Chaque commande est préparée avec attention." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Chakib Engagements",
+      "blocks": [
+        { "type": "item", "settings": { "title": "Livraison soignée", "text": "Chaque commande est préparée avec attention." } },
+        { "type": "item", "settings": { "title": "Paiement sécurisé", "text": "Vos paiements sont protégés." } },
+        { "type": "item", "settings": { "title": "Qualité premium", "text": "Des matières et finitions choisies." } },
+        { "type": "item", "settings": { "title": "Service client", "text": "Une équipe à votre écoute." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

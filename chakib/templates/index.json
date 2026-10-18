@@ -1,7 +1,98 @@
 {
   "sections": {
-    "hero": { "type": "chakib-hero-3d" },
-    "featured": { "type": "chakib-featured-collection" }
+    "hero": {
+      "type": "chakib-hero-3d"
+    },
+    "categories": {
+      "type": "chakib-categories",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "title": "Costumes"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "title": "Chemises"
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "title": "Manteaux"
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "title": "Accessoires"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ]
+    },
+    "featured": {
+      "type": "chakib-featured-collection"
+    },
+    "story": {
+      "type": "chakib-story"
+    },
+    "trust": {
+      "type": "chakib-trust",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "title": "Livraison soignée",
+            "text": "Chaque commande est préparée avec attention."
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "title": "Paiement sécurisé",
+            "text": "Vos paiements sont protégés."
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "title": "Qualité premium",
+            "text": "Des matières et finitions choisies."
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "title": "Service client",
+            "text": "Une équipe à votre écoute."
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ]
+    },
+    "newsletter": {
+      "type": "chakib-newsletter"
+    }
   },
-  "order": ["hero", "featured"]
+  "order": [
+    "hero",
+    "categories",
+    "featured",
+    "story",
+    "trust",
+    "newsletter"
+  ]
 }
