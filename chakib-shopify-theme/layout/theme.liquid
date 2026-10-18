@@ -55,6 +55,10 @@
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
 
+    {%- if settings.custom_css != blank %}
+      {% style %}{{ settings.custom_css | replace: '</style', '' }}{% endstyle %}
+    {%- endif %}
+
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
       window.skTheme = {

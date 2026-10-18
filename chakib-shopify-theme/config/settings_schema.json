@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Chakib",
-    "theme_version": "1.0.0",
+    "theme_version": "1.0.1",
     "theme_author": "Chakib",
     "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/tree/claude/boutique-sekhri-store/chakib-shopify-theme",
     "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
@@ -147,6 +147,17 @@
         "type": "text",
         "id": "contact_address",
         "label": "Adresse"
+      }
+    ]
+  },
+  {
+    "name": "CSS personnalisé",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "CSS personnalisé",
+        "info": "Optionnel. Collez ici du CSS pour habiller une application (ex. formulaire de commande COD). Supprimez le contenu pour annuler."
       }
     ]
   }
