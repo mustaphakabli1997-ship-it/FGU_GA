@@ -9,7 +9,7 @@
 |---|---|
 | **الواجهة** | صفحة رئيسية بهيرو متحرك، الأقسام، المنتجات، صفحة المنتج (ألوان/مقاسات)، السلة، الطلب، بحث، **فرنسي + عربي (RTL)** بزر واحد، موبايل أولاً |
 | **الأقسام** | Ensembles · T-shirts & Polos · Sweats & Hoodies · Tricots · Vestes · Pantalons & Joggers · Shorts · Accessoires |
-| **النشرة البريدية** | خانة الإيميل في 4 أماكن: نافذة تظهر للزائر الجديد، الصفحة الرئيسية، أسفل كل صفحة، وصفحة الطلب |
+| **النشرة البريدية** | **اختيارية تماماً** — ما تظهر أي نافذة للزائر كي يدخل. خانة الإيميل موجودة في الصفحة الرئيسية وأسفل كل صفحة وزر الجرس 🔔 في الأعلى، وخيار غير مفعّل مسبقاً في صفحة الطلب. اللي حبّ يشترك يشترك |
 | **إيميل تلقائي** | كل ما تزيد منتج من لوحة التحكم → يوصل إيميل لكل المشتركين **بشعار Boutique Sekhri** + صورة المنتج + السعر + رابط مباشر، بلغة كل مشترك (FR/AR) |
 | **الطلبات** | الدفع عند الاستلام، 58 ولاية، توصيل للمنزل أو نقطة استلام، إشعار إيميل للمالك |
 | **لوحة التحكم** `/admin` | بالعربية: المنتجات (صور، ألوان، مقاسات، تخفيضات)، المشتركون (تصدير CSV)، الطلبات (تغيير الحالة)، الإيميلات (تجربة + سجل الحملات) |
@@ -105,6 +105,6 @@ npm test      # اشتراك، إيميل المنتج بالشعار، الطل
 ### English summary
 
 Node.js (Express) storefront + admin for *Boutique Sekhri*. Bilingual FR/AR (RTL), cash-on-delivery checkout for the 58
-Algerian wilayas, newsletter signup in four places, and an **automatic branded email to every subscriber whenever a product
+Algerian wilayas, optional newsletter signup (home page, footer, header bell, unchecked checkbox at checkout; no popup on entry), and an **automatic branded email to every subscriber whenever a product
 is added in `/admin`**. Emails are only actually delivered once `SMTP_HOST` (and credentials) are set; until then they are
 written to `data/outbox` for preview. Run with `npm install && npm start`; see `.env.example` for all options.

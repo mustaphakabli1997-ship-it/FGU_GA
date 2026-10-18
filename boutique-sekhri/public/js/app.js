@@ -129,7 +129,6 @@
         method: 'POST',
         body: { email, lang: state.lang, source: form.elements.source.value, website: form.elements.website.value },
       });
-      store.set('sk_nl', 'done');
       form.innerHTML = `<div class="nl-success"><svg class="ico"><use href="#i-check"/></svg><div><b>${t('nlThanks')}</b><span>${t('nlThanksText')}</span></div></div>`;
       if (form.closest('#nl-modal')) setTimeout(() => closeLayer($('#nl-modal')), 2600);
     } catch (err) {
@@ -137,15 +136,6 @@
       msg.classList.add('err');
       btn.disabled = false;
     }
-  }
-
-  function maybeShowNewsletterPopup() {
-    if (store.get('sk_nl') === 'done') return;
-    const dismissed = store.get('sk_nl_dismissed', 0);
-    if (Date.now() - dismissed < 7 * 864e5) return;
-    setTimeout(() => {
-      if (!document.body.classList.contains('lock') && !location.hash.startsWith('#/commande')) openLayer($('#nl-modal'), { focus: 'input' });
-    }, 3800);
   }
 
   // ----------------------------------------------------------------- layers
@@ -168,7 +158,6 @@
     el.classList.remove('open');
     layers.splice(layers.indexOf(el), 1);
     if (el.id === 'cart-drawer') $('#scrim').classList.remove('open');
-    if (el.id === 'nl-modal' && store.get('sk_nl') !== 'done') store.set('sk_nl_dismissed', Date.now());
     setTimeout(() => {
       el.hidden = true;
       if (el.id === 'cart-drawer') $('#scrim').hidden = true;
@@ -668,7 +657,6 @@
         state.cart = [];
         saveCart();
         store.set('sk_draft', {});
-        if (el.newsletter.checked && el.email.value.trim()) store.set('sk_nl', 'done');
         renderCart();
         location.hash = `#/merci/${encodeURIComponent(res.ref)}`;
       } catch (err) {
@@ -974,7 +962,7 @@
     renderRoute();
 
     const pre = $('#preloader');
-    const hide = () => { pre.classList.add('done'); setTimeout(() => pre.remove(), 700); document.body.classList.add('ready'); maybeShowNewsletterPopup(); };
+    const hide = () => { pre.classList.add('done'); setTimeout(() => pre.remove(), 700); document.body.classList.add('ready'); };
     if (reduceMotion) hide(); else setTimeout(hide, 1100);
   }
 

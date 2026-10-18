@@ -116,7 +116,7 @@
     const rows = state.subs.map((s) => `<tr>
       <td><span class="ltr">${esc(s.email)}</span></td>
       <td class="hide-sm">${s.lang === 'ar' ? 'العربية' : 'Français'}</td>
-      <td class="hide-sm">${esc({ popup: 'النافذة المنبثقة', footer: 'أسفل الصفحة', home: 'الصفحة الرئيسية', checkout: 'صفحة الطلب' }[s.source] || s.source)}</td>
+      <td class="hide-sm">${esc({ popup: 'زر الجرس', footer: 'أسفل الصفحة', home: 'الصفحة الرئيسية', checkout: 'صفحة الطلب' }[s.source] || s.source)}</td>
       <td>${when(s.createdAt)}</td>
       <td>${s.unsubscribedAt ? '<span class="badge bad">ألغى الاشتراك</span>' : '<span class="badge ok">نشط</span>'}</td>
       <td><div class="row-actions"><button class="btn danger sm" data-del-sub="${s.id}">حذف</button></div></td></tr>`).join('');
