@@ -1,0 +1,8 @@
+{%- comment -%} The Chakib logotype (gold, with crown). An uploaded logo in the theme settings replaces it. {%- endcomment -%}
+<a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+  {%- if settings.logo != blank -%}
+    {{ settings.logo | image_url: width: 480 | image_tag: class: 'brand-logo', alt: shop.name, widths: '240, 480', loading: 'eager' }}
+  {%- else -%}
+    <img class="brand-logo" src="{{ 'chakib-logo.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="113" height="46">
+  {%- endif -%}
+</a>

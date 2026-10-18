@@ -1,0 +1,54 @@
+{%- if section.blocks.size > 0 -%}
+  <section class="perks section--ivory">
+    <div class="container perks-grid">
+      {%- for block in section.blocks -%}
+        <div class="perk reveal" style="--d: {{ forloop.index0 | times: 80 }}ms" {{ block.shopify_attributes }}>
+          <svg class="ico" aria-hidden="true"><use href="#i-{{ block.settings.icon }}"/></svg>
+          <b>{{ block.settings.title | escape }}</b>
+          <span>{{ block.settings.text | escape }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Atouts",
+  "blocks": [
+    {
+      "type": "perk",
+      "name": "Atout",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "default": "award",
+          "options": [
+            { "value": "award", "label": "Étoile" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "cash", "label": "Billet" },
+            { "value": "bolt", "label": "Éclair" },
+            { "value": "whatsapp", "label": "Message" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Grandes maisons" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Une sélection pointue des plus belles signatures." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Atouts",
+      "blocks": [
+        { "type": "perk", "settings": { "icon": "award", "title": "Grandes maisons", "text": "Une sélection pointue des plus belles signatures." } },
+        { "type": "perk", "settings": { "icon": "truck", "title": "Livraison partout", "text": "Dans les 58 wilayas, à domicile ou en point relais." } },
+        { "type": "perk", "settings": { "icon": "cash", "title": "Paiement à la livraison", "text": "Tu règles uniquement à la réception de ta commande." } },
+        { "type": "perk", "settings": { "icon": "whatsapp", "title": "Conseil personnalisé", "text": "Une question sur une pièce ? Écris-nous sur WhatsApp." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,116 @@
+{
+  "general": {
+    "skip": "انتقل إلى المحتوى",
+    "home": "الرئيسية",
+    "menu": "القائمة",
+    "close": "إغلاق",
+    "search": "بحث",
+    "account": "حسابي",
+    "login": "تسجيل الدخول",
+    "cart": "السلة",
+    "language": "اللغة",
+    "view": "عرض",
+    "see_all": "عرض الكل",
+    "new": "جديد",
+    "sold_out": "نفد المخزون",
+    "all": "الكل",
+    "pieces": {
+      "one": "{{ count }} قطعة",
+      "other": "{{ count }} قطعة"
+    },
+    "page": "صفحة {{ number }}",
+    "previous": "السابق",
+    "next": "التالي",
+    "scroll": "مرّر للأسفل",
+    "password_title": "المتجر سيفتح قريباً",
+    "password_text": "أدخل كلمة السر للدخول إلى المتجر.",
+    "password_label": "كلمة السر",
+    "password_enter": "دخول",
+    "password_error": "كلمة السر غير صحيحة.",
+    "not_found_title": "الصفحة غير موجودة",
+    "not_found_text": "هذه الصفحة غير موجودة أو تم سحب المنتج.",
+    "back_to_shop": "العودة إلى المتجر",
+    "discover": "اكتشف"
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "ابحث عن منتج…",
+    "hint": "اكتب اسم منتج أو فئة.",
+    "results": {
+      "one": "{{ count }} نتيجة لـ «{{ terms }}»",
+      "other": "{{ count }} نتيجة لـ «{{ terms }}»"
+    },
+    "no_results": "لا توجد منتجات مطابقة لبحثك."
+  },
+  "collection": {
+    "sort_by": "ترتيب حسب",
+    "sort_manual": "اختيارنا",
+    "sort_best_selling": "الأكثر مبيعاً",
+    "sort_title_ascending": "أ → ي",
+    "sort_title_descending": "ي → أ",
+    "sort_price_ascending": "السعر: الأقل أولاً",
+    "sort_price_descending": "السعر: الأعلى أولاً",
+    "sort_created_descending": "الأحدث",
+    "sort_created_ascending": "الأقدم",
+    "filters": "تصفية",
+    "apply": "تطبيق",
+    "clear": "إعادة الضبط",
+    "price_from": "من",
+    "price_to": "إلى",
+    "empty": "لا توجد منتجات في هذه الفئة حالياً.",
+    "all_categories": "كل الفئات"
+  },
+  "products": {
+    "color": "اللون",
+    "size": "المقاس",
+    "quantity": "الكمية",
+    "add_to_cart": "أضف إلى السلة",
+    "buy_now": "اطلب الآن",
+    "sold_out": "نفد المخزون",
+    "unavailable": "غير متوفر",
+    "added": "تمت الإضافة إلى السلة",
+    "pick_option": "اختر خياراً للمتابعة.",
+    "assure_delivery": "توصيل إلى كل الجزائر",
+    "assure_cod": "الدفع عند الاستلام",
+    "assure_quality": "مختارات من كبرى الماركات",
+    "related": "من نفس الفئة",
+    "whatsapp": "اطلب عبر واتساب",
+    "notify_me": "أخبروني بالمنتجات الجديدة",
+    "sale": "-{{ percent }}%"
+  },
+  "cart": {
+    "title": "السلة",
+    "empty": "سلتك فارغة.",
+    "continue_shopping": "متابعة التسوق",
+    "remove": "حذف",
+    "subtotal": "المجموع الفرعي",
+    "shipping_at_checkout": "تُحسب تكلفة التوصيل والضرائب في الخطوة التالية.",
+    "checkout": "إتمام الطلب",
+    "free_left": "بقي {{ amount }} للحصول على توصيل مجاني",
+    "free_reached": "توصيل مجاني!",
+    "note": "ملاحظة على الطلب (اختياري)",
+    "update_error": "تعذّر تحديث السلة. حاول من جديد."
+  },
+  "newsletter": {
+    "eyebrow": "الحلقة الملكية",
+    "placeholder": "your@email.com",
+    "button": "اشترك",
+    "note": "إلغاء الاشتراك بنقرة واحدة من أي رسالة.",
+    "thanks": "مرحباً بك في الحلقة!",
+    "thanks_text": "شكراً لاشتراكك. سنخبرك بالقطع الجديدة والمبيعات الخاصة.",
+    "error": "أدخل بريداً إلكترونياً صحيحاً.",
+    "label": "البريد الإلكتروني"
+  },
+  "footer": {
+    "shop": "المتجر",
+    "help": "معلومات واتصال",
+    "blurb": "أزياء رجالية فاخرة من كبرى الماركات العالمية.",
+    "made": "Luxury Sportswear",
+    "policies": "معلومات قانونية"
+  },
+  "blog": {
+    "read_more": "اقرأ المزيد",
+    "published": "نُشر في {{ date }}",
+    "empty": "لا توجد مقالات حالياً."
+  }
+}

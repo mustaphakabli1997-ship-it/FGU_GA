@@ -1,0 +1,153 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Chakib",
+    "theme_version": "1.0.0",
+    "theme_author": "Chakib",
+    "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/tree/claude/boutique-sekhri-store/chakib-shopify-theme",
+    "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Or",
+        "default": "#e0bd69"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_light",
+        "label": "Or clair (reflets)",
+        "default": "#fee490"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_dark",
+        "label": "Or foncé (ombres)",
+        "default": "#af8a46"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Noir charbon (fond sombre)",
+        "default": "#0f1014"
+      },
+      {
+        "type": "color",
+        "id": "color_ivory",
+        "label": "Ivoire (fond clair)",
+        "default": "#f4eee2"
+      }
+    ]
+  },
+  {
+    "name": "Logo et icône",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo (optionnel)",
+        "info": "Sans image, le logo Chakib intégré (or, avec couronne) est utilisé."
+      },
+      {
+        "type": "range",
+        "id": "logo_height",
+        "min": 28,
+        "max": 80,
+        "step": 2,
+        "unit": "px",
+        "label": "Hauteur du logo",
+        "default": 46
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Image carrée, 32 x 32 px minimum."
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Signature (pied de page)",
+        "default": "Maison de mode"
+      }
+    ]
+  },
+  {
+    "name": "Livraison et panier",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Seuil de livraison offerte (affichage)",
+        "default": 30000,
+        "info": "Affiche une barre de progression dans le panier. Les vrais tarifs se règlent dans Paramètres > Expédition et livraison. Mettre 0 pour masquer."
+      },
+      {
+        "type": "number",
+        "id": "new_badge_days",
+        "label": "Badge « Nouveau » pendant (jours)",
+        "default": 30
+      },
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "default": "drawer",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Tiroir latéral"
+          },
+          {
+            "value": "page",
+            "label": "Page panier"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux et contact",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok (URL)"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Numéro WhatsApp",
+        "info": "Format international sans + ni espaces, ex : 213550123456. Affiche un bouton WhatsApp flottant."
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Téléphone"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Email de contact"
+      },
+      {
+        "type": "text",
+        "id": "contact_address",
+        "label": "Adresse"
+      }
+    ]
+  }
+]

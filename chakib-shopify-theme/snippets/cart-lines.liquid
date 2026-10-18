@@ -1,0 +1,29 @@
+{%- comment -%} The list of cart lines, shared by the drawer and the cart page. {%- endcomment -%}
+<ul class="cart-list">
+  {%- for item in cart.items -%}
+    <li class="cart-line" data-line="{{ forloop.index }}">
+      <a class="cart-thumb" href="{{ item.url }}">
+        {%- if item.image -%}
+          {{ item.image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 160', alt: item.image.alt | default: item.product.title }}
+        {%- else -%}
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </a>
+      <div class="cart-meta">
+        <a class="cart-name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+        {%- unless item.product.has_only_default_variant -%}
+          <span class="cart-opt">{{ item.variant.title | escape }}</span>
+        {%- endunless -%}
+        <div class="cart-controls">
+          <div class="qty" role="group" aria-label="{{ 'products.quantity' | t }}">
+            <button type="button" data-qty-change="{{ item.quantity | minus: 1 }}" data-line="{{ forloop.index }}" aria-label="-"><svg class="ico" aria-hidden="true"><use href="#i-minus"/></svg></button>
+            <output>{{ item.quantity }}</output>
+            <button type="button" data-qty-change="{{ item.quantity | plus: 1 }}" data-line="{{ forloop.index }}" aria-label="+"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          </div>
+          <button class="link-btn danger" type="button" data-qty-change="0" data-line="{{ forloop.index }}" aria-label="{{ 'cart.remove' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-trash"/></svg></button>
+        </div>
+      </div>
+      <div class="cart-price"><bdi dir="ltr" class="money">{{ item.final_line_price | money }}</bdi></div>
+    </li>
+  {%- endfor -%}
+</ul>

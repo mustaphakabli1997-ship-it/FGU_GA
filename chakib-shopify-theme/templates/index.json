@@ -1,0 +1,219 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": "58",
+            "label": "Wilayas livrées"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": "4+",
+            "label": "Grandes maisons"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": "COD",
+            "label": "Paiement à la livraison"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "eyebrow": "Mode homme · Grandes maisons",
+        "title_1": "L'élégance",
+        "title_2": "sans compromis",
+        "subtitle": "Prada, Moncler, Lacoste, Balmain… une sélection des plus grandes maisons, livrée partout en Algérie.",
+        "button_1_label": "Découvrir la collection",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Nos maisons",
+        "button_2_link": "/collections",
+        "tag": "Nouvelle collection"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "w1": {
+          "type": "word",
+          "settings": {
+            "text": "Prada"
+          }
+        },
+        "w2": {
+          "type": "word",
+          "settings": {
+            "text": "Moncler"
+          }
+        },
+        "w3": {
+          "type": "word",
+          "settings": {
+            "text": "Lacoste"
+          }
+        },
+        "w4": {
+          "type": "word",
+          "settings": {
+            "text": "Balmain"
+          }
+        }
+      },
+      "block_order": [
+        "w1",
+        "w2",
+        "w3",
+        "w4"
+      ],
+      "settings": {}
+    },
+    "brands": {
+      "type": "brands-grid",
+      "blocks": {
+        "b1": {
+          "type": "brand",
+          "settings": {
+            "name": "Prada",
+            "tagline": "Prêt-à-porter & accessoires"
+          }
+        },
+        "b2": {
+          "type": "brand",
+          "settings": {
+            "name": "Moncler",
+            "tagline": "Doudounes & outerwear"
+          }
+        },
+        "b3": {
+          "type": "brand",
+          "settings": {
+            "name": "Lacoste",
+            "tagline": "Polos & sportswear"
+          }
+        },
+        "b4": {
+          "type": "brand",
+          "settings": {
+            "name": "Balmain",
+            "tagline": "Maison parisienne"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "eyebrow": "Sélection",
+        "title": "Nos maisons",
+        "text": "Les grandes signatures de la mode, réunies au même endroit."
+      }
+    },
+    "categories": {
+      "type": "collection-list",
+      "settings": {
+        "eyebrow": "Explorer",
+        "title": "La garde-robe idéale"
+      }
+    },
+    "latest": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Fraîchement arrivé",
+        "title": "Nouveautés",
+        "products_to_show": 8,
+        "background": "ivory"
+      }
+    },
+    "editorial": {
+      "type": "signature",
+      "settings": {
+        "eyebrow": "Pièce signature",
+        "button_label": "Découvrir la pièce"
+      }
+    },
+    "perks": {
+      "type": "perks",
+      "blocks": {
+        "p1": {
+          "type": "perk",
+          "settings": {
+            "icon": "award",
+            "title": "Grandes maisons",
+            "text": "Une sélection pointue des plus belles signatures."
+          }
+        },
+        "p2": {
+          "type": "perk",
+          "settings": {
+            "icon": "truck",
+            "title": "Livraison partout",
+            "text": "Dans les 58 wilayas, à domicile ou en point relais."
+          }
+        },
+        "p3": {
+          "type": "perk",
+          "settings": {
+            "icon": "cash",
+            "title": "Paiement à la livraison",
+            "text": "Tu règles uniquement à la réception de ta commande."
+          }
+        },
+        "p4": {
+          "type": "perk",
+          "settings": {
+            "icon": "whatsapp",
+            "title": "Conseil personnalisé",
+            "text": "Une question sur une pièce ? Écris-nous sur WhatsApp."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {}
+    },
+    "statement": {
+      "type": "statement",
+      "settings": {
+        "line_1": "Le luxe n'est pas un détail,",
+        "line_2": "c'est une signature.",
+        "subtitle": "Chaque pièce est choisie pour sa coupe, sa matière et son allure. Habille-toi comme un roi."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Rejoins le Cercle",
+        "text": "Inscription facultative : sois averti des nouvelles pièces et des ventes privées."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "brands",
+    "categories",
+    "latest",
+    "editorial",
+    "perks",
+    "statement",
+    "newsletter"
+  ]
+}

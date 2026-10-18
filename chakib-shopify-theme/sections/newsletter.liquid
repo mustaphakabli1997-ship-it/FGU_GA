@@ -1,0 +1,24 @@
+<section class="nl-section section--ink2" id="club">
+  <div class="container nl-inner">
+    <div class="nl-box reveal">
+      <svg class="nl-crown" aria-hidden="true"><use href="#ck-crown"/></svg>
+      <p class="eyebrow center">{{ 'newsletter.eyebrow' | t }}</p>
+      <h2 class="display">{{ section.settings.title | escape }}</h2>
+      {%- if section.settings.text != blank -%}<p class="lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+      {% render 'newsletter-form', form_id: 'club-newsletter', form_class: 'nl-form' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter (optionnelle)",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Rejoins le Cercle" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Inscription facultative : sois averti des nouvelles pièces et des ventes privées." }
+  ],
+  "presets": [
+    { "name": "Newsletter (optionnelle)" }
+  ]
+}
+{% endschema %}

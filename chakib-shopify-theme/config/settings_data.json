@@ -1,0 +1,14 @@
+{
+  "current": {
+    "color_gold": "#e0bd69",
+    "color_gold_light": "#fee490",
+    "color_gold_dark": "#af8a46",
+    "color_ink": "#0f1014",
+    "color_ivory": "#f4eee2",
+    "logo_height": 46,
+    "brand_tagline": "Maison de mode",
+    "free_shipping_threshold": 30000,
+    "new_badge_days": 30,
+    "cart_type": "drawer"
+  }
+}

@@ -1,0 +1,13 @@
+{%- comment -%}
+  Renders a price. Params: product (optional), variant (optional, defaults to the product's selected/first available variant).
+{%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign compare = target.compare_at_price | default: 0
+-%}
+<span class="price">
+  <bdi dir="ltr" class="money">{{ target.price | money }}</bdi>
+  {%- if compare > target.price %}
+    <s><bdi dir="ltr" class="money">{{ compare | money }}</bdi></s>
+  {%- endif -%}
+</span>

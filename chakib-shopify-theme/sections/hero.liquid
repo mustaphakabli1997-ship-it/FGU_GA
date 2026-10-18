@@ -1,0 +1,95 @@
+<section class="hero" data-hero>
+  <div class="hero-bg" aria-hidden="true"><i class="glow g1"></i><i class="glow g2"></i></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow reveal">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 class="hero-title">
+        <span class="line reveal" style="--d: 80ms">{{ section.settings.title_1 | escape }}</span>
+        <span class="line reveal" style="--d: 180ms"><em>{{ section.settings.title_2 | escape }}</em></span>
+      </h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="hero-sub reveal" style="--d: 280ms">{{ section.settings.subtitle | escape }}</p>
+      {%- endif -%}
+      <div class="hero-cta reveal" style="--d: 360ms">
+        {%- if section.settings.button_1_label != blank -%}
+          <a class="btn btn-primary" href="{{ section.settings.button_1_link | default: routes.collections_url }}">{{ section.settings.button_1_label | escape }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank -%}
+          <a class="btn btn-ghost" href="{{ section.settings.button_2_link | default: routes.collections_url }}">{{ section.settings.button_2_label | escape }}</a>
+        {%- endif -%}
+      </div>
+      {%- if section.blocks.size > 0 -%}
+        <dl class="hero-stats reveal" style="--d: 440ms">
+          {%- for block in section.blocks -%}
+            <div {{ block.shopify_attributes }}>
+              <dt><bdi dir="ltr">{{ block.settings.value | escape }}</bdi></dt>
+              <dd>{{ block.settings.label | escape }}</dd>
+            </div>
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+
+    <div class="hero-visual">
+      <span class="hero-frame" aria-hidden="true"></span>
+      <div class="hero-img main reveal" style="--d: 200ms">
+        {%- if section.settings.image_1 != blank -%}
+          {{ section.settings.image_1 | image_url: width: 1100 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '550, 800, 1100', sizes: '(min-width: 960px) 40vw, 90vw', alt: section.settings.title_1 }}
+        {%- else -%}
+          <span class="hero-placeholder" aria-hidden="true"><svg class="ico crown"><use href="#ck-crown"/></svg><b>C</b></span>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.image_2 != blank -%}
+        <div class="hero-img second reveal" style="--d: 360ms">
+          {{ section.settings.image_2 | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 600', sizes: '25vw', alt: '' }}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.tag != blank -%}
+        <span class="hero-tag">{{ section.settings.tag | escape }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Héro éditorial",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Mode homme · Grandes maisons" },
+    { "type": "text", "id": "title_1", "label": "Titre — ligne 1", "default": "L'élégance" },
+    { "type": "text", "id": "title_2", "label": "Titre — ligne 2 (italique doré)", "default": "sans compromis" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Prada, Moncler, Lacoste, Balmain… une sélection des plus grandes maisons, livrée partout en Algérie." },
+    { "type": "text", "id": "button_1_label", "label": "Bouton 1 — texte", "default": "Découvrir la collection" },
+    { "type": "url", "id": "button_1_link", "label": "Bouton 1 — lien", "default": "/collections/all" },
+    { "type": "text", "id": "button_2_label", "label": "Bouton 2 — texte", "default": "Nos maisons" },
+    { "type": "url", "id": "button_2_link", "label": "Bouton 2 — lien", "default": "/collections" },
+    { "type": "header", "content": "Visuels" },
+    { "type": "image_picker", "id": "image_1", "label": "Image principale (portrait, 4:5)", "info": "Sans image, un cadre doré avec la couronne s'affiche." },
+    { "type": "image_picker", "id": "image_2", "label": "Image secondaire (carrée)" },
+    { "type": "text", "id": "tag", "label": "Étiquette sur l'image", "default": "Nouvelle collection" }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Chiffre clé",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Valeur", "default": "58" },
+        { "type": "text", "id": "label", "label": "Légende", "default": "Wilayas livrées" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Héro éditorial",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "58", "label": "Wilayas livrées" } },
+        { "type": "stat", "settings": { "value": "4+", "label": "Grandes maisons" } },
+        { "type": "stat", "settings": { "value": "COD", "label": "Paiement à la livraison" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+{%- comment -%} Params: collection, index, attrs (optional editor attributes) {%- endcomment -%}
+{%- liquid
+  assign delay = index | default: 0 | modulo: 4 | times: 80
+  assign cover = collection.image | default: collection.products.first.featured_image
+-%}
+<a class="mosaic-tile reveal" style="--d: {{ delay }}ms" href="{{ collection.url }}" {{ attrs }}>
+  {%- if cover -%}
+    {{ cover | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360, 540, 720, 900', sizes: '(min-width: 1180px) 30vw, 50vw', alt: collection.title }}
+  {%- else -%}
+    <span class="mosaic-fallback" aria-hidden="true"><svg class="ico crown"><use href="#ck-crown"/></svg></span>
+  {%- endif -%}
+  <span class="mosaic-caption">
+    <b>{{ collection.title | escape }}</b>
+    <small>{{ 'general.pieces' | t: count: collection.products_count }}</small>
+  </span>
+</a>
