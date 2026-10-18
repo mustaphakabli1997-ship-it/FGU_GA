@@ -1,0 +1,27 @@
+<section class="statement">
+  <div class="container">
+    <h2 class="statement-text reveal">
+      <span class="outline">{{ section.settings.line_1 | escape }}</span>
+      <span>{{ section.settings.line_2 | escape }}</span>
+      <em>{{ section.settings.line_3 | escape }}</em>
+    </h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="statement-sub reveal" style="--d: 100ms">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Slogan géant",
+  "settings": [
+    { "type": "text", "id": "line_1", "label": "Partie contour", "default": "De 19 à 50 ans" },
+    { "type": "text", "id": "line_2", "label": "Partie pleine", "default": "le style" },
+    { "type": "text", "id": "line_3", "label": "Partie orange", "default": "n'a pas d'âge." },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Du premier entraînement aux rendez-vous importants : des pièces conçues pour accompagner chaque étape." }
+  ],
+  "presets": [
+    { "name": "Slogan géant" }
+  ]
+}
+{% endschema %}

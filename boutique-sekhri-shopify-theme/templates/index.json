@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "stat-1": { "type": "stat", "settings": { "value": "58", "label": "Wilayas livrées" } },
+        "stat-2": { "type": "stat", "settings": { "value": "19–50", "label": "Ans, tous les styles" } },
+        "stat-3": { "type": "stat", "settings": { "value": "COD", "label": "Paiement à la livraison" } }
+      },
+      "block_order": ["stat-1", "stat-2", "stat-3"],
+      "settings": {
+        "eyebrow": "Boutique Sekhri — Homme",
+        "title_outline": "LUXURY",
+        "title_solid": "SPORTSWEAR",
+        "subtitle": "Ensembles, tricots, joggers, shorts et pièces signature pour hommes de 19 à 50 ans. Une allure premium, livrée partout en Algérie.",
+        "button_1_label": "Découvrir la collection",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Nouveautés",
+        "button_2_link": "/collections/all"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "blocks": {
+        "w1": { "type": "word", "settings": { "text": "Ensembles" } },
+        "w2": { "type": "word", "settings": { "text": "Tricots" } },
+        "w3": { "type": "word", "settings": { "text": "Pantalons & Joggers" } },
+        "w4": { "type": "word", "settings": { "text": "Shorts" } },
+        "w5": { "type": "word", "settings": { "text": "Sweats & Hoodies" } },
+        "w6": { "type": "word", "settings": { "text": "Vestes" } },
+        "w7": { "type": "word", "settings": { "text": "T-shirts & Polos" } }
+      },
+      "block_order": ["w1", "w2", "w3", "w4", "w5", "w6", "w7"],
+      "settings": {}
+    },
+    "categories": {
+      "type": "collection-list",
+      "settings": { "eyebrow": "Explorer", "title": "Tout le vestiaire" }
+    },
+    "latest": {
+      "type": "featured-collection",
+      "settings": { "eyebrow": "Fraîchement arrivé", "title": "Nouveautés", "products_to_show": 8 }
+    },
+    "signature": {
+      "type": "signature",
+      "settings": { "eyebrow": "Pièce signature", "button_label": "Découvrir" }
+    },
+    "perks": {
+      "type": "perks",
+      "blocks": {
+        "p1": { "type": "perk", "settings": { "icon": "award", "title": "Qualité premium", "text": "Des finitions soignées, pensées pour durer." } },
+        "p2": { "type": "perk", "settings": { "icon": "truck", "title": "Livraison partout", "text": "Dans les 58 wilayas, à domicile ou en point relais." } },
+        "p3": { "type": "perk", "settings": { "icon": "cash", "title": "Paiement à la livraison", "text": "Tu paies uniquement quand tu reçois ta commande." } },
+        "p4": { "type": "perk", "settings": { "icon": "bolt", "title": "Commande en 1 minute", "text": "Nom, téléphone, adresse : c'est tout." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": {}
+    },
+    "statement": {
+      "type": "statement",
+      "settings": {
+        "line_1": "De 19 à 50 ans",
+        "line_2": "le style",
+        "line_3": "n'a pas d'âge.",
+        "subtitle": "Du premier entraînement aux rendez-vous importants : des pièces conçues pour accompagner chaque étape."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Sois le premier informé",
+        "text": "Inscription facultative : laisse ton email pour être averti des prochains produits et des offres."
+      }
+    }
+  },
+  "order": ["hero", "marquee", "categories", "latest", "signature", "perks", "statement", "newsletter"]
+}

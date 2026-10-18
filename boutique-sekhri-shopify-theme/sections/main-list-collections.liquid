@@ -1,0 +1,22 @@
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ 'collection.all_categories' | t }}</span></nav>
+    <h1 class="display reveal">{{ 'collection.all_categories' | t }}</h1>
+  </div>
+</section>
+<section class="section tight no-top">
+  <div class="container">
+    <div class="cat-grid">
+      {%- for collection in collections -%}
+        {% render 'category-tile', collection: collection, index: forloop.index0 %}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Liste des collections",
+  "settings": []
+}
+{% endschema %}

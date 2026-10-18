@@ -1,0 +1,155 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Boutique Sekhri",
+    "theme_version": "1.0.0",
+    "theme_author": "Boutique Sekhri",
+    "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/tree/claude/boutique-sekhri-store/boutique-sekhri-shopify-theme",
+    "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Couleur d'accent (orange néon)",
+        "default": "#ff4d00"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_hover",
+        "label": "Accent au survol",
+        "default": "#ff7a2e"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Fond du site (noir mat)",
+        "default": "#0b0b0c"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Texte",
+        "default": "#f3f3f4"
+      },
+      {
+        "type": "color",
+        "id": "color_silver",
+        "label": "Argent métallique",
+        "default": "#c9ccd1"
+      }
+    ]
+  },
+  {
+    "name": "Logo et icône",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo (optionnel)",
+        "info": "Sans image, le monogramme BS intégré est utilisé."
+      },
+      {
+        "type": "text",
+        "id": "brand_word_1",
+        "label": "Nom de marque — mot 1",
+        "default": "Boutique"
+      },
+      {
+        "type": "text",
+        "id": "brand_word_2",
+        "label": "Nom de marque — mot 2 (en orange)",
+        "default": "Sekhri"
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Signature",
+        "default": "LUXURY SPORTSWEAR"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Image carrée, 32 x 32 px minimum."
+      }
+    ]
+  },
+  {
+    "name": "Livraison et panier",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Seuil de livraison offerte (affichage)",
+        "default": 15000,
+        "info": "Affiche une barre de progression dans le panier. Les vrais tarifs se règlent dans Paramètres > Expédition et livraison. Mettre 0 pour masquer."
+      },
+      {
+        "type": "number",
+        "id": "new_badge_days",
+        "label": "Badge « Nouveau » pendant (jours)",
+        "default": 30
+      },
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "default": "drawer",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Tiroir latéral"
+          },
+          {
+            "value": "page",
+            "label": "Page panier"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux et contact",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok (URL)"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Numéro WhatsApp",
+        "info": "Format international sans + ni espaces, ex : 213550123456. Affiche un bouton WhatsApp flottant."
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Téléphone"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Email de contact"
+      },
+      {
+        "type": "text",
+        "id": "contact_address",
+        "label": "Adresse"
+      }
+    ]
+  }
+]

@@ -1,0 +1,49 @@
+{%- comment -%} Params: product, index (optional, for the staggered reveal) {%- endcomment -%}
+{%- liquid
+  assign delay = index | default: 0 | modulo: 4 | times: 70
+  assign first_image = product.featured_image
+  assign second_image = product.images[1]
+-%}
+<a class="card reveal" style="--d: {{ delay }}ms" href="{{ product.url }}">
+  <div class="card-media">
+    {% render 'badges', product: product %}
+    {%- if first_image -%}
+      {{
+        first_image
+        | image_url: width: 720
+        | image_tag: class: 'media-img', widths: '240, 360, 480, 720', sizes: '(min-width: 1180px) 25vw, 50vw', loading: 'lazy', alt: product.title
+      }}
+      {%- if second_image -%}
+        {{
+          second_image
+          | image_url: width: 720
+          | image_tag: class: 'media-alt', widths: '240, 360, 480, 720', sizes: '(min-width: 1180px) 25vw, 50vw', loading: 'lazy', alt: ''
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+    <span class="card-cta">{{ 'general.view' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+  </div>
+  <div class="card-info">
+    {%- if product.type != blank -%}
+      <span class="card-cat">{{ product.type }}</span>
+    {%- endif -%}
+    <h3 class="card-name">{{ product.title | escape }}</h3>
+    <div class="card-row">
+      {% render 'price', product: product %}
+      {%- for option in product.options_with_values -%}
+        {%- assign option_name = option.name | downcase -%}
+        {%- if option_name contains 'couleur' or option_name contains 'color' or option.name contains 'لون' -%}
+          <span class="swatches">
+            {%- for value in option.values limit: 5 -%}
+              {%- if value.swatch.color -%}
+                <i style="background: {{ value.swatch.color }}" title="{{ value | escape }}"></i>
+              {%- endif -%}
+            {%- endfor -%}
+          </span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</a>

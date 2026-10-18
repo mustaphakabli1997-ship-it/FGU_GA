@@ -1,0 +1,18 @@
+{%- comment -%} Params: collection, index, attrs (optional editor attributes) {%- endcomment -%}
+{%- liquid
+  assign n = index | default: 0 | plus: 1
+  assign delay = index | default: 0 | modulo: 4 | times: 70
+  assign cover = collection.image | default: collection.products.first.featured_image
+-%}
+<a class="cat-tile reveal{% if cover %} has-image{% endif %}" style="--d: {{ delay }}ms" href="{{ collection.url }}" {{ attrs }}>
+  <span class="cat-num">{% if n < 10 %}0{% endif %}{{ n }}</span>
+  <div class="cat-art">
+    {%- if cover -%}
+      {{ cover | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 480, 640', sizes: '(min-width: 1180px) 25vw, 50vw', alt: collection.title }}
+    {%- else -%}
+      {{ 'collection-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="cat-label"><b>{{ collection.title | escape }}</b><span>{{ 'general.pieces' | t: count: collection.products_count }}</span></div>
+  <i class="cat-arrow"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></i>
+</a>

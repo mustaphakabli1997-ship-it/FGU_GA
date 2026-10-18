@@ -1,0 +1,23 @@
+{%- comment -%}
+  Optional newsletter signup. Creates a Shopify customer with email-marketing consent and the "newsletter" tag,
+  so the contact can be emailed with Shopify Email. Params: form_id, form_class (optional).
+{%- endcomment -%}
+{%- form 'customer', id: form_id, class: form_class -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  {%- if form.posted_successfully? -%}
+    <div class="nl-success" role="status">
+      <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+      <div><b>{{ 'newsletter.thanks' | t }}</b><span>{{ 'newsletter.thanks_text' | t }}</span></div>
+    </div>
+  {%- else -%}
+    <div class="nl-row">
+      <label class="sr" for="{{ form_id }}-email">{{ 'newsletter.label' | t }}</label>
+      <input id="{{ form_id }}-email" type="email" name="contact[email]" required autocomplete="email" inputmode="email" dir="ltr" placeholder="{{ 'newsletter.placeholder' | t }}" value="{{ form.email }}">
+      <button class="btn btn-primary" type="submit"><span>{{ 'newsletter.button' | t }}</span><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    </div>
+    <p class="nl-note">{{ 'newsletter.note' | t }}</p>
+    {%- if form.errors -%}
+      <p class="nl-msg err" role="alert">{{ 'newsletter.error' | t }}</p>
+    {%- endif -%}
+  {%- endif -%}
+{%- endform -%}

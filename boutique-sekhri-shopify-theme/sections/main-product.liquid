@@ -1,0 +1,154 @@
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign active_media = current.featured_media.id | default: product.featured_media.id
+  assign form_id = 'product-form-' | append: section.id
+-%}
+<section class="product-page" data-product-section data-section-id="{{ section.id }}">
+  <div class="container">
+    <nav class="crumbs" aria-label="breadcrumb">
+      <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i>
+      {%- if product.collections.size > 0 -%}
+        {%- assign crumb = product.collections.first -%}
+        <a href="{{ crumb.url }}">{{ crumb.title | escape }}</a><i>/</i>
+      {%- endif -%}
+      <span>{{ product.title | escape }}</span>
+    </nav>
+
+    <div class="product-grid">
+      <div class="gallery">
+        <div class="stage main-stage" data-stage>
+          {% render 'badges', product: product %}
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <div class="stage-slide{% if media.id == active_media %} is-active{% endif %}" data-media-id="{{ media.id }}">
+                {{
+                  media
+                  | image_url: width: 1200
+                  | image_tag: widths: '480, 720, 960, 1200', sizes: '(min-width: 960px) 55vw, 100vw', loading: 'eager', alt: media.alt | default: product.title
+                }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if product.media.size == 0 -%}
+            <div class="stage-slide is-active">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+          {%- endif -%}
+        </div>
+        {%- if product.media.size > 1 -%}
+          <div class="thumbs">
+            {%- for media in product.media -%}
+              {%- if media.media_type == 'image' -%}
+                <button type="button" class="thumb{% if media.id == active_media %} on{% endif %}" data-thumb="{{ media.id }}" aria-label="{{ forloop.index }}">
+                  {{ media | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 160', alt: '' }}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="product-info">
+        {%- if product.type != blank -%}<p class="eyebrow">{{ product.type | escape }}</p>{%- endif -%}
+        <h1 class="product-title">{{ product.title | escape }}</h1>
+        <div class="product-price" data-price>{% render 'price', variant: current %}</div>
+        {%- if product.description != blank -%}
+          <div class="lead rte">{{ product.description }}</div>
+        {%- endif -%}
+
+        {%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate', data-product-form: '' -%}
+          <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              {%- liquid
+                assign option_name = option.name | downcase
+                assign is_color = false
+                if option_name contains 'couleur' or option_name contains 'color' or option.name contains 'لون'
+                  assign is_color = true
+                endif
+              -%}
+              <fieldset class="opt" data-option>
+                <legend>{{ option.name | escape }}{% if is_color %}: <b data-option-label>{{ option.selected_value | escape }}</b>{% endif %}</legend>
+                {%- if is_color -%}
+                  <div class="swatch-list">
+                    {%- for value in option.values -%}
+                      <label class="swatch">
+                        <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" data-position="{{ option.position }}"{% if option.selected_value == value %} checked{% endif %}>
+                        {%- if value.swatch.color -%}
+                          <i style="background: {{ value.swatch.color }}"></i>
+                        {%- elsif value.swatch.image -%}
+                          <i style="background-image: url('{{ value.swatch.image | image_url: width: 80 }}'); background-size: cover"></i>
+                        {%- else -%}
+                          <i class="swatch-text">{{ value | escape }}</i>
+                        {%- endif -%}
+                        <span class="sr">{{ value | escape }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="size-list">
+                    {%- for value in option.values -%}
+                      <label class="size">
+                        <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" data-position="{{ option.position }}"{% if option.selected_value == value %} checked{% endif %}>
+                        <span>{{ value | escape }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </fieldset>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <div class="buy-row">
+            <div class="qty big" role="group" aria-label="{{ 'products.quantity' | t }}">
+              <button type="button" data-qty-step="-1" aria-label="-"><svg class="ico" aria-hidden="true"><use href="#i-minus"/></svg></button>
+              <input class="qty-input" type="number" name="quantity" value="1" min="1" max="10" inputmode="numeric" aria-label="{{ 'products.quantity' | t }}" data-qty-input>
+              <button type="button" data-qty-step="1" aria-label="+"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></button>
+            </div>
+            <button class="btn btn-primary grow" type="submit" name="add" data-add-button data-text-add="{{ 'products.add_to_cart' | t | escape }}" data-text-sold="{{ 'products.sold_out' | t | escape }}" data-text-unavailable="{{ 'products.unavailable' | t | escape }}"{% unless current.available %} disabled{% endunless %}>
+              <svg class="ico" aria-hidden="true"><use href="#i-bag"/></svg>
+              <span data-add-label>{% if current.available %}{{ 'products.add_to_cart' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</span>
+            </button>
+          </div>
+          <button class="btn btn-ghost btn-block" type="button" data-buy-now{% unless current.available %} disabled{% endunless %}>
+            {{ 'products.buy_now' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </button>
+          <p class="field-error" data-form-error role="alert" hidden></p>
+        {%- endform -%}
+
+        {%- if settings.whatsapp_number != blank -%}
+          {%- capture wa_text -%}{{ product.title }} — {{ shop.url }}{{ product.url }}{%- endcapture -%}
+          <a class="btn btn-whatsapp btn-block" href="https://wa.me/{{ settings.whatsapp_number | strip }}?text={{ wa_text | url_encode }}" target="_blank" rel="noopener">
+            <svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>{{ 'products.whatsapp' | t }}
+          </a>
+        {%- endif -%}
+
+        <ul class="assurances">
+          <li><svg class="ico" aria-hidden="true"><use href="#i-truck"/></svg>{{ 'products.assure_delivery' | t }}</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-cash"/></svg>{{ 'products.assure_cod' | t }}</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-award"/></svg>{{ 'products.assure_quality' | t }}</li>
+        </ul>
+        <a class="notify-link" href="{{ routes.root_url }}#club"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>{{ 'products.notify_me' | t }}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-buy" data-sticky-buy>
+    <div><b>{{ product.title | escape }}</b><span data-sticky-price>{% render 'price', variant: current %}</span></div>
+    <button class="btn btn-primary" type="button" data-sticky-add{% unless current.available %} disabled{% endunless %}>{{ 'products.add_to_cart' | t }}</button>
+  </div>
+
+  <script type="application/json" data-variants>{{ product.variants | json }}</script>
+  {%- for variant in product.variants -%}
+    <template data-price-for="{{ variant.id }}">{% render 'price', variant: variant %}</template>
+  {%- endfor -%}
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Page produit",
+  "settings": []
+}
+{% endschema %}

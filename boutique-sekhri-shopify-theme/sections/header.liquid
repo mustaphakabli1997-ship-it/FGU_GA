@@ -1,0 +1,88 @@
+<header class="site-header" id="header" data-header>
+  <div class="container header-inner">
+    <button class="icon-btn menu-btn" type="button" data-menu-open aria-label="{{ 'general.menu' | t }}" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
+    </button>
+
+    {% render 'brand' %}
+
+    <nav class="nav" aria-label="{{ 'general.menu' | t }}">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <a href="{{ link.url }}"{% if link.active or link.child_active %} class="on" aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <div class="actions">
+      {%- if localization.available_languages.size > 1 -%}
+        {%- form 'localization', id: 'header-localization', class: 'lang-form' -%}
+          <label class="sr" for="header-language">{{ 'general.language' | t }}</label>
+          <select id="header-language" name="language_code" class="lang-select" data-auto-submit>
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+            {%- endfor -%}
+          </select>
+          <noscript><button class="lang-btn" type="submit">OK</button></noscript>
+        {%- endform -%}
+      {%- endif -%}
+
+      <button class="icon-btn" type="button" data-search-open aria-label="{{ 'general.search' | t }}">
+        <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      </button>
+
+      {%- if section.settings.show_newsletter_bell -%}
+        <a class="icon-btn bell-btn" href="{{ routes.root_url }}#club" aria-label="{{ 'newsletter.eyebrow' | t }}">
+          <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
+        </a>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-btn account-btn" href="{{ routes.account_url }}" aria-label="{{ 'general.account' | t }}">
+          <svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>
+        </a>
+      {%- endif -%}
+
+      <a class="icon-btn cart-btn" href="{{ routes.cart_url }}" data-cart-open aria-label="{{ 'general.cart' | t }}">
+        <svg class="ico" aria-hidden="true"><use href="#i-bag"/></svg>
+        <span class="badge" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" hidden>
+  <div class="mobile-menu-inner">
+    <button class="icon-btn mobile-close" type="button" data-menu-close aria-label="{{ 'general.close' | t }}">
+      <svg class="ico" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+    <nav aria-label="{{ 'general.menu' | t }}">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <a href="{{ link.url }}">{{ link.title | escape }}</a>
+      {%- endfor -%}
+      {%- if section.settings.show_newsletter_bell -%}
+        <a class="mm-nl" href="{{ routes.root_url }}#club"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>{{ 'newsletter.eyebrow' | t }}</a>
+      {%- endif -%}
+    </nav>
+  </div>
+</div>
+
+<div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="{{ 'general.search' | t }}" hidden>
+  <div class="container search-inner">
+    <form class="search-field" action="{{ routes.search_url }}" method="get" role="search">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="search-input" type="search" name="q" autocomplete="off" placeholder="{{ 'search.placeholder' | t }}" aria-label="{{ 'search.placeholder' | t }}">
+      <input type="hidden" name="type" value="product">
+      <button class="icon-btn" type="button" data-search-close aria-label="{{ 'general.close' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </form>
+    <p class="muted">{{ 'search.hint' | t }}</p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu principal", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_newsletter_bell", "label": "Afficher la cloche d'inscription à la newsletter", "default": true }
+  ]
+}
+{% endschema %}

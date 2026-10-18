@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "main-collection", "settings": { "products_per_page": 24, "enable_sorting": true, "enable_filtering": true, "menu": "main-menu" } }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,42 @@
+{%- liquid
+  assign item = section.settings.product | default: collections['all'].products.first
+-%}
+{%- if item != blank -%}
+  <section class="signature">
+    <div class="container signature-inner">
+      <div class="signature-art reveal">
+        <div class="plate">
+          {%- if item.featured_image -%}
+            {{ item.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 960px) 45vw, 90vw', alt: item.title }}
+          {%- else -%}
+            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+        <span class="ring"></span>
+      </div>
+      <div class="signature-copy reveal" style="--d: 120ms">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="display">{{ item.title | escape }}</h2>
+        {%- if item.description != blank -%}
+          <p class="lead">{{ item.description | strip_html | truncate: 200 }}</p>
+        {%- endif -%}
+        <div class="signature-price">{% render 'price', product: item %}</div>
+        <a class="btn btn-primary" href="{{ item.url }}">{{ section.settings.button_label | escape }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Pièce signature",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Pièce signature" },
+    { "type": "product", "id": "product", "label": "Produit", "info": "Sans choix : le premier produit de la boutique." },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Découvrir" }
+  ],
+  "presets": [
+    { "name": "Pièce signature" }
+  ]
+}
+{% endschema %}

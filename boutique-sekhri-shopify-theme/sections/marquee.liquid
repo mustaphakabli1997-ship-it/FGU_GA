@@ -1,0 +1,42 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker">
+      <div class="ticker-track">
+        {%- for i in (1..4) -%}
+          {%- for block in section.blocks -%}
+            <span {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span><i>✦</i>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau défilant",
+  "blocks": [
+    {
+      "type": "word",
+      "name": "Mot",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Ensembles" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau défilant",
+      "blocks": [
+        { "type": "word", "settings": { "text": "Ensembles" } },
+        { "type": "word", "settings": { "text": "Tricots" } },
+        { "type": "word", "settings": { "text": "Pantalons & Joggers" } },
+        { "type": "word", "settings": { "text": "Shorts" } },
+        { "type": "word", "settings": { "text": "Sweats & Hoodies" } },
+        { "type": "word", "settings": { "text": "Vestes" } },
+        { "type": "word", "settings": { "text": "T-shirts & Polos" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

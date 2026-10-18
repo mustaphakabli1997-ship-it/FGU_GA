@@ -1,0 +1,9 @@
+{%- comment -%} Logo + brand name. Uses the uploaded logo when set, else the built-in BS monogram. {%- endcomment -%}
+<a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+  {%- if settings.logo != blank -%}
+    {{ settings.logo | image_url: width: 240 | image_tag: class: 'brand-logo', alt: shop.name, widths: '120, 240', height: 34 }}
+  {%- else -%}
+    <svg class="brand-mark" viewBox="15 8 808 508" aria-hidden="true"><use href="#sk-mark"/></svg>
+  {%- endif -%}
+  <span class="brand-word"><b>{{ settings.brand_word_1 }}</b> <em>{{ settings.brand_word_2 }}</em></span>
+</a>

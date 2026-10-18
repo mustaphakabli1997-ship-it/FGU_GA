@@ -1,0 +1,26 @@
+<section class="nl-section" id="club">
+  <div class="container nl-inner">
+    <div class="nl-copy reveal">
+      <svg class="nl-mark" viewBox="15 8 808 508" aria-hidden="true"><use href="#sk-mark"/></svg>
+      <p class="eyebrow">{{ 'newsletter.eyebrow' | t }}</p>
+      <h2 class="display">{{ section.settings.title | escape }}</h2>
+      {%- if section.settings.text != blank -%}<p class="lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="reveal" style="--d: 120ms">
+      {% render 'newsletter-form', form_id: 'club-newsletter', form_class: 'nl-form big' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter (optionnelle)",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Sois le premier informé" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Inscription facultative : laisse ton email pour être averti des prochains produits et des offres." }
+  ],
+  "presets": [
+    { "name": "Newsletter (optionnelle)" }
+  ]
+}
+{% endschema %}

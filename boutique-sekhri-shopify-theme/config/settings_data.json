@@ -1,0 +1,15 @@
+{
+  "current": {
+    "color_accent": "#ff4d00",
+    "color_accent_hover": "#ff7a2e",
+    "color_bg": "#0b0b0c",
+    "color_text": "#f3f3f4",
+    "color_silver": "#c9ccd1",
+    "brand_word_1": "Boutique",
+    "brand_word_2": "Sekhri",
+    "brand_tagline": "LUXURY SPORTSWEAR",
+    "free_shipping_threshold": 15000,
+    "new_badge_days": 30,
+    "cart_type": "drawer"
+  }
+}

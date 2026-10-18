@@ -1,0 +1,21 @@
+{
+  "name": "En-tête",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg-1": { "type": "message", "settings": { "text": "Livraison dans les 58 wilayas" } },
+        "msg-2": { "type": "message", "settings": { "text": "Paiement à la livraison" } },
+        "msg-3": { "type": "message", "settings": { "text": "Rejoins le Club : sois averti à chaque nouveau produit" } }
+      },
+      "block_order": ["msg-1", "msg-2", "msg-3"],
+      "settings": { "label": "Annonces", "link": "" }
+    },
+    "header": {
+      "type": "header",
+      "settings": { "menu": "main-menu", "show_newsletter_bell": true }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

@@ -1,0 +1,284 @@
+/* Boutique Sekhri — Shopify theme behaviour (no dependencies).
+   Everything is event-delegated so it survives the theme editor re-rendering sections. */
+(function () {
+  'use strict';
+
+  const $ = (sel, el = document) => el.querySelector(sel);
+  const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+  const theme = window.skTheme || { routes: {}, strings: {}, cartType: 'drawer' };
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const designMode = Boolean(window.Shopify && window.Shopify.designMode);
+
+  // ----------------------------------------------------------------- layers
+  const layers = [];
+  function openLayer(el, focusSel) {
+    if (!el || !el.hidden) return;
+    el.hidden = false;
+    layers.push(el);
+    if (el.id === 'cart-drawer') $('#scrim').hidden = false;
+    document.body.classList.add('lock');
+    requestAnimationFrame(() => {
+      el.classList.add('open');
+      if (el.id === 'cart-drawer') $('#scrim').classList.add('open');
+      const target = (focusSel && $(focusSel, el)) || $('button, [href], input', el);
+      if (target) target.focus({ preventScroll: true });
+    });
+  }
+  function closeLayer(el) {
+    if (!el || el.hidden) return;
+    el.classList.remove('open');
+    layers.splice(layers.indexOf(el), 1);
+    if (el.id === 'cart-drawer') $('#scrim').classList.remove('open');
+    setTimeout(() => {
+      el.hidden = true;
+      if (el.id === 'cart-drawer') $('#scrim').hidden = true;
+      if (!layers.length) document.body.classList.remove('lock');
+    }, 320);
+  }
+
+  // ------------------------------------------------------------------ toast
+  function toast(message, isError) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    if (isError) el.style.borderInlineStartColor = '#ff5d5d';
+    el.textContent = message;
+    $('#toasts').append(el);
+    requestAnimationFrame(() => el.classList.add('in'));
+    setTimeout(() => { el.classList.remove('in'); setTimeout(() => el.remove(), 400); }, 3000);
+  }
+
+  // ------------------------------------------------------------------- cart
+  const json = async (res) => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.status >= 400) throw new Error(data.description || data.message || theme.strings.updateError);
+    return data;
+  };
+
+  function setCount(count) {
+    $$('[data-cart-count]').forEach((el) => { el.textContent = count; el.hidden = !count; });
+  }
+
+  function renderDrawer(html) {
+    if (!html) return;
+    const fresh = $('#cart-drawer', new DOMParser().parseFromString(html, 'text/html'));
+    const live = $('#cart-drawer');
+    if (fresh && live) live.innerHTML = fresh.innerHTML;
+  }
+
+  async function refreshCart(sectionHtml) {
+    if (sectionHtml) renderDrawer(sectionHtml);
+    else renderDrawer(await (await fetch(`${theme.routes.cart}?section_id=cart-drawer`)).text());
+    const cart = await json(await fetch(theme.routes.cartJson, { headers: { Accept: 'application/json' } }));
+    setCount(cart.item_count);
+  }
+
+  async function addToCart(form) {
+    const body = new FormData(form);
+    body.append('sections', 'cart-drawer');
+    body.append('sections_url', window.location.pathname);
+    const data = await json(await fetch(`${theme.routes.cartAdd}.js`, { method: 'POST', body, headers: { Accept: 'application/json' } }));
+    await refreshCart(data.sections && data.sections['cart-drawer']);
+    return data;
+  }
+
+  async function changeLine(line, quantity) {
+    const data = await json(await fetch(`${theme.routes.cartChange}.js`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ line, quantity, sections: 'cart-drawer', sections_url: window.location.pathname }),
+    }));
+    setCount(data.item_count);
+    if ($('[data-cart-page]')) { window.location.reload(); return; }
+    renderDrawer(data.sections && data.sections['cart-drawer']);
+  }
+
+  // ---------------------------------------------------------------- product
+  function productState(root) {
+    const dataEl = $('[data-variants]', root);
+    return { variants: dataEl ? JSON.parse(dataEl.textContent) : [] };
+  }
+
+  function currentVariant(root, variants) {
+    const chosen = [];
+    $$('input[type="radio"][data-position]:checked', root).forEach((input) => { chosen[Number(input.dataset.position) - 1] = input.value; });
+    return variants.find((v) => chosen.every((value, i) => v[`option${i + 1}`] === value)) || null;
+  }
+
+  function showMedia(root, mediaId) {
+    if (!mediaId) return;
+    const slides = $$('.stage-slide', root);
+    if (!slides.some((s) => s.dataset.mediaId === String(mediaId))) return;
+    slides.forEach((s) => s.classList.toggle('is-active', s.dataset.mediaId === String(mediaId)));
+    $$('[data-thumb]', root).forEach((t) => t.classList.toggle('on', t.dataset.thumb === String(mediaId)));
+  }
+
+  function updateVariant(root) {
+    const { variants } = productState(root);
+    const variant = currentVariant(root, variants);
+    const addBtn = $('[data-add-button]', root);
+    const label = $('[data-add-label]', root);
+    const buyNow = $('[data-buy-now]', root);
+    const sticky = $('[data-sticky-add]', root);
+
+    $$('[data-option]', root).forEach((fs) => {
+      const checked = $('input:checked', fs);
+      const out = $('[data-option-label]', fs);
+      if (out && checked) out.textContent = checked.value;
+    });
+
+    const available = Boolean(variant && variant.available);
+    [addBtn, buyNow, sticky].forEach((b) => { if (b) b.disabled = !available; });
+    if (label) {
+      label.textContent = !variant ? addBtn.dataset.textUnavailable : available ? addBtn.dataset.textAdd : addBtn.dataset.textSold;
+    }
+    if (!variant) return;
+
+    $('[data-variant-id]', root).value = variant.id;
+    const priceTpl = $(`template[data-price-for="${variant.id}"]`, root);
+    if (priceTpl) {
+      $('[data-price]', root).innerHTML = priceTpl.innerHTML;
+      const stickyPrice = $('[data-sticky-price]', root);
+      if (stickyPrice) stickyPrice.innerHTML = priceTpl.innerHTML;
+    }
+    showMedia(root, variant.featured_media && variant.featured_media.id);
+    const url = new URL(window.location.href);
+    url.searchParams.set('variant', variant.id);
+    window.history.replaceState({}, '', url);
+  }
+
+  async function submitProduct(root, { buyNow = false } = {}) {
+    const form = $('[data-product-form]', root);
+    const err = $('[data-form-error]', root);
+    err.hidden = true;
+    const buttons = [$('[data-add-button]', root), $('[data-buy-now]', root), $('[data-sticky-add]', root)].filter(Boolean);
+    buttons.forEach((b) => { b.disabled = true; b.setAttribute('aria-busy', 'true'); });
+    try {
+      await addToCart(form);
+      if (buyNow) { window.location.href = '/checkout'; return; }
+      toast(theme.strings.added);
+      if (theme.cartType === 'drawer') openLayer($('#cart-drawer'));
+      else window.location.href = theme.routes.cart;
+    } catch (e) {
+      err.textContent = e.message;
+      err.hidden = false;
+    } finally {
+      buttons.forEach((b) => b.removeAttribute('aria-busy'));
+      updateVariant(root);
+    }
+  }
+
+  // ---------------------------------------------------------------- effects
+  let revealObserver;
+  function initReveal(scope = document) {
+    const els = $$('.reveal:not(.in)', scope);
+    if (!('IntersectionObserver' in window) || reduceMotion || designMode) { els.forEach((el) => el.classList.add('in')); return; }
+    revealObserver = revealObserver || new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); revealObserver.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    els.forEach((el) => revealObserver.observe(el));
+  }
+
+  function initHero(scope = document) {
+    const hero = $('[data-hero]', scope);
+    if (!hero || hero.dataset.bound || reduceMotion || matchMedia('(hover: none)').matches) return;
+    hero.dataset.bound = '1';
+    let raf = 0;
+    hero.addEventListener('pointermove', (e) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = hero.getBoundingClientRect();
+        hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+        hero.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+      });
+    });
+  }
+
+  function onScroll() {
+    const header = $('[data-header]');
+    if (header) header.classList.toggle('scrolled', window.scrollY > 24);
+  }
+
+  // ----------------------------------------------------------------- events
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+
+    if (t.closest('[data-menu-open]')) {
+      openLayer($('#mobile-menu'));
+      $('[data-menu-open]').setAttribute('aria-expanded', 'true');
+      return;
+    }
+    if (t.closest('[data-menu-close]') || (t.closest('#mobile-menu a') && !t.closest('[data-menu-open]'))) {
+      closeLayer($('#mobile-menu'));
+      const opener = $('[data-menu-open]');
+      if (opener) opener.setAttribute('aria-expanded', 'false');
+      return;
+    }
+    if (t.closest('[data-search-open]')) { openLayer($('#search-overlay'), 'input'); return; }
+    if (t.closest('[data-search-close]') || t.id === 'search-overlay') { closeLayer($('#search-overlay')); return; }
+
+    const cartLink = t.closest('[data-cart-open]');
+    if (cartLink && theme.cartType === 'drawer') {
+      e.preventDefault();
+      openLayer($('#cart-drawer'));
+      return;
+    }
+    if (t.closest('[data-cart-close]') || t.id === 'scrim') { closeLayer($('#cart-drawer')); return; }
+
+    const qty = t.closest('[data-qty-change]');
+    if (qty) {
+      qty.disabled = true;
+      changeLine(Number(qty.dataset.line), Number(qty.dataset.qtyChange)).catch((err) => toast(err.message, true)).finally(() => { qty.disabled = false; });
+      return;
+    }
+
+    const step = t.closest('[data-qty-step]');
+    if (step) {
+      const input = $('[data-qty-input]', step.closest('.qty'));
+      input.value = Math.max(1, Math.min(10, Number(input.value || 1) + Number(step.dataset.qtyStep)));
+      return;
+    }
+
+    const root = t.closest('[data-product-section]');
+    if (root) {
+      const thumb = t.closest('[data-thumb]');
+      if (thumb) { showMedia(root, thumb.dataset.thumb); return; }
+      if (t.closest('[data-buy-now]')) { submitProduct(root, { buyNow: true }); return; }
+      if (t.closest('[data-sticky-add]')) { submitProduct(root); return; }
+    }
+
+    const jump = t.closest('[data-scroll]');
+    if (jump) {
+      const target = $(jump.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
+    }
+  });
+
+  document.addEventListener('submit', (e) => {
+    const form = e.target.closest('[data-product-form]');
+    if (!form) return;
+    e.preventDefault();
+    submitProduct(form.closest('[data-product-section]'));
+  });
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    const root = t.closest('[data-product-section]');
+    if (root && t.matches('input[type="radio"][data-position]')) updateVariant(root);
+    if (t.matches('select[data-auto-submit]') && t.form) t.form.submit();
+    const filters = t.closest('[data-auto-submit-form]');
+    if (filters && !t.matches('select[data-auto-submit]')) filters.requestSubmit();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && layers.length) closeLayer(layers[layers.length - 1]);
+  });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // theme editor: re-run initialisers when a section is (re)loaded
+  document.addEventListener('shopify:section:load', (e) => { initReveal(e.target); initHero(e.target); onScroll(); });
+
+  initReveal();
+  initHero();
+  onScroll();
+})();

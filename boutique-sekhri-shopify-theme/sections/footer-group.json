@@ -1,0 +1,16 @@
+{
+  "name": "Pied de page",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "show_newsletter": true,
+        "newsletter_title": "Sois le premier informé",
+        "menu_shop": "main-menu",
+        "menu_info": "footer"
+      }
+    }
+  },
+  "order": ["footer"]
+}

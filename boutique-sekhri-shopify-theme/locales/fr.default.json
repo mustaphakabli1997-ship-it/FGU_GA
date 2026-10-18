@@ -1,0 +1,115 @@
+{
+  "general": {
+    "skip": "Aller au contenu",
+    "home": "Accueil",
+    "menu": "Menu",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "account": "Mon compte",
+    "login": "Connexion",
+    "cart": "Panier",
+    "language": "Langue",
+    "view": "Voir",
+    "see_all": "Tout voir",
+    "new": "Nouveau",
+    "sold_out": "Épuisé",
+    "all": "Tout",
+    "pieces": {
+      "one": "{{ count }} pièce",
+      "other": "{{ count }} pièces"
+    },
+    "page": "Page {{ number }}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "scroll": "Défiler",
+    "password_title": "Boutique bientôt ouverte",
+    "password_text": "Entre le mot de passe pour accéder à la boutique.",
+    "password_label": "Mot de passe",
+    "password_enter": "Entrer",
+    "password_error": "Mot de passe incorrect.",
+    "not_found_title": "Page introuvable",
+    "not_found_text": "Cette page n'existe pas ou le produit a été retiré.",
+    "back_to_shop": "Retour à la boutique"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Rechercher un produit…",
+    "hint": "Tape le nom d'un produit ou d'une catégorie.",
+    "results": {
+      "one": "{{ count }} résultat pour « {{ terms }} »",
+      "other": "{{ count }} résultats pour « {{ terms }} »"
+    },
+    "no_results": "Aucun produit ne correspond à ta recherche."
+  },
+  "collection": {
+    "sort_by": "Trier par",
+    "sort_manual": "Sélection",
+    "sort_best_selling": "Meilleures ventes",
+    "sort_title_ascending": "A → Z",
+    "sort_title_descending": "Z → A",
+    "sort_price_ascending": "Prix croissant",
+    "sort_price_descending": "Prix décroissant",
+    "sort_created_descending": "Nouveautés",
+    "sort_created_ascending": "Plus anciens",
+    "filters": "Filtres",
+    "apply": "Appliquer",
+    "clear": "Réinitialiser",
+    "price_from": "De",
+    "price_to": "À",
+    "empty": "Aucun produit dans cette catégorie pour le moment.",
+    "all_categories": "Toutes les catégories"
+  },
+  "products": {
+    "color": "Couleur",
+    "size": "Taille",
+    "quantity": "Quantité",
+    "add_to_cart": "Ajouter au panier",
+    "buy_now": "Commander maintenant",
+    "sold_out": "Épuisé",
+    "unavailable": "Indisponible",
+    "added": "Ajouté au panier",
+    "pick_option": "Choisis une option pour continuer.",
+    "assure_delivery": "Livraison partout en Algérie",
+    "assure_cod": "Paiement à la livraison",
+    "assure_quality": "Qualité premium",
+    "related": "Dans la même catégorie",
+    "whatsapp": "Commander sur WhatsApp",
+    "notify_me": "Être averti des prochains produits",
+    "sale": "-{{ percent }}%"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Ton panier est vide.",
+    "continue_shopping": "Continuer mes achats",
+    "remove": "Retirer",
+    "subtotal": "Sous-total",
+    "shipping_at_checkout": "Livraison et taxes calculées à l'étape suivante.",
+    "checkout": "Commander",
+    "free_left": "Plus que {{ amount }} pour la livraison offerte",
+    "free_reached": "Livraison offerte !",
+    "note": "Note pour la commande (optionnel)",
+    "update_error": "Impossible de mettre à jour le panier. Réessaie."
+  },
+  "newsletter": {
+    "eyebrow": "Club Sekhri",
+    "placeholder": "ton@email.com",
+    "button": "Je m'inscris",
+    "note": "Désabonnement en 1 clic depuis chaque email.",
+    "thanks": "Bienvenue dans le Club !",
+    "thanks_text": "Merci pour ton inscription. Tu seras averti des prochains produits.",
+    "error": "Entre une adresse email valide.",
+    "label": "Adresse email"
+  },
+  "footer": {
+    "shop": "Boutique",
+    "help": "Infos & contact",
+    "blurb": "Le sportswear de luxe pour les hommes qui ne s'arrêtent jamais.",
+    "made": "Luxury Sportswear",
+    "policies": "Informations légales"
+  },
+  "blog": {
+    "read_more": "Lire la suite",
+    "published": "Publié le {{ date }}",
+    "empty": "Aucun article pour le moment."
+  }
+}
