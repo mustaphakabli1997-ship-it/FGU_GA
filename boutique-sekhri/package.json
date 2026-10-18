@@ -1,0 +1,21 @@
+{
+  "name": "boutique-sekhri",
+  "version": "1.0.0",
+  "description": "Boutique Sekhri — Luxury Sportswear. Boutique en ligne pour hommes (19-50 ans) avec newsletter automatique.",
+  "private": true,
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^10.1.6"
+  }
+}

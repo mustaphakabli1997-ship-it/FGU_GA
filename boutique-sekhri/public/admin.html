@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0b0b0c">
+  <title>لوحة التحكم — Boutique Sekhri</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<section class="login" id="login" hidden>
+  <form class="login-card" id="login-form">
+    <img src="/assets/logo-mark.svg" alt="Boutique Sekhri" class="login-logo">
+    <h1>لوحة التحكم</h1>
+    <p class="muted">Boutique Sekhri — أدخل كلمة السر للمتابعة</p>
+    <label class="field"><span>كلمة السر</span>
+      <input type="password" name="password" autocomplete="current-password" required autofocus dir="ltr">
+    </label>
+    <p class="error" id="login-error" hidden></p>
+    <button class="btn primary block" type="submit">دخول</button>
+  </form>
+</section>
+
+<div class="app" id="app" hidden>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/admin"><img src="/assets/logo-mark.svg" alt=""><b>Boutique <em>Sekhri</em></b><span class="tag">لوحة التحكم</span></a>
+      <nav class="tabs" id="tabs" role="tablist">
+        <button role="tab" data-tab="products" class="on">المنتجات</button>
+        <button role="tab" data-tab="subscribers">المشتركون <i class="count" id="count-subs">0</i></button>
+        <button role="tab" data-tab="orders">الطلبات <i class="count" id="count-orders" hidden>0</i></button>
+        <button role="tab" data-tab="emails">الإيميلات <i class="live" id="live-dot" hidden></i></button>
+      </nav>
+      <div class="topbar-actions">
+        <a class="btn ghost sm" href="/" target="_blank" rel="noopener">عرض المتجر ↗</a>
+        <button class="btn ghost sm" id="logout" type="button">خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main" id="panel"></main>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" id="modal-card" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
