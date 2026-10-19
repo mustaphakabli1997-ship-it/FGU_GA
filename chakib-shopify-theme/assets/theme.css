@@ -130,7 +130,7 @@ body.is-ar .btn { text-transform: none; font-size: .9rem; font-weight: 700; }
 body.is-ar .chip { text-transform: none; font-size: .82rem; }
 
 /* ------------------------------------------------------------- announce */
-.announce { position: relative; z-index: 51; height: 38px; display: flex; align-items: center; overflow: hidden; background: var(--ink-2); border-bottom: 1px solid var(--gold-line); }
+.announce { position: relative; height: 38px; display: flex; align-items: center; overflow: hidden; background: var(--ink-2); border-bottom: 1px solid var(--gold-line); }
 .announce-link { display: flex; align-items: center; width: 100%; height: 100%; }
 .announce-track { display: flex; align-items: center; gap: 34px; width: max-content; white-space: nowrap; animation: marquee 60s linear infinite; font-size: .66rem; font-weight: 500; letter-spacing: .26em; text-transform: uppercase; color: var(--gold-light); }
 .announce-track i { font-style: normal; color: var(--gold-dark); font-size: .8em; }
