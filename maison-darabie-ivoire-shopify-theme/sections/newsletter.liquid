@@ -1,0 +1,26 @@
+<section class="nl section--sand" id="club">
+  <div class="container nl-in">
+    <div class="nl-copy reveal">
+      <p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ 'newsletter.eyebrow' | t }}</p>
+      <h2 class="display">{{ section.settings.title | escape }}</h2>
+      {%- if section.settings.text != blank -%}<p class="lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="nl-form-wrap reveal" style="--d: 120ms">
+      {% render 'newsletter-form', form_id: 'club-newsletter', form_class: 'nl-form' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter (optionnelle)",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "08" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "La Maison vous écrit" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Inscription facultative : soyez averti des nouvelles fragrances et des offres privées." }
+  ],
+  "presets": [
+    { "name": "Newsletter (optionnelle)" }
+  ]
+}
+{% endschema %}

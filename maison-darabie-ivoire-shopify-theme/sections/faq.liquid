@@ -1,0 +1,72 @@
+{%- if section.blocks.size > 0 -%}
+  <section class="section sec-faq section--{{ section.settings.scheme }}" id="faq">
+    <div class="container faq-in">
+      <header class="faq-head reveal">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="display">{{ section.settings.title | escape }}</h2>
+        {%- if section.settings.text != blank -%}<p class="lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+        {%- if settings.whatsapp_number != blank -%}
+          <a class="link" href="{% render 'wa-link' %}" target="_blank" rel="noopener">{{ 'faq.ask' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        {%- endif -%}
+      </header>
+      <div class="faq-list">
+        {%- for block in section.blocks -%}
+          <details class="faq-item reveal" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+            <summary><span>{{ block.settings.question | escape }}</span><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="faq-answer rte">{{ block.settings.answer }}</div>
+          </details>
+        {%- endfor -%}
+      </div>
+    </div>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {%- for block in section.blocks -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | json }},
+              "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | json }} }
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Questions fréquentes",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "07" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Aide" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Questions fréquentes" },
+    { "type": "textarea", "id": "text", "label": "Texte (optionnel)" },
+    { "type": "checkbox", "id": "open_first", "label": "Ouvrir la première question", "default": false },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "ivory", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" } ] }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Les parfums sont-ils originaux ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Oui, tous nos parfums sont 100 % originaux.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Questions fréquentes",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Les parfums sont-ils originaux ?", "answer": "<p>Oui, tous nos parfums sont 100 % originaux.</p>" } },
+        { "type": "question", "settings": { "question": "Comment passer commande ?", "answer": "<p>Choisissez votre parfum, cliquez sur « Commander maintenant », puis renseignez votre nom, votre numéro de téléphone et votre adresse. Nous vous contactons pour confirmer la commande avant l'expédition.</p>" } },
+        { "type": "question", "settings": { "question": "Livrez-vous dans ma wilaya ?", "answer": "<p>Oui, nous livrons dans les 58 wilayas. Le prix et le délai de livraison dépendent de votre wilaya et du mode choisi (domicile ou point relais).</p>" } },
+        { "type": "question", "settings": { "question": "Comment puis-je payer ?", "answer": "<p>Le paiement se fait à la livraison, en espèces, à la réception de votre commande.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

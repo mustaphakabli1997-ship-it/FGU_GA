@@ -1,0 +1,110 @@
+{%- liquid
+  assign rows = ''
+  assign views = ''
+  assign n = 0
+-%}
+{%- if section.blocks.size > 0 -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.collection != blank -%}
+      {%- assign n = n | plus: 1 -%}
+      {%- assign c = block.settings.collection -%}
+      {%- capture row -%}
+        <li><a class="idx-row{% if n == 1 %} is-on{% endif %}" href="{{ c.url }}" data-idx-row="{{ n }}" {{ block.shopify_attributes }}>
+          <span class="idx-n">{% if n < 10 %}0{% endif %}{{ n }}</span>
+          <span class="idx-t">{{ c.title | escape }}</span>
+          <span class="idx-c">{{ 'general.pieces' | t: count: c.products_count }}</span>
+          <svg class="ico idx-a" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a></li>
+      {%- endcapture -%}
+      {%- capture view -%}
+        <figure class="pv{% if n == 1 %} is-on{% endif %}" data-idx-pv="{{ n }}">
+          {%- if c.image -%}
+            {{ c.image | image_url: width: 900 | image_tag: class: 'pv-img', loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 960px) 40vw, 90vw', alt: c.title }}
+          {%- elsif c.products.first.featured_image -%}
+            {{ c.products.first.featured_image | image_url: width: 900 | image_tag: class: 'pv-img is-contain', loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 960px) 40vw, 90vw', alt: c.title }}
+          {%- else -%}
+            <span class="pv-fallback" aria-hidden="true"><img src="{{ 'monogram.svg' | asset_url }}" alt="" width="160" height="160" loading="lazy"></span>
+          {%- endif -%}
+          <figcaption>{{ c.title | escape }}</figcaption>
+        </figure>
+      {%- endcapture -%}
+      {%- assign rows = rows | append: row -%}
+      {%- assign views = views | append: view -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- for c in collections -%}
+    {%- if n < 6 and c.products_count > 0 -%}
+      {%- assign n = n | plus: 1 -%}
+      {%- capture row -%}
+        <li><a class="idx-row{% if n == 1 %} is-on{% endif %}" href="{{ c.url }}" data-idx-row="{{ n }}">
+          <span class="idx-n">{% if n < 10 %}0{% endif %}{{ n }}</span>
+          <span class="idx-t">{{ c.title | escape }}</span>
+          <span class="idx-c">{{ 'general.pieces' | t: count: c.products_count }}</span>
+          <svg class="ico idx-a" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </a></li>
+      {%- endcapture -%}
+      {%- capture view -%}
+        <figure class="pv{% if n == 1 %} is-on{% endif %}" data-idx-pv="{{ n }}">
+          {%- if c.image -%}
+            {{ c.image | image_url: width: 900 | image_tag: class: 'pv-img', loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 960px) 40vw, 90vw', alt: c.title }}
+          {%- elsif c.products.first.featured_image -%}
+            {{ c.products.first.featured_image | image_url: width: 900 | image_tag: class: 'pv-img is-contain', loading: 'lazy', widths: '450, 700, 900', sizes: '(min-width: 960px) 40vw, 90vw', alt: c.title }}
+          {%- else -%}
+            <span class="pv-fallback" aria-hidden="true"><img src="{{ 'monogram.svg' | asset_url }}" alt="" width="160" height="160" loading="lazy"></span>
+          {%- endif -%}
+          <figcaption>{{ c.title | escape }}</figcaption>
+        </figure>
+      {%- endcapture -%}
+      {%- assign rows = rows | append: row -%}
+      {%- assign views = views | append: view -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- if n > 0 -%}
+  <section class="section sec-idx section--{{ section.settings.scheme }}" id="cats">
+    <div class="container">
+      <header class="sec-head reveal">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          <h2 class="display">{{ section.settings.title | escape }}</h2>
+          {%- if section.settings.text != blank -%}<p class="lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+        </div>
+        <a class="link" href="{{ routes.collections_url }}">{{ 'general.see_all' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </header>
+
+      <div class="uni" data-idx>
+        <ol class="idx-list">{{ rows }}</ol>
+        <div class="idx-view oct oct--dark">{{ views }}</div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Univers (liste)",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "02" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Univers" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Choisissez votre signature" },
+    { "type": "textarea", "id": "text", "label": "Texte (optionnel)" },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "ivory", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" } ] },
+    { "type": "paragraph", "content": "Ajoutez des blocs pour choisir les collections (Homme, Femme, Mixte, Oud…). Sans bloc, les 6 premières collections de la boutique sont utilisées. Au survol, l'image de la collection apparaît à droite." }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    { "name": "Univers (liste)" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,40 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="ann" role="region" aria-label="{{ section.settings.label | escape }}" data-announce>
+    {%- if section.settings.link != blank -%}<a class="ann-link" href="{{ section.settings.link }}">{%- endif -%}
+    <div class="ann-track">
+      {%- for block in section.blocks -%}
+        <p class="ann-msg{% if forloop.first %} is-on{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.link != blank -%}</a>{%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Barre d'annonces",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Libellé d'accessibilité", "default": "Annonces" },
+    { "type": "url", "id": "link", "label": "Lien (optionnel)" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Livraison dans les 58 wilayas" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Barre d'annonces",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Parfums 100 % originaux" } },
+        { "type": "message", "settings": { "text": "Livraison dans les 58 wilayas" } },
+        { "type": "message", "settings": { "text": "Paiement à la livraison" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

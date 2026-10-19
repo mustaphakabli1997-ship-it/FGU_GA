@@ -1,0 +1,48 @@
+{%- comment -%} Params: product, index (optional, for the staggered reveal) {%- endcomment -%}
+{%- liquid
+  assign delay = index | default: 0 | modulo: 4 | times: 70
+  assign first_image = product.featured_image
+  assign second_image = product.images[1]
+  assign show_vendor = false
+  if settings.show_vendor and product.vendor != blank
+    assign vendor_key = product.vendor | downcase
+    assign shop_key = shop.name | downcase
+    if vendor_key != shop_key
+      assign show_vendor = true
+    endif
+  endif
+-%}
+<a class="pc reveal" style="--d: {{ delay }}ms" href="{{ product.url }}">
+  <div class="pc-media oct oct--dark">
+    {% render 'badges', product: product %}
+    {%- if first_image -%}
+      {{
+        first_image
+        | image_url: width: 720
+        | image_tag: class: 'media-img', widths: '240, 360, 480, 720', sizes: '(min-width: 1180px) 24vw, 70vw', loading: 'lazy', alt: product.title
+      }}
+      {%- if second_image -%}
+        {{
+          second_image
+          | image_url: width: 720
+          | image_tag: class: 'media-alt', widths: '240, 360, 480, 720', sizes: '(min-width: 1180px) 24vw, 70vw', loading: 'lazy', alt: ''
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+    <span class="pc-cta">{{ 'general.view' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+  </div>
+  <div class="pc-info">
+    {%- if show_vendor -%}
+      <span class="pc-brand">{{ product.vendor | escape }}</span>
+    {%- endif -%}
+    <div class="pc-row">
+      <div class="pc-main">
+        <h3 class="pc-name">{{ product.title | escape }}</h3>
+        {% render 'product-facts', product: product, mode: 'line' %}
+      </div>
+      <span class="pc-price">{% render 'price', product: product, from: true %}</span>
+    </div>
+  </div>
+</a>

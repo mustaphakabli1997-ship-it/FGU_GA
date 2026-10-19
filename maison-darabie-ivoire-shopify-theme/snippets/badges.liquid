@@ -1,0 +1,26 @@
+{%- comment -%} Params: product {%- endcomment -%}
+{%- liquid
+  assign published_epoch = product.published_at | date: '%s'
+  assign now_epoch = 'now' | date: '%s'
+  assign age_days = now_epoch | minus: published_epoch | divided_by: 86400
+  assign new_days = settings.new_badge_days | default: 30
+  assign percent = 0
+  if product.compare_at_price > product.price
+    assign diff = product.compare_at_price | minus: product.price
+    assign percent = diff | times: 100 | divided_by: product.compare_at_price | round
+  endif
+-%}
+{%- if product.available == false or age_days <= new_days or percent > 0 -%}
+  <div class="badges">
+    {%- if product.available == false -%}
+      <span class="badge-tag soldout">{{ 'general.sold_out' | t }}</span>
+    {%- else -%}
+      {%- if age_days <= new_days -%}
+        <span class="badge-tag new">{{ 'general.new' | t }}</span>
+      {%- endif -%}
+      {%- if percent > 0 -%}
+        <span class="badge-tag sale"><bdi dir="ltr">{{ 'products.sale' | t: percent: percent }}</bdi></span>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+{%- endif -%}

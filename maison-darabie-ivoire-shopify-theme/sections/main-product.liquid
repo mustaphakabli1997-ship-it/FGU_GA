@@ -1,0 +1,252 @@
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign active_media = current.featured_media.id | default: product.featured_media.id
+  assign form_id = 'product-form-' | append: section.id
+  assign image_count = 0
+  for media in product.media
+    if media.media_type == 'image'
+      assign image_count = image_count | plus: 1
+    endif
+  endfor
+  assign show_vendor = false
+  if settings.show_vendor and product.vendor != blank
+    assign vendor_key = product.vendor | downcase
+    assign shop_key = shop.name | downcase
+    if vendor_key != shop_key
+      assign show_vendor = true
+    endif
+  endif
+-%}
+<section class="pdp" data-product-section data-section-id="{{ section.id }}">
+  <div class="container">
+    <nav class="crumbs" aria-label="breadcrumb">
+      <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i>
+      {%- if product.collections.size > 0 -%}
+        {%- assign crumb = product.collections.first -%}
+        <a href="{{ crumb.url }}">{{ crumb.title | escape }}</a><i>/</i>
+      {%- endif -%}
+      <span>{{ product.title | escape }}</span>
+    </nav>
+
+    <div class="pdp-grid">
+      <div class="pdp-gallery">
+        <div class="stage stage--{{ section.settings.media_fit }}" data-stage>
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <div class="stage-slide oct oct--dark{% if media.id == active_media %} is-active{% endif %}" data-media-id="{{ media.id }}">
+                {{
+                  media
+                  | image_url: width: 1200
+                  | image_tag: widths: '480, 720, 960, 1200', sizes: '(min-width: 960px) 50vw, 100vw', loading: 'eager', alt: media.alt | default: product.title
+                }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if image_count == 0 -%}
+            <div class="stage-slide is-active">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+          {%- endif -%}
+        </div>
+        {% render 'badges', product: product %}
+        {%- if settings.show_seal -%}
+          {% render 'seal', text: settings.seal_text, uid: section.id %}
+        {%- endif -%}
+        {%- if image_count > 1 and section.settings.show_dots -%}
+          <div class="gal-dots" role="group" aria-label="{{ 'products.photos' | t }}">
+            {%- for media in product.media -%}
+              {%- if media.media_type == 'image' -%}
+                <button type="button" class="gal-dot{% if media.id == active_media %} on{% endif %}" data-thumb="{{ media.id }}" aria-label="{{ forloop.index }} / {{ image_count }}"></button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="pdp-info{% if section.settings.sticky_info %} is-sticky{% endif %}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'title' -%}
+              <div class="pdp-head" {{ block.shopify_attributes }}>
+                {%- if show_vendor -%}<p class="eyebrow"><a href="{{ product.vendor | url_for_vendor }}">{{ product.vendor | escape }}</a></p>{%- endif -%}
+                <h1 class="pdp-title">{{ product.title | escape }}</h1>
+              </div>
+
+            {%- when 'price' -%}
+              <div class="pdp-price" data-price {{ block.shopify_attributes }}>{% render 'price', variant: current %}</div>
+
+            {%- when 'facts' -%}
+              <div {{ block.shopify_attributes }}>{% render 'product-facts', product: product, mode: 'chips' %}</div>
+
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                <div class="lead rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+              {%- endif -%}
+
+            {%- when 'variant_picker' -%}
+              {%- unless product.has_only_default_variant -%}
+                <div class="pdp-options" {{ block.shopify_attributes }}>
+                  {%- for option in product.options_with_values -%}
+                    {%- liquid
+                      assign option_name = option.name | downcase
+                      assign is_color = false
+                      if option_name contains 'couleur' or option_name contains 'color' or option.name contains 'لون'
+                        assign is_color = true
+                      endif
+                    -%}
+                    <fieldset class="opt" data-option>
+                      <legend>{{ option.name | escape }}{% if is_color %}: <b data-option-label>{{ option.selected_value | escape }}</b>{% endif %}</legend>
+                      {%- if is_color -%}
+                        <div class="swatch-list">
+                          {%- for value in option.values -%}
+                            <label class="swatch">
+                              <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" data-position="{{ option.position }}"{% if option.selected_value == value %} checked{% endif %}>
+                              {%- if value.swatch.color -%}
+                                <i style="background: {{ value.swatch.color }}"></i>
+                              {%- elsif value.swatch.image -%}
+                                <i style="background-image: url('{{ value.swatch.image | image_url: width: 80 }}'); background-size: cover"></i>
+                              {%- else -%}
+                                <i class="swatch-text">{{ value | escape }}</i>
+                              {%- endif -%}
+                              <span class="sr">{{ value | escape }}</span>
+                            </label>
+                          {%- endfor -%}
+                        </div>
+                      {%- else -%}
+                        <div class="size-list">
+                          {%- for value in option.values -%}
+                            <label class="size">
+                              <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" data-position="{{ option.position }}"{% if option.selected_value == value %} checked{% endif %}>
+                              <span><bdi>{{ value | escape }}</bdi></span>
+                            </label>
+                          {%- endfor -%}
+                        </div>
+                      {%- endif -%}
+                    </fieldset>
+                  {%- endfor -%}
+                </div>
+              {%- endunless -%}
+
+            {%- when 'buy_buttons' -%}
+              <div class="pdp-buy" {{ block.shopify_attributes }}>
+                {%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate', data-product-form: '' -%}
+                  <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+                  <div class="buy-row">
+                    <div class="qty big" role="group" aria-label="{{ 'products.quantity' | t }}">
+                      <button type="button" data-qty-step="-1" aria-label="-"><svg class="ico" aria-hidden="true"><use href="#i-minus"/></svg></button>
+                      <input class="qty-input" type="number" name="quantity" value="1" min="1" max="20" inputmode="numeric" aria-label="{{ 'products.quantity' | t }}" data-qty-input>
+                      <button type="button" data-qty-step="1" aria-label="+"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></button>
+                    </div>
+                    <button class="btn grow lg" type="submit" name="add" data-add-button data-text-add="{{ 'products.add_to_cart' | t | escape }}" data-text-sold="{{ 'products.sold_out' | t | escape }}" data-text-unavailable="{{ 'products.unavailable' | t | escape }}"{% unless current.available %} disabled{% endunless %}>
+                      <span data-add-label>{% if current.available %}{{ 'products.add_to_cart' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</span>
+                    </button>
+                  </div>
+                  <button class="btn btn--gold btn-block lg" type="button" data-buy-now{% unless current.available %} disabled{% endunless %}>
+                    {{ 'products.buy_now' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg>
+                  </button>
+                  <p class="field-error" data-form-error role="alert" hidden></p>
+                {%- endform -%}
+              </div>
+
+            {%- when 'notes' -%}
+              <div {{ block.shopify_attributes }}>{% render 'product-facts', product: product, mode: 'notes' %}</div>
+
+            {%- when 'profile' -%}
+              <div {{ block.shopify_attributes }}>{% render 'product-facts', product: product, mode: 'profile' %}</div>
+
+            {%- when 'assurances' -%}
+              <ul class="assurances" {{ block.shopify_attributes }}>
+                <li><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg><span>{% if block.settings.text_1 != blank %}{{ block.settings.text_1 | escape }}{% else %}{{ 'products.assure_original' | t }}{% endif %}</span></li>
+                <li><svg class="ico" aria-hidden="true"><use href="#i-truck"/></svg><span>{% if block.settings.text_2 != blank %}{{ block.settings.text_2 | escape }}{% else %}{{ 'products.assure_delivery' | t }}{% endif %}</span></li>
+                <li><svg class="ico" aria-hidden="true"><use href="#i-cash"/></svg><span>{% if block.settings.text_3 != blank %}{{ block.settings.text_3 | escape }}{% else %}{{ 'products.assure_cod' | t }}{% endif %}</span></li>
+                {%- if settings.gift_wrap_enabled -%}
+                  <li><svg class="ico" aria-hidden="true"><use href="#i-gift"/></svg><span>{% if block.settings.text_4 != blank %}{{ block.settings.text_4 | escape }}{% else %}{{ 'products.assure_gift' | t }}{% endif %}</span></li>
+                {%- endif -%}
+              </ul>
+
+            {%- when 'collapsible' -%}
+              <details class="acc" {{ block.shopify_attributes }}>
+                <summary><span>{{ block.settings.heading | escape }}</span><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+                <div class="acc-body rte">{{ block.settings.content }}</div>
+              </details>
+
+            {%- when 'whatsapp' -%}
+              {%- if settings.whatsapp_number != blank -%}
+                {%- capture wa_text -%}{{ product.title }} — {{ shop.url }}{{ product.url }}{%- endcapture -%}
+                <a class="btn btn-whatsapp btn-block" href="{% render 'wa-link', text: wa_text %}" target="_blank" rel="noopener" {{ block.shopify_attributes }}>
+                  <svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>{{ 'products.whatsapp' | t }}
+                </a>
+              {%- endif -%}
+
+            {%- when '@app' -%}
+              {% render block %}
+
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-buy" data-sticky-buy>
+    <div class="sb-info"><b>{{ product.title | escape }}</b><span data-sticky-price>{% render 'price', variant: current %}</span></div>
+    <button class="btn" type="button" data-sticky-add{% unless current.available %} disabled{% endunless %}>{{ 'products.add_to_cart' | t }}</button>
+  </div>
+
+  <script type="application/json" data-variants>{{ product.variants | json }}</script>
+  {%- for variant in product.variants -%}
+    <template data-price-for="{{ variant.id }}">{% render 'price', variant: variant %}</template>
+  {%- endfor -%}
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Page produit",
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_fit",
+      "label": "Cadrage des photos",
+      "default": "contain",
+      "options": [
+        { "value": "contain", "label": "Flacon entier (idéal pour fond blanc)" },
+        { "value": "cover", "label": "Remplir le cadre (photos d'ambiance)" }
+      ]
+    },
+    { "type": "checkbox", "id": "show_dots", "label": "Points de navigation des photos (mobile)", "default": true },
+    { "type": "checkbox", "id": "sticky_info", "label": "Fiche fixe pendant le défilement des photos (ordinateur)", "default": true }
+  ],
+  "blocks": [
+    { "type": "title", "name": "Marque et titre", "limit": 1, "settings": [] },
+    { "type": "price", "name": "Prix", "limit": 1, "settings": [] },
+    { "type": "facts", "name": "Fiche du parfum", "limit": 1, "settings": [] },
+    { "type": "description", "name": "Description", "limit": 1, "settings": [] },
+    { "type": "variant_picker", "name": "Options (contenance…)", "limit": 1, "settings": [] },
+    { "type": "buy_buttons", "name": "Quantité et achat", "limit": 1, "settings": [] },
+    { "type": "notes", "name": "Notes olfactives", "limit": 1, "settings": [] },
+    { "type": "profile", "name": "Profil (tenue, sillage)", "limit": 1, "settings": [] },
+    {
+      "type": "assurances",
+      "name": "Atouts de confiance",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "text_1", "label": "Atout 1", "info": "Laisser vide pour le texte par défaut." },
+        { "type": "text", "id": "text_2", "label": "Atout 2" },
+        { "type": "text", "id": "text_3", "label": "Atout 3" },
+        { "type": "text", "id": "text_4", "label": "Atout 4 (emballage cadeau)" }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "name": "Onglet déroulant",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Titre", "default": "Livraison & paiement" },
+        { "type": "richtext", "id": "content", "label": "Contenu", "default": "<p>Livraison dans les 58 wilayas, à domicile ou en point relais. Paiement à la livraison : vous réglez uniquement à la réception de votre commande.</p>" }
+      ]
+    },
+    { "type": "whatsapp", "name": "Bouton WhatsApp", "limit": 1, "settings": [] },
+    { "type": "@app" }
+  ]
+}
+{% endschema %}

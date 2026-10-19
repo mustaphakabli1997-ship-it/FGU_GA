@@ -1,0 +1,146 @@
+{
+  "general": {
+    "skip": "Aller au contenu",
+    "home": "Accueil",
+    "menu": "Menu",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "account": "Mon compte",
+    "login": "Connexion",
+    "cart": "Panier",
+    "language": "Langue",
+    "view": "Découvrir",
+    "see_all": "Tout voir",
+    "new": "Nouveau",
+    "sold_out": "Épuisé",
+    "all": "Tout",
+    "pieces": {
+      "one": "{{ count }} parfum",
+      "other": "{{ count }} parfums"
+    },
+    "page": "Page {{ number }}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "password_title": "Ouverture imminente",
+    "password_text": "Entrez le mot de passe pour accéder à la boutique.",
+    "password_label": "Mot de passe",
+    "password_enter": "Entrer",
+    "password_error": "Mot de passe incorrect.",
+    "not_found_title": "Page introuvable",
+    "not_found_text": "Cette page n'existe pas ou le produit a été retiré.",
+    "back_to_shop": "Retour à la boutique",
+    "discover": "Découvrir",
+    "explore": "Explorer",
+    "scroll": "Défiler"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Rechercher un parfum…",
+    "hint": "Tapez le nom d'un parfum, d'une marque ou d'une catégorie.",
+    "results": {
+      "one": "{{ count }} résultat pour « {{ terms }} »",
+      "other": "{{ count }} résultats pour « {{ terms }} »"
+    },
+    "no_results": "Aucun produit ne correspond à votre recherche."
+  },
+  "collection": {
+    "sort_by": "Trier par",
+    "apply": "Appliquer",
+    "clear": "Réinitialiser",
+    "price_from": "De",
+    "price_to": "À",
+    "empty": "Aucun parfum dans cette catégorie pour le moment.",
+    "all_categories": "Tous nos univers",
+    "filters": "Filtrer",
+    "results": {
+      "one": "{{ count }} parfum",
+      "other": "{{ count }} parfums"
+    },
+    "filters_title": "Affiner la sélection",
+    "universes": {
+      "one": "{{ count }} univers",
+      "other": "{{ count }} univers"
+    }
+  },
+  "products": {
+    "quantity": "Quantité",
+    "add_to_cart": "Ajouter au panier",
+    "buy_now": "Commander maintenant",
+    "sold_out": "Épuisé",
+    "unavailable": "Indisponible",
+    "added": "Ajouté au panier",
+    "pick_option": "Choisissez une option pour continuer.",
+    "assure_original": "Parfum 100 % original",
+    "assure_delivery": "Livraison partout en Algérie",
+    "assure_cod": "Paiement à la livraison",
+    "assure_gift": "Emballage cadeau disponible",
+    "related": "Vous aimerez aussi",
+    "whatsapp": "Commander sur WhatsApp",
+    "sale": "-{{ percent }}%",
+    "from": "À partir de",
+    "fact_genre": "Pour",
+    "fact_family": "Famille",
+    "fact_concentration": "Concentration",
+    "notes_title": "Notes olfactives",
+    "note_top": "Tête",
+    "note_heart": "Cœur",
+    "note_base": "Fond",
+    "profile_title": "Profil olfactif",
+    "profile_tenue": "Tenue",
+    "profile_sillage": "Sillage",
+    "profile_intensite": "Intensité",
+    "photos": "Photos"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "continue_shopping": "Continuer mes achats",
+    "remove": "Retirer",
+    "subtotal": "Sous-total",
+    "shipping_at_checkout": "Livraison et taxes calculées à l'étape suivante.",
+    "checkout": "Commander",
+    "free_left": "Plus que {{ amount }} pour la livraison offerte",
+    "free_reached": "Livraison offerte !",
+    "note": "Note ou message cadeau (optionnel)",
+    "gift_wrap": "Emballage cadeau",
+    "update_error": "Impossible de mettre à jour le panier. Réessayez.",
+    "items": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "summary": "Récapitulatif"
+  },
+  "newsletter": {
+    "eyebrow": "La Maison",
+    "placeholder": "votre@email.com",
+    "button": "Je m'inscris",
+    "note": "Désabonnement en 1 clic depuis chaque email.",
+    "thanks": "Bienvenue dans la Maison !",
+    "thanks_text": "Merci pour votre inscription. Vous serez averti des nouvelles fragrances et des offres privées.",
+    "error": "Entrez une adresse email valide.",
+    "label": "Adresse email",
+    "note_short": "Offres privées et nouvelles fragrances, sans engagement."
+  },
+  "contact": {
+    "name": "Nom",
+    "phone": "Téléphone",
+    "email": "Email",
+    "message": "Votre message",
+    "send": "Envoyer",
+    "thanks": "Message envoyé",
+    "thanks_text": "Merci, nous vous répondons très vite.",
+    "error": "Vérifiez les champs et réessayez."
+  },
+  "footer": {
+    "shop": "Boutique",
+    "help": "Infos & contact",
+    "blurb": "Des parfums 100 % originaux, livrés partout en Algérie."
+  },
+  "blog": {
+    "read_more": "Lire la suite",
+    "empty": "Aucun article pour le moment."
+  },
+  "faq": {
+    "ask": "Poser une question sur WhatsApp"
+  }
+}

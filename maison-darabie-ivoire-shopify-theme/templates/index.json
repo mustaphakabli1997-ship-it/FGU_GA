@@ -1,0 +1,111 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "f1": { "type": "fact", "settings": { "icon": "shield", "text": "100 % Original" } },
+        "f2": { "type": "fact", "settings": { "icon": "cash", "text": "Paiement à la livraison" } },
+        "f3": { "type": "fact", "settings": { "icon": "truck", "text": "58 wilayas" } }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": {
+        "eyebrow": "100 % Original · Parfums d'exception",
+        "title_1": "L'art du parfum",
+        "title_2": "d'Arabie",
+        "subtitle": "Oud, ambre, musc et rose : une sélection de parfums 100 % originaux, livrée dans les 58 wilayas avec paiement à la livraison.",
+        "button_1_label": "Découvrir la collection",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Nos univers",
+        "button_2_link": "/collections",
+        "tag": "Nouvelle collection",
+        "seal_text": "100% ORIGINAL • PARFUMS ORIGINAUX •"
+      }
+    },
+    "perks": {
+      "type": "perks",
+      "blocks": {
+        "p1": { "type": "perk", "settings": { "icon": "shield", "title": "100 % Original", "text": "Des parfums authentiques, sélectionnés avec soin." } },
+        "p2": { "type": "perk", "settings": { "icon": "truck", "title": "Livraison partout", "text": "Dans les 58 wilayas, à domicile ou en point relais." } },
+        "p3": { "type": "perk", "settings": { "icon": "cash", "title": "Paiement à la livraison", "text": "Vous réglez uniquement à la réception de votre commande." } },
+        "p4": { "type": "perk", "settings": { "icon": "gift", "title": "Emballage cadeau", "text": "Un écrin élégant pour chaque occasion." } }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"],
+      "settings": { "scheme": "ivory" }
+    },
+    "categories": {
+      "type": "collection-list",
+      "settings": {
+        "index": "02",
+        "eyebrow": "Univers",
+        "title": "Choisissez votre signature",
+        "scheme": "ivory"
+      }
+    },
+    "latest": {
+      "type": "featured-collection",
+      "settings": {
+        "index": "03",
+        "eyebrow": "Nouveautés",
+        "title": "Nos dernières fragrances",
+        "products_to_show": 8,
+        "scheme": "sand"
+      }
+    },
+    "editorial": {
+      "type": "signature",
+      "settings": {
+        "index": "04",
+        "eyebrow": "Parfum signature",
+        "button_label": "Découvrir ce parfum"
+      }
+    },
+    "manifesto": {
+      "type": "statement",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "value": "100%", "label": "Parfums originaux" } },
+        "s2": { "type": "stat", "settings": { "value": "58", "label": "Wilayas livrées" } },
+        "s3": { "type": "stat", "settings": { "value": "COD", "label": "Paiement à la livraison" } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "index": "05",
+        "eyebrow": "La Maison",
+        "line_1": "Un parfum n'est pas un détail,",
+        "line_2": "c'est une signature.",
+        "subtitle": "Notes de tête, de cœur et de fond : choisissez la fragrance qui vous ressemble, 100 % originale, livrée jusqu'à votre porte."
+      }
+    },
+    "banner": {
+      "type": "image-banner",
+      "settings": {
+        "index": "06",
+        "eyebrow": "Offrir",
+        "title": "Coffrets & emballage cadeau",
+        "text": "Ajoutez l'emballage cadeau à votre commande et glissez un mot personnalisé : un parfum, c'est le plus beau des messages.",
+        "button_label": "Voir la collection",
+        "button_link": "/collections/all",
+        "height": 520
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "Les parfums sont-ils originaux ?", "answer": "<p>Oui, tous nos parfums sont 100 % originaux.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Comment passer commande ?", "answer": "<p>Choisissez votre parfum, cliquez sur « Commander maintenant », puis renseignez votre nom, votre numéro de téléphone et votre adresse. Nous vous contactons pour confirmer la commande avant l'expédition.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "Livrez-vous dans ma wilaya ?", "answer": "<p>Oui, nous livrons dans les 58 wilayas. Le prix et le délai de livraison dépendent de votre wilaya et du mode choisi (domicile ou point relais).</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Comment puis-je payer ?", "answer": "<p>Le paiement se fait à la livraison, en espèces, à la réception de votre commande.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": { "index": "07", "eyebrow": "Aide", "title": "Questions fréquentes", "scheme": "ivory", "open_first": false }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "index": "08",
+        "title": "La Maison vous écrit",
+        "text": "Inscription facultative : soyez averti des nouvelles fragrances et des offres privées."
+      }
+    }
+  },
+  "order": ["hero", "perks", "categories", "latest", "editorial", "manifesto", "banner", "faq", "newsletter"]
+}

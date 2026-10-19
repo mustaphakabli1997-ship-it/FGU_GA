@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "facts": { "type": "facts" },
+        "description": { "type": "description" },
+        "variants": { "type": "variant_picker" },
+        "buy": { "type": "buy_buttons" },
+        "notes": { "type": "notes" },
+        "profile": { "type": "profile" },
+        "assurances": { "type": "assurances" },
+        "delivery": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Livraison & paiement",
+            "content": "<p>Livraison dans les 58 wilayas, à domicile ou en point relais. Paiement à la livraison : vous réglez uniquement à la réception de votre commande.</p>"
+          }
+        },
+        "authentic": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Authenticité",
+            "content": "<p>Tous nos parfums sont 100 % originaux. Pour toute question sur un produit, écrivez-nous sur WhatsApp.</p>"
+          }
+        },
+        "whatsapp": { "type": "whatsapp" }
+      },
+      "block_order": ["title", "price", "facts", "description", "variants", "buy", "notes", "profile", "assurances", "delivery", "authentic", "whatsapp"],
+      "settings": { "media_fit": "contain", "show_dots": true, "sticky_info": true }
+    },
+    "related": { "type": "related-products", "settings": { "limit": 8 } }
+  },
+  "order": ["main", "related"]
+}

@@ -1,0 +1,33 @@
+<aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+  <div class="drawer-head">
+    <h2 id="cart-title">{{ 'cart.title' | t }}</h2>
+    <button class="icon-btn" type="button" data-cart-close aria-label="{{ 'general.close' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+  {%- if cart.item_count == 0 -%}
+    <div class="drawer-body">
+      <div class="empty">
+        <svg class="ico big" aria-hidden="true"><use href="#i-bag"/></svg>
+        <p>{{ 'cart.empty' | t }}</p>
+        <a class="btn btn--line" href="{{ routes.collections_url }}/all">{{ 'cart.continue_shopping' | t }}</a>
+      </div>
+    </div>
+  {%- else -%}
+    <div class="drawer-body">
+      {% render 'free-shipping' %}
+      {% render 'cart-lines' %}
+    </div>
+    <form class="drawer-foot" action="{{ routes.cart_url }}" method="post">
+      {% render 'cart-extras' %}
+      <div class="sum-row"><span>{{ 'cart.subtotal' | t }}</span><b><bdi dir="ltr" class="money">{{ cart.total_price | money }}</bdi></b></div>
+      <p class="muted small">{{ 'cart.shipping_at_checkout' | t }}</p>
+      <button class="btn btn-block" type="submit" name="checkout">{{ 'cart.checkout' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    </form>
+  {%- endif -%}
+</aside>
+
+{% schema %}
+{
+  "name": "Tiroir panier",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,22 @@
+{%- comment -%}
+  The rotating "100 % original" ring. Params: text (nothing is drawn when empty), uid (any unique string).
+  The text is upper-cased and repeated until it fills the ring, so a short phrase looks as good as a long one.
+{%- endcomment -%}
+{%- if text != blank -%}
+  {%- liquid
+    assign unit = text | strip | upcase | append: ' • '
+    assign ring = unit
+    if unit.size < 12
+      assign ring = unit | append: unit | append: unit | append: unit
+    elsif unit.size < 24
+      assign ring = unit | append: unit
+    endif
+  -%}
+  <div class="seal" aria-hidden="true">
+    <svg class="seal-ring" viewBox="0 0 120 120">
+      <defs><path id="seal-path-{{ uid }}" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+      <text><textPath href="#seal-path-{{ uid }}" textLength="284" lengthAdjust="spacing">{{ ring | escape }}</textPath></text>
+    </svg>
+    <svg class="seal-star"><use href="#md-star"/></svg>
+  </div>
+{%- endif -%}

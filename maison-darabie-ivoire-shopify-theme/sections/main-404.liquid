@@ -1,0 +1,16 @@
+<section class="nf on-dark">
+  <div class="nf-bg" aria-hidden="true"></div>
+  <div class="container nf-in">
+    <p class="nf-num" aria-hidden="true">404</p>
+    <h1 class="display">{{ 'general.not_found_title' | t }}</h1>
+    <p class="lead">{{ 'general.not_found_text' | t }}</p>
+    <a class="btn btn--gold" href="{{ routes.collections_url }}/all">{{ 'general.back_to_shop' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page 404",
+  "settings": []
+}
+{% endschema %}

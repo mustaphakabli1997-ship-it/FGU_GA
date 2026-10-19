@@ -1,0 +1,146 @@
+{
+  "general": {
+    "skip": "انتقل إلى المحتوى",
+    "home": "الرئيسية",
+    "menu": "القائمة",
+    "close": "إغلاق",
+    "search": "بحث",
+    "account": "حسابي",
+    "login": "تسجيل الدخول",
+    "cart": "السلة",
+    "language": "اللغة",
+    "view": "اكتشف",
+    "see_all": "عرض الكل",
+    "new": "جديد",
+    "sold_out": "نفد المخزون",
+    "all": "الكل",
+    "pieces": {
+      "one": "{{ count }} عطر",
+      "other": "{{ count }} عطر"
+    },
+    "page": "صفحة {{ number }}",
+    "previous": "السابق",
+    "next": "التالي",
+    "password_title": "المتجر سيفتح قريباً",
+    "password_text": "أدخل كلمة السر للدخول إلى المتجر.",
+    "password_label": "كلمة السر",
+    "password_enter": "دخول",
+    "password_error": "كلمة السر غير صحيحة.",
+    "not_found_title": "الصفحة غير موجودة",
+    "not_found_text": "هذه الصفحة غير موجودة أو تم سحب المنتج.",
+    "back_to_shop": "العودة إلى المتجر",
+    "discover": "اكتشف",
+    "explore": "استكشف",
+    "scroll": "مرّر للأسفل"
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "ابحث عن عطر…",
+    "hint": "اكتب اسم عطر أو ماركة أو فئة.",
+    "results": {
+      "one": "{{ count }} نتيجة لـ «{{ terms }}»",
+      "other": "{{ count }} نتيجة لـ «{{ terms }}»"
+    },
+    "no_results": "لا توجد منتجات مطابقة لبحثك."
+  },
+  "collection": {
+    "sort_by": "ترتيب حسب",
+    "apply": "تطبيق",
+    "clear": "إعادة الضبط",
+    "price_from": "من",
+    "price_to": "إلى",
+    "empty": "لا توجد عطور في هذه الفئة حالياً.",
+    "all_categories": "كل عوالمنا",
+    "filters": "تصفية",
+    "results": {
+      "one": "{{ count }} عطر",
+      "other": "{{ count }} عطر"
+    },
+    "filters_title": "حدّد اختيارك",
+    "universes": {
+      "one": "{{ count }} عالم",
+      "other": "{{ count }} عوالم"
+    }
+  },
+  "products": {
+    "quantity": "الكمية",
+    "add_to_cart": "أضف إلى السلة",
+    "buy_now": "اطلب الآن",
+    "sold_out": "نفد المخزون",
+    "unavailable": "غير متوفر",
+    "added": "تمت الإضافة إلى السلة",
+    "pick_option": "اختر خياراً للمتابعة.",
+    "assure_original": "عطر أصلي 100%",
+    "assure_delivery": "توصيل إلى كل الجزائر",
+    "assure_cod": "الدفع عند الاستلام",
+    "assure_gift": "تغليف هدايا متوفر",
+    "related": "قد يعجبك أيضاً",
+    "whatsapp": "اطلب عبر واتساب",
+    "sale": "-{{ percent }}%",
+    "from": "ابتداءً من",
+    "fact_genre": "مخصص لـ",
+    "fact_family": "العائلة العطرية",
+    "fact_concentration": "التركيز",
+    "notes_title": "النفحات العطرية",
+    "note_top": "الافتتاحية",
+    "note_heart": "القلب",
+    "note_base": "القاعدة",
+    "profile_title": "البصمة العطرية",
+    "profile_tenue": "الثبات",
+    "profile_sillage": "الأثر العطري",
+    "profile_intensite": "القوة",
+    "photos": "الصور"
+  },
+  "cart": {
+    "title": "السلة",
+    "empty": "سلتك فارغة.",
+    "continue_shopping": "متابعة التسوق",
+    "remove": "حذف",
+    "subtotal": "المجموع الفرعي",
+    "shipping_at_checkout": "تُحسب تكلفة التوصيل والضرائب في الخطوة التالية.",
+    "checkout": "إتمام الطلب",
+    "free_left": "بقي {{ amount }} للحصول على توصيل مجاني",
+    "free_reached": "توصيل مجاني!",
+    "note": "ملاحظة أو رسالة هدية (اختياري)",
+    "gift_wrap": "تغليف هدية",
+    "update_error": "تعذّر تحديث السلة. حاول من جديد.",
+    "items": {
+      "one": "{{ count }} منتج",
+      "other": "{{ count }} منتج"
+    },
+    "summary": "ملخص الطلب"
+  },
+  "newsletter": {
+    "eyebrow": "بيت العطور",
+    "placeholder": "your@email.com",
+    "button": "اشترك",
+    "note": "إلغاء الاشتراك بنقرة واحدة من أي رسالة.",
+    "thanks": "مرحباً بك في بيت العطور!",
+    "thanks_text": "شكراً لاشتراكك. سنخبرك بالعطور الجديدة والعروض الخاصة.",
+    "error": "أدخل بريداً إلكترونياً صحيحاً.",
+    "label": "البريد الإلكتروني",
+    "note_short": "عروض خاصة وعطور جديدة، دون أي التزام."
+  },
+  "contact": {
+    "name": "الاسم",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "message": "رسالتك",
+    "send": "إرسال",
+    "thanks": "تم إرسال الرسالة",
+    "thanks_text": "شكراً لك، سنرد عليك في أقرب وقت.",
+    "error": "تحقق من الحقول وحاول من جديد."
+  },
+  "footer": {
+    "shop": "المتجر",
+    "help": "معلومات واتصال",
+    "blurb": "عطور أصلية 100%، نوصلها إلى كل أنحاء الجزائر."
+  },
+  "blog": {
+    "read_more": "اقرأ المزيد",
+    "empty": "لا توجد مقالات حالياً."
+  },
+  "faq": {
+    "ask": "اسأل عبر واتساب"
+  }
+}
