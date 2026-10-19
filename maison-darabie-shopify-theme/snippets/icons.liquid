@@ -1,0 +1,71 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="md-gold" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#f3dfa0"/><stop offset=".5" stop-color="#d4b570"/><stop offset="1" stop-color="#a98343"/>
+    </linearGradient>
+    <linearGradient id="md-cap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7d5d24"/><stop offset=".22" stop-color="#e9d291"/><stop offset=".5" stop-color="#c9ab6f"/><stop offset=".78" stop-color="#f1dca0"/><stop offset="1" stop-color="#7a5a22"/>
+    </linearGradient>
+    <linearGradient id="md-liquid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0c868"/><stop offset=".55" stop-color="#d49a3a"/><stop offset="1" stop-color="#a86a1c"/>
+    </linearGradient>
+    <linearGradient id="md-liquid-2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9a37a"/><stop offset=".55" stop-color="#a8613e"/><stop offset="1" stop-color="#6b3320"/>
+    </linearGradient>
+    <linearGradient id="md-glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".14" stop-color="#fff" stop-opacity=".06"/><stop offset=".86" stop-color="#fff" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity=".3"/>
+    </linearGradient>
+    <symbol id="md-star" viewBox="0 0 24 24"><path d="M12.00 0.80L14.53 5.90L19.92 4.08L18.10 9.47L23.20 12.00L18.10 14.53L19.92 19.92L14.53 18.10L12.00 23.20L9.47 18.10L4.08 19.92L5.90 14.53L0.80 12.00L5.90 9.47L4.08 4.08L9.47 5.90Z"/></symbol>
+    {%- for art in (1..2) -%}
+      <symbol id="md-bottle-{% if art == 1 %}a{% else %}b{% endif %}" viewBox="0 0 220 340">
+        <rect x="30" y="98" width="160" height="232" rx="14" fill="url(#md-liquid{% if art == 2 %}-2{% endif %})"/>
+        <rect x="30" y="98" width="160" height="232" rx="14" fill="url(#md-glass)"/>
+        <rect x="30.5" y="98.5" width="159" height="231" rx="13.5" fill="none" stroke="#fff" stroke-opacity=".35"/>
+        <path d="M40 304h140v14a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8z" fill="#fff" fill-opacity=".16"/>
+        <path d="M44 114v176" stroke="#fff" stroke-opacity=".5" stroke-width="5" stroke-linecap="round"/>
+        <path d="M176 120v120" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round"/>
+        <rect x="62" y="150" width="96" height="124" fill="#0c0c0c"/>
+        <rect x="62" y="150" width="96" height="124" fill="none" stroke="url(#md-cap)" stroke-width="1.4"/>
+        <rect x="67" y="155" width="86" height="114" fill="none" stroke="#c9ab6f" stroke-opacity=".5" stroke-width=".7"/>
+        <image href="{{ 'monogram.svg' | asset_url }}" x="86" y="162" width="48" height="48"/>
+        <text x="110" y="228" text-anchor="middle" fill="#d9bd78" font-family="Cormorant Garamond, Georgia, serif" font-size="13" letter-spacing=".6">MAISON</text>
+        <text x="110" y="244" text-anchor="middle" fill="#ecd9a2" font-family="Cormorant Garamond, Georgia, serif" font-size="15" font-style="italic">D'Arabie</text>
+        <text x="110" y="256" text-anchor="middle" fill="#c9ab6f" font-family="Montserrat, Arial, sans-serif" font-size="5" letter-spacing="2.6">PARFUMS</text>
+        <rect x="88" y="76" width="44" height="26" fill="url(#md-cap)"/>
+        <rect x="64" y="90" width="92" height="14" rx="3" fill="url(#md-cap)"/>
+        <rect x="68" y="12" width="84" height="70" rx="5" fill="url(#md-cap)"/>
+        <rect x="68" y="12" width="84" height="12" rx="5" fill="#000" fill-opacity=".16"/>
+        <path d="M74 48l6-6 6 6-6 6zM88 48l6-6 6 6-6 6zM102 48l6-6 6 6-6 6zM116 48l6-6 6 6-6 6zM130 48l6-6 6 6-6 6z" fill="#000" fill-opacity=".28"/>
+        <path d="M82 27v13M96 27v13M110 27v13M124 27v13M138 27v13M82 57v18M96 57v18M110 57v18M124 57v18M138 57v18" stroke="#000" stroke-opacity=".2" stroke-width="1.2"/>
+        <rect x="68.5" y="12.5" width="83" height="69" rx="4.5" fill="none" stroke="#fff" stroke-opacity=".28"/>
+      </symbol>
+    {%- endfor -%}
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 3.8-5.4 7.5-5.4s6.7 1.8 7.5 5.4"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 8h13l-1.1 12.5H6.6L5.5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.6 2H4.4L6 16z"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6h11v10h-11zM13.5 10h4.2l3.3 3.2V16h-7.5"/><circle cx="7" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7L12 3z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 2.6v6c0 4.6-3.1 8.2-7.5 9.9-4.4-1.7-7.5-5.3-7.5-9.9v-6L12 3z"/><path d="M8.6 12.2l2.5 2.5 4.4-4.9"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="4" rx="1"/><path d="M5 13v7.5h14V13M12 9v11.5"/><path d="M12 9c-1.2-3.8-5-4.6-5-2.2 0 1.7 2.6 2.2 5 2.2zM12 9c1.2-3.8 5-4.6 5-2.2 0 1.7-2.6 2.2-5 2.2z"/></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M9.5 2.5h5v3.5h-5z"/><path d="M10.5 6v2.2M13.5 6v2.2"/><rect x="6" y="8.2" width="12" height="13.3" rx="2"/><rect x="9" y="12.4" width="6" height="5" rx=".5"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6 6.3 6 10.6a6 6 0 0 1-12 0C6 9.5 12 3.2 12 3.2z"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v5M17.5 9.5v5"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6l1-8z"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M4 20l1.2-4.1A8 8 0 1 1 8.2 19L4 20z"/><path d="M9 8.8c.3 2.8 2.4 5 5.2 5.9l1.2-1.3-2-1-.9.7a4 4 0 0 1-1.7-1.7l.7-.9-1-2L9 8.8z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r=".6"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M14 8.5h3V4.5h-3a4 4 0 0 0-4 4V11H7v4h3v6h4v-6h3l.8-4H14V8.8c0-.2.1-.3.3-.3z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path d="M14 4v10.2a3.7 3.7 0 1 1-3.7-3.7"/><path d="M14 4c.3 2.6 1.9 4.2 4.5 4.4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l2.4 5-1.9 1.4a11 11 0 0 0 5.4 5.4l1.4-1.9 5 2.4-.6 3.1a2 2 0 0 1-2 1.6A15.5 15.5 0 0 1 3.5 6.1a2 2 0 0 1 1.6-2l1.5-.6z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7.5l8.5 6 8.5-6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  </defs>
+</svg>

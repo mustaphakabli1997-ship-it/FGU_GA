@@ -1,0 +1,20 @@
+{
+  "current": {
+    "color_gold": "#c9ab6f",
+    "color_gold_light": "#efdca6",
+    "color_gold_dark": "#a07c3c",
+    "color_ink": "#101010",
+    "color_ivory": "#faf5ea",
+    "color_sand": "#eadfca",
+    "logo_height": 46,
+    "brand_tagline": "Parfums originaux",
+    "card_image_fit": "contain",
+    "show_vendor": true,
+    "new_badge_days": 30,
+    "show_seal": true,
+    "seal_text": "100% Original",
+    "free_shipping_threshold": 15000,
+    "cart_type": "drawer",
+    "gift_wrap_enabled": true
+  }
+}

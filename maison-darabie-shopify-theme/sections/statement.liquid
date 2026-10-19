@@ -1,0 +1,27 @@
+<section class="statement section--ink">
+  <div class="statement-bg" aria-hidden="true"></div>
+  <div class="container">
+    <img class="statement-mono" src="{{ 'monogram.svg' | asset_url }}" alt="" width="84" height="84" loading="lazy">
+    <h2 class="statement-text reveal">
+      <span>{{ section.settings.line_1 | escape }}</span>
+      <em>{{ section.settings.line_2 | escape }}</em>
+    </h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="statement-sub reveal" style="--d: 100ms">{{ section.settings.subtitle | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Citation / slogan",
+  "settings": [
+    { "type": "text", "id": "line_1", "label": "Partie 1", "default": "Un parfum n'est pas un détail," },
+    { "type": "text", "id": "line_2", "label": "Partie 2 (italique doré)", "default": "c'est une signature." },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Notes de tête, de cœur et de fond : choisissez la fragrance qui vous ressemble." }
+  ],
+  "presets": [
+    { "name": "Citation / slogan" }
+  ]
+}
+{% endschema %}

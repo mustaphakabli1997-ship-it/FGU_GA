@@ -1,0 +1,65 @@
+{%- liquid
+  assign item = section.settings.product | default: collections['all'].products.first
+  assign arch_class = 'arch editorial-arch'
+  assign show_vendor = false
+  if item.vendor != blank
+    assign vendor_key = item.vendor | downcase
+    assign shop_key = shop.name | downcase
+    if vendor_key != shop_key
+      assign show_vendor = true
+    endif
+  endif
+  if section.settings.image == blank and item.featured_image
+    assign arch_class = arch_class | append: ' arch--photo'
+  endif
+-%}
+{%- if item != blank -%}
+  <section class="editorial section--{{ section.settings.scheme }}{% if section.settings.reverse %} is-reverse{% endif %}">
+    <div class="editorial-bg" aria-hidden="true"></div>
+    <div class="container editorial-inner">
+      <div class="editorial-art reveal">
+        <span class="arch-line l1" aria-hidden="true"></span>
+        <span class="arch-line l2" aria-hidden="true"></span>
+        <div class="{{ arch_class }}">
+          {%- if section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'arch-img', widths: '500, 800, 1000', sizes: '(min-width: 960px) 40vw, 86vw', alt: item.title }}
+          {%- elsif item.featured_image -%}
+            <span class="arch-glow" aria-hidden="true"></span>
+            {{ item.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'arch-img is-contain', widths: '500, 800, 1000', sizes: '(min-width: 960px) 40vw, 86vw', alt: item.title }}
+          {%- else -%}
+            <span class="arch-glow" aria-hidden="true"></span>
+            {% render 'bottle-art' %}
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="editorial-copy reveal" style="--d: 140ms">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if show_vendor -%}<p class="editorial-vendor">{{ item.vendor | escape }}</p>{%- endif -%}
+        <h2 class="display">{{ item.title | escape }}</h2>
+        {% render 'product-facts', product: item, mode: 'chips' %}
+        {%- if item.description != blank -%}
+          <p class="lead">{{ item.description | replace: '</p>', ' </p>' | replace: '<br>', ' ' | replace: '<br />', ' ' | strip_html | strip | truncate: 220 }}</p>
+        {%- endif -%}
+        <div class="editorial-price">{% render 'price', product: item, from: true %}</div>
+        <a class="btn btn-primary" href="{{ item.url }}">{{ section.settings.button_label | escape }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Parfum signature",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Parfum signature" },
+    { "type": "product", "id": "product", "label": "Produit", "info": "Sans choix : le premier produit de la boutique." },
+    { "type": "image_picker", "id": "image", "label": "Image éditoriale (optionnel)", "info": "Sans image : la photo du produit (ou l'illustration des flacons)." },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Découvrir ce parfum" },
+    { "type": "checkbox", "id": "reverse", "label": "Inverser (image à droite)", "default": false },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "ink", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" }, { "value": "ink", "label": "Noir" } ] }
+  ],
+  "presets": [
+    { "name": "Parfum signature" }
+  ]
+}
+{% endschema %}

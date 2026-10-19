@@ -1,0 +1,16 @@
+{%- comment -%}
+  Outputs a wa.me link for the WhatsApp number in the theme settings.
+  Accepts local (0550…), international (+213550…) or 00213… formats and always builds the 213… form wa.me requires.
+  Param: text (optional prefilled message).
+{%- endcomment -%}
+{%- liquid
+  assign wa = settings.whatsapp_number | strip | remove: '+' | remove: ' ' | remove: '-' | remove: '.' | remove: '(' | remove: ')'
+  assign head_two = wa | slice: 0, 2
+  assign head_one = wa | slice: 0
+  if head_two == '00'
+    assign wa = wa | slice: 2, 20
+  elsif head_one == '0'
+    assign wa = wa | slice: 1, 20 | prepend: '213'
+  endif
+-%}
+https://wa.me/{{ wa }}{% if text != blank %}?text={{ text | url_encode }}{%- endif -%}

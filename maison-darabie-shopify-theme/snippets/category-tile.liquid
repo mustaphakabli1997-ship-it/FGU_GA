@@ -1,0 +1,18 @@
+{%- comment -%} Params: collection, index, attrs (optional editor attributes) {%- endcomment -%}
+{%- liquid
+  assign delay = index | default: 0 | modulo: 4 | times: 80
+  assign cover = collection.image | default: collection.products.first.featured_image
+-%}
+<a class="arch-tile reveal" style="--d: {{ delay }}ms" href="{{ collection.url }}" {{ attrs }}>
+  <span class="arch-tile-media">
+    {%- if cover -%}
+      {{ cover | image_url: width: 720 | image_tag: loading: 'lazy', widths: '320, 480, 720', sizes: '(min-width: 1180px) 22vw, 46vw', alt: collection.title }}
+    {%- else -%}
+      <span class="arch-fallback" aria-hidden="true"><svg class="ico"><use href="#i-bottle"/></svg></span>
+    {%- endif -%}
+  </span>
+  <span class="arch-tile-caption">
+    <b>{{ collection.title | escape }}</b>
+    <small>{{ 'general.pieces' | t: count: collection.products_count }}</small>
+  </span>
+</a>

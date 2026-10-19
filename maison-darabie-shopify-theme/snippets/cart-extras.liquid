@@ -1,0 +1,21 @@
+{%- comment -%}
+  Gift wrap checkbox + order note, shared by the drawer and the cart page (both live inside the checkout form).
+  The theme script also saves them with /cart/update.js as soon as they change, so they survive the drawer refreshing.
+{%- endcomment -%}
+<div class="cart-extras">
+  {%- if settings.gift_wrap_enabled -%}
+    <label class="gift-opt">
+      <input type="hidden" name="attributes[Emballage cadeau]" value="">
+      <input type="checkbox" name="attributes[Emballage cadeau]" value="Oui" data-gift-wrap{% if cart.attributes['Emballage cadeau'] == 'Oui' %} checked{% endif %}>
+      <i aria-hidden="true"></i>
+      <span class="gift-label">
+        <svg class="ico" aria-hidden="true"><use href="#i-gift"/></svg>
+        {%- if settings.gift_wrap_label != blank -%}{{ settings.gift_wrap_label | escape }}{%- else -%}{{ 'cart.gift_wrap' | t }}{%- endif -%}
+      </span>
+    </label>
+  {%- endif -%}
+  <label class="field cart-note">
+    <span>{{ 'cart.note' | t }}</span>
+    <textarea name="note" rows="2" maxlength="300" data-cart-note>{{ cart.note }}</textarea>
+  </label>
+</div>

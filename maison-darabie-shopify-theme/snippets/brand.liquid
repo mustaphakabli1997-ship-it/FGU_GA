@@ -1,0 +1,21 @@
+{%- comment -%}
+  The Maison D'Arabie logo. An uploaded logo in the theme settings replaces it.
+  Params: variant ('horizontal' default, or 'stacked' for the footer / password page).
+{%- endcomment -%}
+{%- liquid
+  assign logo_file = 'logo-horizontal.svg'
+  assign logo_w = 233
+  assign logo_h = 46
+  if variant == 'stacked'
+    assign logo_file = 'logo-stacked.svg'
+    assign logo_w = 220
+    assign logo_h = 152
+  endif
+-%}
+<a class="brand brand--{{ variant | default: 'horizontal' }}" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+  {%- if settings.logo != blank -%}
+    {{ settings.logo | image_url: width: 640 | image_tag: class: 'brand-logo', alt: shop.name, widths: '320, 640', loading: 'eager' }}
+  {%- else -%}
+    <img class="brand-logo" src="{{ logo_file | asset_url }}" alt="{{ shop.name | escape }}" width="{{ logo_w }}" height="{{ logo_h }}">
+  {%- endif -%}
+</a>

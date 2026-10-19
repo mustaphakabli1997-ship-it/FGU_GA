@@ -1,0 +1,94 @@
+<footer class="site-footer">
+  {%- if section.settings.show_newsletter -%}
+    <div class="footer-nl">
+      <div class="container footer-nl-inner">
+        <div>
+          <p class="eyebrow">{{ 'newsletter.eyebrow' | t }}</p>
+          <h2 class="display sm">{{ section.settings.newsletter_title | escape }}</h2>
+        </div>
+        {% render 'newsletter-form', form_id: 'footer-newsletter', form_class: 'nl-form' %}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="footer-pattern">
+    <div class="container footer-top">
+      {% render 'brand', variant: 'stacked' %}
+      {%- if settings.brand_tagline != blank -%}<p class="footer-tag">{{ settings.brand_tagline | escape }}</p>{%- endif -%}
+    </div>
+  </div>
+
+  <div class="container footer-grid">
+    <div class="footer-about">
+      <h3>{{ shop.name | escape }}</h3>
+      <p class="muted">{% if section.settings.blurb != blank %}{{ section.settings.blurb | escape }}{% else %}{{ 'footer.blurb' | t }}{% endif %}</p>
+      {%- liquid
+        assign has_social = false
+        if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or settings.whatsapp_number != blank
+          assign has_social = true
+        endif
+      -%}
+      {%- if has_social -%}
+        <div class="social">
+          {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="ico" aria-hidden="true"><use href="#i-instagram"/></svg></a>{%- endif -%}
+          {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="ico" aria-hidden="true"><use href="#i-facebook"/></svg></a>{%- endif -%}
+          {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok"><svg class="ico" aria-hidden="true"><use href="#i-tiktok"/></svg></a>{%- endif -%}
+          {%- if settings.whatsapp_number != blank -%}<a href="{% render 'wa-link' %}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg></a>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div>
+      <h3>{{ 'footer.shop' | t }}</h3>
+      <ul>
+        {%- for link in linklists[section.settings.menu_shop].links -%}
+          <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div>
+      <h3>{{ 'footer.help' | t }}</h3>
+      <ul class="plain">
+        {%- for link in linklists[section.settings.menu_info].links -%}
+          <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+        {%- endfor -%}
+        {%- if settings.contact_phone != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}" dir="ltr">{{ settings.contact_phone | escape }}</a></li>
+        {%- endif -%}
+        {%- if settings.contact_email != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:{{ settings.contact_email }}" dir="ltr">{{ settings.contact_email | escape }}</a></li>
+        {%- endif -%}
+        {%- if settings.contact_address != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ settings.contact_address | escape }}</span></li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}</span>
+      {%- if shop.policies.size > 0 -%}
+        <span class="policy-links">
+          {%- for policy in shop.policies -%}
+            <a href="{{ policy.url }}">{{ policy.title | escape }}</a>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "settings": [
+    { "type": "checkbox", "id": "show_newsletter", "label": "Afficher l'inscription à la newsletter (hors page d'accueil)", "default": true },
+    { "type": "text", "id": "newsletter_title", "label": "Titre de la newsletter", "default": "Rejoignez la Maison" },
+    { "type": "textarea", "id": "blurb", "label": "Texte de présentation", "info": "Laisser vide pour le texte par défaut." },
+    { "type": "link_list", "id": "menu_shop", "label": "Menu « Boutique »", "default": "main-menu" },
+    { "type": "link_list", "id": "menu_info", "label": "Menu « Infos »", "default": "footer" }
+  ]
+}
+{% endschema %}

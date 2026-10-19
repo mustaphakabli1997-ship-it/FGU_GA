@@ -1,0 +1,25 @@
+{%- if section.blocks.size > 0 -%}
+<section class="section section--{{ section.settings.scheme }} apps-section">
+  <div class="container{% if section.settings.narrow %} narrow-text{% endif %}">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Applications",
+  "settings": [
+    { "type": "checkbox", "id": "narrow", "label": "Largeur réduite", "default": true },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "ivory", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" }, { "value": "ink", "label": "Noir" } ] }
+  ],
+  "blocks": [
+    { "type": "@app" }
+  ],
+  "presets": [
+    { "name": "Applications" }
+  ]
+}
+{% endschema %}

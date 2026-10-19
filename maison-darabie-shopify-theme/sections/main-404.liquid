@@ -1,0 +1,15 @@
+<section class="thanks">
+  <div class="container narrow">
+    <p class="eyebrow">404</p>
+    <h1 class="display">{{ 'general.not_found_title' | t }}</h1>
+    <p class="lead">{{ 'general.not_found_text' | t }}</p>
+    <a class="btn btn-primary" href="{{ routes.collections_url }}/all">{{ 'general.back_to_shop' | t }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page 404",
+  "settings": []
+}
+{% endschema %}

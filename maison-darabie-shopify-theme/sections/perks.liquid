@@ -1,0 +1,61 @@
+{%- if section.blocks.size > 0 -%}
+  <section class="perks section--{{ section.settings.scheme }}">
+    <div class="container perks-grid" style="--cols: {{ section.blocks.size }}">
+      {%- for block in section.blocks -%}
+        <div class="perk reveal" style="--d: {{ forloop.index0 | times: 80 }}ms" {{ block.shopify_attributes }}>
+          <span class="perk-icon"><svg class="ico" aria-hidden="true"><use href="#i-{{ block.settings.icon }}"/></svg></span>
+          <b>{{ block.settings.title | escape }}</b>
+          <span>{{ block.settings.text | escape }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Atouts",
+  "settings": [
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "sand", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" }, { "value": "ink", "label": "Noir" } ] }
+  ],
+  "blocks": [
+    {
+      "type": "perk",
+      "name": "Atout",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "default": "shield",
+          "options": [
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "cash", "label": "Billet" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "bottle", "label": "Flacon" },
+            { "value": "drop", "label": "Goutte" },
+            { "value": "award", "label": "Étoile" },
+            { "value": "bolt", "label": "Éclair" },
+            { "value": "whatsapp", "label": "Message" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "100 % Original" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "Des parfums authentiques, sélectionnés avec soin." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Atouts",
+      "blocks": [
+        { "type": "perk", "settings": { "icon": "shield", "title": "100 % Original", "text": "Des parfums authentiques, sélectionnés avec soin." } },
+        { "type": "perk", "settings": { "icon": "truck", "title": "Livraison partout", "text": "Dans les 58 wilayas, à domicile ou en point relais." } },
+        { "type": "perk", "settings": { "icon": "cash", "title": "Paiement à la livraison", "text": "Vous réglez uniquement à la réception de votre commande." } },
+        { "type": "perk", "settings": { "icon": "gift", "title": "Emballage cadeau", "text": "Un écrin élégant pour chaque occasion." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

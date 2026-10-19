@@ -1,0 +1,38 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-track">
+      {%- for i in (1..4) -%}
+        {%- for block in section.blocks -%}
+          <span {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span><svg class="orn" aria-hidden="true"><use href="#md-star"/></svg>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau défilant",
+  "blocks": [
+    {
+      "type": "word",
+      "name": "Mot",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "100% Original" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bandeau défilant",
+      "blocks": [
+        { "type": "word", "settings": { "text": "100% Original" } },
+        { "type": "word", "settings": { "text": "Oud & Ambre" } },
+        { "type": "word", "settings": { "text": "Livraison 58 wilayas" } },
+        { "type": "word", "settings": { "text": "Paiement à la livraison" } },
+        { "type": "word", "settings": { "text": "Emballage cadeau" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
