@@ -338,6 +338,7 @@
     Required: 'هذا الحقل مطلوب',
   };
   const LEADFORM_ROOTS = '#leadform-embedded-container, .leadform-popup-overlay, .leadform-sidebar-overlay, .leadform-thankyou-overlay, #lfcod-sticky';
+  const EDGES = /^[^A-Za-z0-9\u00C0-\u024F\u0600-\u06FF]+|[^A-Za-z0-9\u00C0-\u024F\u0600-\u06FF]+$/g;
   const isArabic = () => /^ar\b/i.test(document.documentElement.lang);
 
   function translateLeadform() {
@@ -346,7 +347,8 @@
         acceptNode: (n) => (n.nodeValue.trim() && !n.parentElement.closest('option, script, style') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
       });
       for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-        const key = n.nodeValue.trim();
+        // the text without the emoji / punctuation the app may put around it
+        const key = n.nodeValue.replace(EDGES, '');
         const out = LEADFORM_AR[key] || (/^(Price|Prix)\s*:/i.test(key) ? key.replace(/^(Price|Prix)\s*:\s*/i, 'السعر: ') : '');
         if (out) n.nodeValue = n.nodeValue.replace(key, out);
       }
