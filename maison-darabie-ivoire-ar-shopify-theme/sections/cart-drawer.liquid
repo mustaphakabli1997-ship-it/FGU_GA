@@ -19,7 +19,7 @@
     <form class="drawer-foot" action="{{ routes.cart_url }}" method="post">
       {% render 'cart-extras' %}
       <div class="sum-row"><span>{{ 'cart.subtotal' | t }}</span><b>{% render 'money', amount: cart.total_price %}</b></div>
-      <p class="muted small">{{ 'cart.shipping_at_checkout' | t }}</p>
+      <p class="muted small cart-checkout-note">{{ 'cart.shipping_at_checkout' | t }}</p>
       <button class="btn btn-block" type="submit" name="checkout">{{ 'cart.checkout' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     </form>
   {%- endif -%}

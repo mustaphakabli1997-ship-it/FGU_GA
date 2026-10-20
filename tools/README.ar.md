@@ -109,6 +109,11 @@
 - زر **اطلب الآن** في صفحة المنتج يوصّل مباشرة للنموذج (بدل الـcheckout). وشريط الشراء السفلي تاع الثيم يتخبى ملي يكون شريط LeadForm موجود.
 - الثيم يترجم وحده نصوص النموذج الافتراضية (Prénom، Téléphone، wilaya، Commander Maintenant…) للعربية. وإذا كتبتها بالعربية داخل التطبيق تبقى كما كتبتها.
 - يتعطل كله من **Paramètres du thème ← Panier et livraison ← Habiller le formulaire COD LeadForm**.
+- **الدفع عند الاستلام فقط**: ملي يكون LeadForm حاضر، الثيم يخبي زر «Commander» (دفع Shopify بالبطاقة أو PayPal) في السلة الجانبية وصفحة السلة،
+  ويبقى فقط زر الدفع عند الاستلام تاع التطبيق. إذا غاب التطبيق يرجع الزر وحده (باش ما يبقاش الزبون بلا طريقة طلب).
+  يتعطل من **Paramètres du thème ← Panier et livraison ← Paiement à la livraison uniquement**.
+- **لقفل كامل** (الثيم ما يتحكمش في إعدادات الدفع): **Paramètres ← Paiements**، عطّل PayPal ومزوّد البطاقات (**Désactiver**)،
+  وزيد «Paiement à la livraison (COD)» من **Modes de paiement manuels**.
 - من داخل تطبيق LeadForm تبقى عليك: **رسالة الشكر** (الافتراضية فيها صورة شعار غير شعارك، الثيم يخبيها لكن الأحسن تكتب رسالتك)،
   وأسماء الحقول والعنوان إذا حبيت تبدلهم.
 

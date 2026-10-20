@@ -193,6 +193,13 @@
       },
       {
         "type": "checkbox",
+        "id": "cod_only",
+        "label": "Paiement à la livraison uniquement",
+        "info": "Quand le formulaire COD LeadForm est actif, masque le bouton « Commander » (paiement en ligne Shopify : cartes, PayPal…) dans le panier. Pense aussi à désactiver les autres modes de paiement dans Paramètres › Paiements.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
         "id": "leadform_style",
         "label": "Habiller le formulaire COD LeadForm",
         "info": "Applique le style de la maison au formulaire de l'application LeadForm (paiement à la livraison), fait mener « Commander maintenant » vers ce formulaire et affiche ses libellés en arabe sur une boutique arabe.",

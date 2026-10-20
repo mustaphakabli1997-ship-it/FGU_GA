@@ -24,7 +24,7 @@
         <aside class="summary oct">
           <p class="summary-title">{{ 'cart.summary' | t }}</p>
           <div class="sum-row total"><span>{{ 'cart.subtotal' | t }}</span><b>{% render 'money', amount: cart.total_price %}</b></div>
-          <p class="muted small">{{ 'cart.shipping_at_checkout' | t }}</p>
+          <p class="muted small cart-checkout-note">{{ 'cart.shipping_at_checkout' | t }}</p>
           <button class="btn btn-block lg" type="submit" name="checkout">{{ 'cart.checkout' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
           <ul class="summary-notes">
             <li><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg>{{ 'products.assure_original' | t }}</li>

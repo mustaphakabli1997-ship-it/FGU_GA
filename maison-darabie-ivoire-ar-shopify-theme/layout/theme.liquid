@@ -63,6 +63,9 @@
     {%- if settings.leadform_style -%}
       {{ 'leadform.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
+    {%- if settings.cod_only -%}
+      {% style %}body.has-leadform [name='checkout'], body.has-leadform .cart-checkout-note { display: none !important; }{% endstyle %}
+    {%- endif -%}
 
     {%- if settings.custom_css != blank %}
       {% style %}{{ settings.custom_css | replace: '</style', '' }}{% endstyle %}

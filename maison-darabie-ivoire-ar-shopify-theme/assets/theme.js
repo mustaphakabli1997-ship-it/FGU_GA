@@ -356,15 +356,22 @@
     });
   }
 
+  // body.has-leadform tells the stylesheet that the app's order form (or its cart button) is on the page; the app rewrites
+  // its texts itself, so on an Arabic storefront the labels are translated again after every change
   function initLeadform() {
-    if (!theme.leadform || !isArabic()) return;
+    const translate = theme.leadform && isArabic();
     let queued = false;
+    const sync = () => {
+      queued = false;
+      document.body.classList.toggle('has-leadform', Boolean($('#leadform-embedded-container, .leadform-cart-drawer-btn-wrapper, .leadform-cart-page')));
+      if (translate) translateLeadform();
+    };
     new MutationObserver(() => {
       if (queued) return;
       queued = true;
-      requestAnimationFrame(() => { queued = false; translateLeadform(); });
-    }).observe(document.body, { childList: true, subtree: true, characterData: true });
-    translateLeadform();
+      requestAnimationFrame(sync);
+    }).observe(document.body, { childList: true, subtree: true, characterData: translate });
+    sync();
   }
 
   function goToLeadform() {
@@ -435,6 +442,11 @@
       if (target) { e.preventDefault(); target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
     }
   });
+
+  // the app's cash-on-delivery button in the cart drawer does not know our drawer: close it first, the app then scrolls to its form
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.leadform-cart-drawer-btn')) closeLayer($('#cart-drawer'));
+  }, true);
 
   document.addEventListener('submit', (e) => {
     const form = e.target.closest('[data-product-form]');
