@@ -1,0 +1,81 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="md-gold" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#f3dfa0"/><stop offset=".5" stop-color="#d4b570"/><stop offset="1" stop-color="#a98343"/>
+    </linearGradient>
+    <linearGradient id="md-cap" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7d5d24"/><stop offset=".2" stop-color="#ecd79a"/><stop offset=".48" stop-color="#c9ab6f"/><stop offset=".76" stop-color="#f4e2a8"/><stop offset="1" stop-color="#7a5a22"/>
+    </linearGradient>
+    <linearGradient id="md-liquid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2cb6e"/><stop offset=".5" stop-color="#d79d3b"/><stop offset="1" stop-color="#a5661a"/>
+    </linearGradient>
+    <linearGradient id="md-liquid-2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3b48a"/><stop offset=".5" stop-color="#b8693f"/><stop offset="1" stop-color="#703520"/>
+    </linearGradient>
+    <linearGradient id="md-glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".12" stop-color="#fff" stop-opacity=".07"/><stop offset=".88" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#fff" stop-opacity=".34"/>
+    </linearGradient>
+    <linearGradient id="md-refl-fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="md-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26231d"/><stop offset="1" stop-color="#0c0b0a"/>
+    </linearGradient>
+    <mask id="md-refl-mask" maskUnits="userSpaceOnUse" x="0" y="440" width="560" height="140"><rect x="0" y="440" width="560" height="140" fill="url(#md-refl-fade)"/></mask>
+    <symbol id="md-star" viewBox="0 0 24 24"><path d="M12.00 0.80L14.53 5.90L19.92 4.08L18.10 9.47L23.20 12.00L18.10 14.53L19.92 19.92L14.53 18.10L12.00 23.20L9.47 18.10L4.08 19.92L5.90 14.53L0.80 12.00L5.90 9.47L4.08 4.08L9.47 5.90Z"/></symbol>
+    {%- for art in (1..2) -%}
+      <symbol id="md-bottle-{% if art == 1 %}a{% else %}b{% endif %}" viewBox="0 0 240 380">
+        <rect x="22" y="126" width="196" height="238" rx="12" fill="url(#md-liquid{% if art == 2 %}-2{% endif %})"/>
+        <rect x="22" y="126" width="196" height="238" rx="12" fill="url(#md-glass)"/>
+        <path d="M30 330h180v22a10 10 0 0 1-10 10H40a10 10 0 0 1-10-10z" fill="#fff" fill-opacity=".2"/>
+        <rect x="22.5" y="126.5" width="195" height="237" rx="11.5" fill="none" stroke="#fff" stroke-opacity=".42"/>
+        <path d="M38 142v178" stroke="#fff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+        <path d="M204 146v110" stroke="#fff" stroke-opacity=".24" stroke-width="3" stroke-linecap="round"/>
+        <rect x="64" y="174" width="112" height="136" fill="#0c0c0c"/>
+        <rect x="64" y="174" width="112" height="136" fill="none" stroke="url(#md-cap)" stroke-width="1.5"/>
+        <rect x="70" y="180" width="100" height="124" fill="none" stroke="#c9ab6f" stroke-opacity=".5" stroke-width=".7"/>
+        <image href="{{ 'monogram.svg' | asset_url }}" x="90" y="188" width="60" height="60"/>
+        <text x="120" y="268" text-anchor="middle" fill="#d9bd78" font-family="Marcellus, Georgia, serif" font-size="14" letter-spacing=".8">MAISON</text>
+        <text x="120" y="285" text-anchor="middle" fill="#ecd9a2" font-family="Marcellus, Georgia, serif" font-size="16">D'Arabie</text>
+        <text x="120" y="298" text-anchor="middle" fill="#c9ab6f" font-family="Jost, Arial, sans-serif" font-size="5.4" letter-spacing="3">PARFUMS</text>
+        <rect x="92" y="102" width="56" height="28" fill="url(#md-cap)"/>
+        <rect x="72" y="114" width="96" height="14" rx="3" fill="url(#md-cap)"/>
+        <rect x="72" y="125" width="96" height="3" fill="#000" fill-opacity=".25"/>
+        <rect x="58" y="14" width="124" height="96" rx="8" fill="url(#md-cap)"/>
+        <rect x="58" y="14" width="124" height="12" rx="8" fill="#fff" fill-opacity=".28"/>
+        <path d="M66 46l6-6 6 6-6 6zM78 46l6-6 6 6-6 6zM90 46l6-6 6 6-6 6zM102 46l6-6 6 6-6 6zM114 46l6-6 6 6-6 6zM126 46l6-6 6 6-6 6zM138 46l6-6 6 6-6 6zM150 46l6-6 6 6-6 6zM162 46l6-6 6 6-6 6z" fill="#000" fill-opacity=".3"/>
+        <path d="M66 66l6-6 6 6-6 6zM78 66l6-6 6 6-6 6zM90 66l6-6 6 6-6 6zM102 66l6-6 6 6-6 6zM114 66l6-6 6 6-6 6zM126 66l6-6 6 6-6 6zM138 66l6-6 6 6-6 6zM150 66l6-6 6 6-6 6zM162 66l6-6 6 6-6 6z" fill="#000" fill-opacity=".18"/>
+        <path d="M58 32h124M58 80h124M58 86h124" stroke="#000" stroke-opacity=".22"/>
+        <path d="M70 90v18M84 90v18M98 90v18M112 90v18M126 90v18M140 90v18M154 90v18M168 90v18" stroke="#000" stroke-opacity=".16" stroke-width="1.2"/>
+        <rect x="58.5" y="14.5" width="123" height="95" rx="7.5" fill="none" stroke="#fff" stroke-opacity=".3"/>
+      </symbol>
+    {%- endfor -%}
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c.8-3.6 3.8-5.4 7.5-5.4s6.7 1.8 7.5 5.4"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5.5 8h13l-1.1 12.5H6.6L5.5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.6 2H4.4L6 16z"/><path d="M10 21a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6h11v10h-11zM13.5 10h4.2l3.3 3.2V16h-7.5"/><circle cx="7" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7L12 3z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 2.6v6c0 4.6-3.1 8.2-7.5 9.9-4.4-1.7-7.5-5.3-7.5-9.9v-6L12 3z"/><path d="M8.6 12.2l2.5 2.5 4.4-4.9"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="4" rx="1"/><path d="M5 13v7.5h14V13M12 9v11.5"/><path d="M12 9c-1.2-3.8-5-4.6-5-2.2 0 1.7 2.6 2.2 5 2.2zM12 9c1.2-3.8 5-4.6 5-2.2 0 1.7-2.6 2.2-5 2.2z"/></symbol>
+    <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M9.5 2.5h5v3.5h-5z"/><path d="M10.5 6v2.2M13.5 6v2.2"/><rect x="6" y="8.2" width="12" height="13.3" rx="2"/><rect x="9" y="12.4" width="6" height="5" rx=".5"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6 6.3 6 10.6a6 6 0 0 1-12 0C6 9.5 12 3.2 12 3.2z"/></symbol>
+    <symbol id="i-cash" viewBox="0 0 24 24"><rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v5M17.5 9.5v5"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6l1-8z"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M4 20l1.2-4.1A8 8 0 1 1 8.2 19L4 20z"/><path d="M9 8.8c.3 2.8 2.4 5 5.2 5.9l1.2-1.3-2-1-.9.7a4 4 0 0 1-1.7-1.7l.7-.9-1-2L9 8.8z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r=".6"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M14 8.5h3V4.5h-3a4 4 0 0 0-4 4V11H7v4h3v6h4v-6h3l.8-4H14V8.8c0-.2.1-.3.3-.3z"/></symbol>
+    <symbol id="i-tiktok" viewBox="0 0 24 24"><path d="M14 4v10.2a3.7 3.7 0 1 1-3.7-3.7"/><path d="M14 4c.3 2.6 1.9 4.2 4.5 4.4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5l2.4 5-1.9 1.4a11 11 0 0 0 5.4 5.4l1.4-1.9 5 2.4-.6 3.1a2 2 0 0 1-2 1.6A15.5 15.5 0 0 1 3.5 6.1a2 2 0 0 1 1.6-2l1.5-.6z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7.5l8.5 6 8.5-6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  </defs>
+</svg>

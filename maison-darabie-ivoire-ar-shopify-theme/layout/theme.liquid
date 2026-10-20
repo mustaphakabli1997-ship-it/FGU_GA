@@ -1,0 +1,117 @@
+<!doctype html>
+{%- liquid
+  assign is_rtl = false
+  if request.locale.iso_code == 'ar'
+    assign is_rtl = true
+  endif
+-%}
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{% if is_rtl %}rtl{% else %}ltr{% endif %}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_ivory }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- else -%}
+      <link rel="icon" type="image/svg+xml" href="{{ 'favicon.svg' | asset_url }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.search' | t }}: {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: number: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif %}
+
+    {% render 'meta-tags' %}
+
+    {{ 'marcellus-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {{ 'jost-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+
+    {% style %}
+      @font-face { font-family: 'Marcellus'; src: url('{{ 'marcellus-latin.woff2' | asset_url }}') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      @font-face { font-family: 'Jost'; src: url('{{ 'jost-latin.woff2' | asset_url }}') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+      @font-face { font-family: 'Amiri'; src: url('{{ 'amiri-arabic.woff2' | asset_url }}') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+      @font-face { font-family: 'Cairo'; src: url('{{ 'cairo-arabic.woff2' | asset_url }}') format('woff2'); font-weight: 200 1000; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+      @font-face { font-family: 'Cairo'; src: url('{{ 'cairo-latin.woff2' | asset_url }}') format('woff2'); font-weight: 200 1000; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+      :root {
+        --ivory: {{ settings.color_ivory }};
+        --sand: {{ settings.color_sand }};
+        --ink: {{ settings.color_ink }};
+        --gold: {{ settings.color_gold }};
+        --gold-light: {{ settings.color_gold_light }};
+        --gold-dark: {{ settings.color_gold_dark }};
+        --logo-h: {{ settings.logo_height | default: 44 }}px;
+        {%- if settings.marble_image != blank %}
+        --marble: url('{{ settings.marble_image | image_url: width: 2000 }}');
+        {%- else %}
+        --marble: url('{{ 'marble-black.jpg' | asset_url }}');
+        {%- endif %}
+      }
+    {% endstyle %}
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+    {%- if settings.custom_css != blank %}
+      {% style %}{{ settings.custom_css | replace: '</style', '' }}{% endstyle %}
+    {%- endif %}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.mdTheme = {
+        cartType: {{ settings.cart_type | json }},
+        routes: {
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_url | append: '/update.js' | json }},
+          cartJson: {{ routes.cart_url | append: '.js' | json }},
+          search: {{ routes.search_url | json }}
+        },
+        strings: {
+          added: {{ 'products.added' | t | json }},
+          pickOption: {{ 'products.pick_option' | t | json }},
+          updateError: {{ 'cart.update_error' | t | json }}
+        }
+      };
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }} fit-{{ settings.card_image_fit }}{% if settings.paper_grain %} has-grain{% endif %}{% if is_rtl %} is-ar{% endif %}" data-route="{{ template.name }}">
+    {% render 'icons' %}
+
+    <a class="skip-link" href="#main">{{ 'general.skip' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <div class="scrim" id="scrim" hidden></div>
+    {% section 'cart-drawer' %}
+
+    {% if settings.whatsapp_number != blank %}
+      <a class="wa-float" href="{% render 'wa-link' %}" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+      </a>
+    {% endif %}
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  </body>
+</html>

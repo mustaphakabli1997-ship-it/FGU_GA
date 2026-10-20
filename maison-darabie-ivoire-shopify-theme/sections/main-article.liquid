@@ -1,7 +1,7 @@
 <article>
   <section class="page-head">
     <div class="container ph-in">
-      <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><a href="{{ blog.url }}">{{ blog.title | escape }}</a><i>/</i><span>{{ article.title | escape }}</span></nav>
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><a href="{{ blog.url }}">{{ blog.title | escape }}</a><i>/</i><span>{{ article.title | escape }}</span></nav>
       <h1 class="display reveal">{{ article.title | escape }}</h1>
       <p class="ph-count">{{ article.published_at | time_tag: format: 'date' }}</p>
     </div>

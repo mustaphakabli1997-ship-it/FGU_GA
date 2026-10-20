@@ -1,0 +1,52 @@
+{%- liquid
+  assign source = section.settings.collection | default: collections['all']
+  assign limit = section.settings.products_to_show
+-%}
+{%- if source.products_count > 0 or request.design_mode -%}
+  <section class="section sec-rail section--{{ section.settings.scheme }}" id="{{ section.id }}">
+    <div class="container">
+      <header class="sec-head reveal">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          <h2 class="display">{{ section.settings.title | escape }}</h2>
+        </div>
+        <div class="sec-tools">
+          <a class="link" href="{{ source.url | default: routes.collections_url }}">{{ 'general.see_all' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <div class="rail-ctl">
+            <button type="button" class="rail-btn prev" data-rail-prev aria-label="{{ 'general.previous' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button type="button" class="rail-btn next" data-rail-next aria-label="{{ 'general.next' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div class="rail" data-rail>
+      <div class="rail-track" tabindex="-1">
+        {%- for product in source.products limit: limit -%}
+          <div class="rail-item">{% render 'product-card', product: product, index: forloop.index0 %}</div>
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            <div class="rail-item"><div class="pc"><div class="pc-media">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div></div></div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="container"><div class="rail-bar" aria-hidden="true"><i data-rail-bar></i></div></div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Produits (défilement)",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "03" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "وصل حديثًا" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "أحدث عطورنا" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Sans choix : tous les produits de la boutique." },
+    { "type": "range", "id": "products_to_show", "min": 2, "max": 16, "step": 1, "default": 8, "label": "Nombre de produits" },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "ivory", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" } ] }
+  ],
+  "presets": [
+    { "name": "Produits (défilement)" }
+  ]
+}
+{% endschema %}

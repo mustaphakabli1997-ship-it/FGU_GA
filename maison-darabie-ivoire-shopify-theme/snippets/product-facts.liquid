@@ -3,6 +3,8 @@
   notes_tete, notes_coeur, notes_fond, tenue, sillage, intensite) or, with no setup at all, from product tags written as
   « Genre:Homme », « Famille:Oud », « Concentration:EDP », « Tête:Bergamote / Safran », « Cœur:Rose / Oud », « Fond:Ambre / Musc »,
   « Tenue:4 », « Sillage:3 », « Intensité:5 » (profile values are numbers from 1 to 5).
+  Arabic names work too: « الجنس:رجالي », « العائلة:عود », « التركيز:ماء عطر », « القمة: … », « القلب: … », « القاعدة: … »,
+  « الثبات:4 », « الانتشار:3 », « القوة:5 ».
   Params: product, mode — 'line' (short text for cards), 'chips' (genre / famille / concentration),
   'notes' (olfactive notes in three steps), 'profile' (tenue / sillage / intensité as five diamonds).
 {%- endcomment -%}
@@ -25,39 +27,39 @@
     assign key = parts[0] | strip | downcase
     assign val = tag | remove_first: parts[0] | remove_first: ':' | strip
     case key
-      when 'genre', 'sexe', 'pour'
+      when 'genre', 'sexe', 'pour', 'الجنس', 'للجنس', 'مخصص'
         if genre == blank
           assign genre = val
         endif
-      when 'famille', 'family', 'univers'
+      when 'famille', 'family', 'univers', 'العائلة', 'العائلة العطرية', 'الفئة'
         if famille == blank
           assign famille = val
         endif
-      when 'concentration'
+      when 'concentration', 'التركيز'
         if concentration == blank
           assign concentration = val
         endif
-      when 'tête', 'tete', 'top', 'head'
+      when 'tête', 'tete', 'top', 'head', 'القمة', 'الافتتاحية'
         if note_top == blank
           assign note_top = val
         endif
-      when 'cœur', 'coeur', 'heart'
+      when 'cœur', 'coeur', 'heart', 'القلب'
         if note_heart == blank
           assign note_heart = val
         endif
-      when 'fond', 'base'
+      when 'fond', 'base', 'القاعدة', 'القاع'
         if note_base == blank
           assign note_base = val
         endif
-      when 'tenue', 'longévité', 'longevite', 'longevity'
+      when 'tenue', 'longévité', 'longevite', 'longevity', 'الثبات'
         if p_tenue == blank
           assign p_tenue = val
         endif
-      when 'sillage', 'projection'
+      when 'sillage', 'projection', 'الانتشار', 'الأثر'
         if p_sillage == blank
           assign p_sillage = val
         endif
-      when 'intensité', 'intensite', 'intensity'
+      when 'intensité', 'intensite', 'intensity', 'القوة', 'الشدة'
         if p_intensite == blank
           assign p_intensite = val
         endif

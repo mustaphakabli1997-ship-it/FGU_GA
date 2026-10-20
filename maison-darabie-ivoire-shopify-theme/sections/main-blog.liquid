@@ -1,7 +1,7 @@
 {%- paginate blog.articles by 12 -%}
   <section class="page-head">
     <div class="container ph-in">
-      <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ blog.title | escape }}</span></nav>
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ blog.title | escape }}</span></nav>
       <h1 class="display reveal">{{ blog.title | escape }}</h1>
     </div>
   </section>

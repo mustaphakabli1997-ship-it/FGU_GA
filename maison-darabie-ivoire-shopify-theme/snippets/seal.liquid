@@ -1,21 +1,30 @@
 {%- comment -%}
   The rotating "100 % original" ring. Params: text (nothing is drawn when empty), uid (any unique string).
   The text is upper-cased and repeated until it fills the ring, so a short phrase looks as good as a long one.
+  In Arabic the glyphs are stretched instead of spaced out, which keeps the letters joined.
 {%- endcomment -%}
 {%- if text != blank -%}
   {%- liquid
     assign unit = text | strip | upcase | append: ' • '
-    assign ring = unit
-    if unit.size < 12
-      assign ring = unit | append: unit | append: unit | append: unit
-    elsif unit.size < 24
-      assign ring = unit | append: unit
+    assign target = 40
+    assign adjust = 'spacing'
+    if request.locale.iso_code == 'ar'
+      assign target = 56
+      assign adjust = 'spacingAndGlyphs'
     endif
+    assign copies = target | divided_by: unit.size
+    if copies < 1
+      assign copies = 1
+    endif
+    assign ring = ''
+    for i in (1..copies)
+      assign ring = ring | append: unit
+    endfor
   -%}
   <div class="seal" aria-hidden="true">
     <svg class="seal-ring" viewBox="0 0 120 120">
       <defs><path id="seal-path-{{ uid }}" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
-      <text><textPath href="#seal-path-{{ uid }}" textLength="284" lengthAdjust="spacing">{{ ring | escape }}</textPath></text>
+      <text><textPath href="#seal-path-{{ uid }}" textLength="284" lengthAdjust="{{ adjust }}">{{ ring | escape }}</textPath></text>
     </svg>
     <svg class="seal-star"><use href="#md-star"/></svg>
   </div>

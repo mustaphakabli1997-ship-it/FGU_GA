@@ -23,7 +23,7 @@
           <button class="link-btn danger" type="button" data-qty-change="0" data-line="{{ forloop.index }}" aria-label="{{ 'cart.remove' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-trash"/></svg></button>
         </div>
       </div>
-      <div class="cart-price"><bdi dir="ltr" class="money">{{ item.final_line_price | money }}</bdi></div>
+      <div class="cart-price">{% render 'money', amount: item.final_line_price %}</div>
     </li>
   {%- endfor -%}
 </ul>

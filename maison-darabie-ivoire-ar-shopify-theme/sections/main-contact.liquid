@@ -1,0 +1,59 @@
+<section class="page-head">
+  <div class="container ph-in">
+    <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ page.title | escape }}</span></nav>
+    <h1 class="display reveal">{{ page.title | escape }}</h1>
+  </div>
+</section>
+
+<section class="section tight no-top">
+  <div class="container contact-grid">
+    <div class="contact-info">
+      {%- if page.content != blank -%}<div class="rte lead">{{ page.content }}</div>{%- endif -%}
+      <ul class="contact-list">
+        {%- if settings.contact_phone != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:{{ settings.contact_phone | replace: ' ', '' }}" dir="ltr">{{ settings.contact_phone | escape }}</a></li>
+        {%- endif -%}
+        {%- if settings.whatsapp_number != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-whatsapp"/></svg><a href="{% render 'wa-link' %}" target="_blank" rel="noopener">WhatsApp</a></li>
+        {%- endif -%}
+        {%- if settings.contact_email != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:{{ settings.contact_email }}" dir="ltr">{{ settings.contact_email | escape }}</a></li>
+        {%- endif -%}
+        {%- if settings.contact_address != blank -%}
+          <li><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg><span>{{ settings.contact_address | escape }}</span></li>
+        {%- endif -%}
+      </ul>
+    </div>
+
+    {%- form 'contact', id: 'contact-form', class: 'contact-form' -%}
+      {%- if form.posted_successfully? -%}
+        <div class="nl-success" role="status">
+          <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>
+          <div><b>{{ 'contact.thanks' | t }}</b><span>{{ 'contact.thanks_text' | t }}</span></div>
+        </div>
+      {%- else -%}
+        {%- if form.errors -%}
+          <p class="nl-msg err" role="alert">{{ 'contact.error' | t }}</p>
+        {%- endif -%}
+        <div class="contact-row">
+          <label class="field"><span>{{ 'contact.name' | t }}</span>
+            <input type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}" required></label>
+          <label class="field"><span>{{ 'contact.phone' | t }}</span>
+            <input type="tel" name="contact[phone]" autocomplete="tel" inputmode="tel" dir="ltr" value="{{ form.phone }}"></label>
+        </div>
+        <label class="field"><span>{{ 'contact.email' | t }}</span>
+          <input type="email" name="contact[email]" autocomplete="email" inputmode="email" dir="ltr" value="{{ form.email }}" required></label>
+        <label class="field"><span>{{ 'contact.message' | t }}</span>
+          <textarea name="contact[body]" rows="5" required>{{ form.body }}</textarea></label>
+        <button class="btn" type="submit">{{ 'contact.send' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page contact",
+  "settings": []
+}
+{% endschema %}

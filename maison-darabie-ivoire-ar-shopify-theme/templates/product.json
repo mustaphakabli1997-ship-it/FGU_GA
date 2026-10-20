@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title"
+        },
+        "price": {
+          "type": "price"
+        },
+        "facts": {
+          "type": "facts"
+        },
+        "description": {
+          "type": "description"
+        },
+        "variants": {
+          "type": "variant_picker"
+        },
+        "buy": {
+          "type": "buy_buttons"
+        },
+        "notes": {
+          "type": "notes"
+        },
+        "profile": {
+          "type": "profile"
+        },
+        "assurances": {
+          "type": "assurances"
+        },
+        "delivery": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "التوصيل والدفع",
+            "content": "<p>التوصيل إلى 58 ولاية، إلى باب بيتك أو إلى نقطة استلام. الدفع عند الاستلام: لا تدفع إلا حين يصلك طلبك.</p>"
+          }
+        },
+        "authentic": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "الأصالة",
+            "content": "<p>جميع عطورنا أصلية 100%. لأي استفسار عن منتج، راسلنا على واتساب.</p>"
+          }
+        },
+        "whatsapp": {
+          "type": "whatsapp"
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "facts",
+        "description",
+        "variants",
+        "buy",
+        "notes",
+        "profile",
+        "assurances",
+        "delivery",
+        "authentic",
+        "whatsapp"
+      ],
+      "settings": {
+        "media_fit": "contain",
+        "show_dots": true,
+        "sticky_info": true
+      }
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "limit": 8
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

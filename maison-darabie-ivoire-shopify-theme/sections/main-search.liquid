@@ -1,7 +1,7 @@
 {%- paginate search.results by section.settings.results_per_page -%}
   <section class="page-head">
     <div class="container ph-in">
-      <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ 'search.title' | t }}</span></nav>
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ 'search.title' | t }}</span></nav>
       <h1 class="display reveal">{{ 'search.title' | t }}</h1>
       <form class="shop-search search-page-form" action="{{ routes.search_url }}" method="get" role="search">
         <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>

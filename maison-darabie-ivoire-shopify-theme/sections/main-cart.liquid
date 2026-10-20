@@ -1,6 +1,6 @@
 <section class="page-head">
   <div class="container ph-in">
-    <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ 'cart.title' | t }}</span></nav>
+    <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ 'cart.title' | t }}</span></nav>
     <h1 class="display">{{ 'cart.title' | t }}</h1>
     {%- if cart.item_count > 0 -%}<p class="ph-count">{{ 'cart.items' | t: count: cart.item_count }}</p>{%- endif -%}
   </div>
@@ -23,7 +23,7 @@
         </div>
         <aside class="summary oct">
           <p class="summary-title">{{ 'cart.summary' | t }}</p>
-          <div class="sum-row total"><span>{{ 'cart.subtotal' | t }}</span><b><bdi dir="ltr" class="money">{{ cart.total_price | money }}</bdi></b></div>
+          <div class="sum-row total"><span>{{ 'cart.subtotal' | t }}</span><b>{% render 'money', amount: cart.total_price %}</b></div>
           <p class="muted small">{{ 'cart.shipping_at_checkout' | t }}</p>
           <button class="btn btn-block lg" type="submit" name="checkout">{{ 'cart.checkout' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
           <ul class="summary-notes">

@@ -1,0 +1,59 @@
+<section class="mani section">
+  <img class="mani-mono" src="{{ 'monogram-ink.svg' | asset_url }}" alt="" width="715" height="711" loading="lazy">
+  <div class="container mani-in">
+    <div class="mani-main">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow reveal"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="mani-text reveal">
+        <span>{{ section.settings.line_1 | escape }}</span>
+        <span class="gold">{{ section.settings.line_2 | escape }}</span>
+      </h2>
+    </div>
+    <div class="mani-side reveal" style="--d: 120ms">
+      {%- if section.settings.subtitle != blank -%}<p class="lead">{{ section.settings.subtitle | escape }}</p>{%- endif -%}
+      {%- if section.blocks.size > 0 -%}
+        <dl class="stats">
+          {%- for block in section.blocks -%}
+            <div {{ block.shopify_attributes }}>
+              <dt><bdi dir="ltr">{{ block.settings.value | escape }}</bdi></dt>
+              <dd>{{ block.settings.label | escape }}</dd>
+            </div>
+          {%- endfor -%}
+        </dl>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Manifeste",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "05" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "الدار" },
+    { "type": "text", "id": "line_1", "label": "Phrase — partie 1", "default": "العطر ليس تفصيلًا،" },
+    { "type": "text", "id": "line_2", "label": "Phrase — partie 2 (en or)", "default": "إنه توقيعك." },
+    { "type": "textarea", "id": "subtitle", "label": "Texte", "default": "نفحات القمة والقلب والقاعدة: اختر العطر الذي يشبهك، أصلي 100% ويصلك حتى باب بيتك." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Chiffre",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Valeur", "default": "58" },
+        { "type": "text", "id": "label", "label": "Légende", "default": "ولاية نوصل إليها" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Manifeste",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "100%", "label": "عطور أصلية" } },
+        { "type": "stat", "settings": { "value": "58", "label": "ولاية نوصل إليها" } },
+        { "type": "stat", "settings": { "value": "COD", "label": "الدفع عند الاستلام" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

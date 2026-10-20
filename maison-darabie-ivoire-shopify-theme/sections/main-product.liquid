@@ -19,7 +19,7 @@
 -%}
 <section class="pdp" data-product-section data-section-id="{{ section.id }}">
   <div class="container">
-    <nav class="crumbs" aria-label="breadcrumb">
+    <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}">
       <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i>
       {%- if product.collections.size > 0 -%}
         {%- assign crumb = product.collections.first -%}

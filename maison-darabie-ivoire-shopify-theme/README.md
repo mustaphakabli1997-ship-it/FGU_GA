@@ -2,10 +2,13 @@
 
 ثيم Shopify (Online Store 2.0) **جديد كليًا** بالهوية البصرية تاع **Maison D'Arabie Parfums**، ماشي نسخة من أي ثيم قبله:
 ورق **عاجي** دافي، شعار **MA** بالحبر الأسود، **رخام أسود بعروق ذهبية** كلحظات في الصفحة، إطارات **ثمانية** بخط ذهبي رفيع
-(من نجمة الشعار)، أرقام الأقسام `01 — 08`، خطوط **Marcellus** (العناوين) و**Jost** (النص)، و**Reem Kufi / Cairo** للعربية.
+(من نجمة الشعار)، أرقام الأقسام `01 — 08`، خطوط **Marcellus** (العناوين) و**Jost** (النص)، و**Amiri / Cairo** للعربية.
 
 > هذا المجلد هو **مصدر** الثيم. الملف اللي ترفعه لـShopify هو `maison-darabie-ivoire-shopify-theme.zip`
 > (ملفات الثيم في **جذر** الـzip: `layout/`, `sections/`, `templates/`… مباشرة، وليس داخل مجلد).
+
+> **نسخة عربية جاهزة** (اللغة الافتراضية عربية، كل النصوص بالعربية، RTL): `maison-darabie-ivoire-ar-shopify-theme.zip`
+> — تُولَّد من هذا المجلد بواسطة `tools/build-ar.py`.
 
 ## 1) رفع الثيم
 **Boutique en ligne ← Thèmes ← Importer ← Charger un fichier zip** ← اختر الملف ← **… ← Publier**
@@ -36,6 +39,7 @@ Genre:Homme, Famille:Oud, Concentration:Eau de parfum, Tête:Safran / Bergamote,
 | `Tête:` / `Cœur:` / `Fond:` | **Notes olfactives**: ثلاث مراحل I · II · III |
 | `Tenue:` / `Sillage:` / `Intensité:` (رقم من **1 إلى 5**) | **Profil olfactif**: خمس معينات ذهبية لكل خاصية |
 
+الأسماء بالعربية تشتغل أيضًا: `الجنس:` `العائلة:` `التركيز:` `القمة:` `القلب:` `القاعدة:` `الثبات:` `الانتشار:` `القوة:`.
 أي حاجة ما تكتبهاش ما تظهرش (ما كاين لا فراغات ولا أخطاء). تقدر بدل الـtags تستعمل **Metafields** بالأسماء
 `custom.genre`, `custom.famille`, `custom.concentration`, `custom.notes_tete`, `custom.notes_coeur`, `custom.notes_fond`,
 `custom.tenue`, `custom.sillage`, `custom.intensite`.

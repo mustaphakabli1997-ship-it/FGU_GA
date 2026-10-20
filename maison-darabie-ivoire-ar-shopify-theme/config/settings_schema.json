@@ -1,0 +1,248 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Maison D'Arabie Ivoire AR",
+    "theme_version": "1.1.0",
+    "theme_author": "Maison D'Arabie",
+    "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/tree/claude/boutique-sekhri-store/maison-darabie-ivoire-shopify-theme",
+    "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_ivory",
+        "label": "Ivoire (fond du site)",
+        "default": "#f8f2e6"
+      },
+      {
+        "type": "color",
+        "id": "color_sand",
+        "label": "Sable (fonds alternatifs)",
+        "default": "#e8dcc6"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Noir (textes et blocs sombres)",
+        "default": "#101010"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Or",
+        "default": "#c9ab6f"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_light",
+        "label": "Or clair (reflets)",
+        "default": "#e6d29a"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_dark",
+        "label": "Bronze (textes dorés sur fond clair)",
+        "default": "#a07c3c"
+      }
+    ]
+  },
+  {
+    "name": "Logo et icône",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo de l'en-tête (optionnel)",
+        "info": "Sans image, le logo Maison D'Arabie intégré (noir sur ivoire) est utilisé. Idéal : fichier horizontal, fond transparent."
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_footer",
+        "label": "Logo du pied de page (optionnel)",
+        "info": "Version claire ou dorée, pour fond noir."
+      },
+      {
+        "type": "range",
+        "id": "logo_height",
+        "min": 28,
+        "max": 72,
+        "step": 2,
+        "unit": "px",
+        "label": "Hauteur du logo",
+        "default": 44
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Image carrée, 32 x 32 px minimum."
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Signature (pied de page)",
+        "default": "عطور أصلية"
+      }
+    ]
+  },
+  {
+    "name": "Apparence",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "paper_grain",
+        "label": "Grain de papier sur le fond",
+        "info": "Texture très légère qui donne un aspect papier de luxe.",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "marble_image",
+        "label": "Image de marbre (optionnel)",
+        "info": "Remplace le marbre noir veiné d'or utilisé en fond du héro, du parfum signature, de la bannière et du pied de page."
+      }
+    ]
+  },
+  {
+    "name": "Produits",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_fit",
+        "label": "Cadrage des photos de parfums",
+        "default": "contain",
+        "options": [
+          {
+            "value": "contain",
+            "label": "Flacon entier (idéal pour fond blanc)"
+          },
+          {
+            "value": "cover",
+            "label": "Remplir le cadre (photos d'ambiance)"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Afficher la marque (Fournisseur) sur les fiches",
+        "info": "Masquée automatiquement quand elle porte le même nom que la boutique.",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "new_badge_days",
+        "label": "Badge « Nouveau » pendant (jours)",
+        "default": 30
+      },
+      {
+        "type": "checkbox",
+        "id": "show_seal",
+        "label": "Sceau « 100 % Original » sur la photo du produit",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "seal_text",
+        "label": "Texte du sceau",
+        "info": "Le texte se répète autour du sceau.",
+        "default": "100% أصلي"
+      }
+    ]
+  },
+  {
+    "name": "Panier et livraison",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Seuil de livraison offerte (affichage)",
+        "default": 15000,
+        "info": "Affiche une barre de progression dans le panier. Les vrais tarifs se règlent dans Paramètres > Expédition et livraison. Mettre 0 pour masquer."
+      },
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "default": "drawer",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Tiroir latéral"
+          },
+          {
+            "value": "page",
+            "label": "Page panier"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "gift_wrap_enabled",
+        "label": "Proposer l'emballage cadeau dans le panier",
+        "info": "Affiche une case « Emballage cadeau » et un message. Visible dans le détail de la commande (attribut « Emballage cadeau »).",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "gift_wrap_label",
+        "label": "Texte de l'emballage cadeau",
+        "info": "Laisser vide pour le texte par défaut."
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux et contact",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok (URL)"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Numéro WhatsApp",
+        "info": "Écrivez-le comme vous voulez (0550…, +213550…, 00213550…) : il est converti au format wa.me. Affiche un bouton WhatsApp flottant."
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Téléphone"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Email de contact"
+      },
+      {
+        "type": "text",
+        "id": "contact_address",
+        "label": "Adresse"
+      }
+    ]
+  },
+  {
+    "name": "CSS personnalisé",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "CSS personnalisé",
+        "info": "Optionnel. Collez ici du CSS pour habiller une application (ex. formulaire de commande COD). Supprimez le contenu pour annuler."
+      }
+    ]
+  }
+]

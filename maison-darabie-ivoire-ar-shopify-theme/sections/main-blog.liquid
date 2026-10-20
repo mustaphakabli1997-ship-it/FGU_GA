@@ -1,0 +1,42 @@
+{%- paginate blog.articles by 12 -%}
+  <section class="page-head">
+    <div class="container ph-in">
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ blog.title | escape }}</span></nav>
+      <h1 class="display reveal">{{ blog.title | escape }}</h1>
+    </div>
+  </section>
+  <section class="section tight no-top">
+    <div class="container">
+      {%- if blog.articles.size > 0 -%}
+        <div class="bc-grid">
+          {%- for article in blog.articles -%}
+            <a class="bc reveal" href="{{ article.url }}">
+              <div class="bc-media oct oct--dark">
+                {%- if article.image -%}
+                  {{ article.image | image_url: width: 720 | image_tag: class: 'media-img', widths: '360, 720', sizes: '(min-width: 960px) 30vw, 90vw', loading: 'lazy', alt: article.image.alt | default: article.title }}
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+              <div class="bc-info">
+                <span class="bc-date">{{ article.published_at | time_tag: format: 'date' }}</span>
+                <h3 class="bc-name">{{ article.title | escape }}</h3>
+                <span class="link">{{ 'blog.read_more' | t }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+        {% render 'pagination', paginate: paginate %}
+      {%- else -%}
+        <div class="empty wide"><p>{{ 'blog.empty' | t }}</p></div>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Blog",
+  "settings": []
+}
+{% endschema %}

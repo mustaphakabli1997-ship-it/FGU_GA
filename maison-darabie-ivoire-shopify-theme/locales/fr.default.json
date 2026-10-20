@@ -31,7 +31,9 @@
     "back_to_shop": "Retour à la boutique",
     "discover": "Découvrir",
     "explore": "Explorer",
-    "scroll": "Défiler"
+    "scroll": "Défiler",
+    "breadcrumb": "Fil d'Ariane",
+    "pagination": "Pagination"
   },
   "search": {
     "title": "Recherche",
@@ -99,7 +101,6 @@
     "subtotal": "Sous-total",
     "shipping_at_checkout": "Livraison et taxes calculées à l'étape suivante.",
     "checkout": "Commander",
-    "free_left": "Plus que {{ amount }} pour la livraison offerte",
     "free_reached": "Livraison offerte !",
     "note": "Note ou message cadeau (optionnel)",
     "gift_wrap": "Emballage cadeau",
@@ -108,7 +109,9 @@
       "one": "{{ count }} article",
       "other": "{{ count }} articles"
     },
-    "summary": "Récapitulatif"
+    "summary": "Récapitulatif",
+    "free_left_before": "Plus que",
+    "free_left_after": "pour la livraison offerte"
   },
   "newsletter": {
     "eyebrow": "La Maison",

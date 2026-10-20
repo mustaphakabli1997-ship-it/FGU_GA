@@ -1,0 +1,122 @@
+{%- comment -%}
+  The perfume "fiche" of a product. Values come from product metafields (namespace custom: genre, famille, concentration,
+  notes_tete, notes_coeur, notes_fond, tenue, sillage, intensite) or, with no setup at all, from product tags written as
+  « Genre:Homme », « Famille:Oud », « Concentration:EDP », « Tête:Bergamote / Safran », « Cœur:Rose / Oud », « Fond:Ambre / Musc »,
+  « Tenue:4 », « Sillage:3 », « Intensité:5 » (profile values are numbers from 1 to 5).
+  Arabic names work too: « الجنس:رجالي », « العائلة:عود », « التركيز:ماء عطر », « القمة: … », « القلب: … », « القاعدة: … »,
+  « الثبات:4 », « الانتشار:3 », « القوة:5 ».
+  Params: product, mode — 'line' (short text for cards), 'chips' (genre / famille / concentration),
+  'notes' (olfactive notes in three steps), 'profile' (tenue / sillage / intensité as five diamonds).
+{%- endcomment -%}
+{%- liquid
+  assign genre = product.metafields.custom.genre.value
+  assign famille = product.metafields.custom.famille.value
+  assign concentration = product.metafields.custom.concentration.value
+  assign note_top = product.metafields.custom.notes_tete.value
+  assign note_heart = product.metafields.custom.notes_coeur.value
+  assign note_base = product.metafields.custom.notes_fond.value
+  assign p_tenue = product.metafields.custom.tenue.value
+  assign p_sillage = product.metafields.custom.sillage.value
+  assign p_intensite = product.metafields.custom.intensite.value
+
+  for tag in product.tags
+    unless tag contains ':'
+      continue
+    endunless
+    assign parts = tag | split: ':'
+    assign key = parts[0] | strip | downcase
+    assign val = tag | remove_first: parts[0] | remove_first: ':' | strip
+    case key
+      when 'genre', 'sexe', 'pour', 'الجنس', 'للجنس', 'مخصص'
+        if genre == blank
+          assign genre = val
+        endif
+      when 'famille', 'family', 'univers', 'العائلة', 'العائلة العطرية', 'الفئة'
+        if famille == blank
+          assign famille = val
+        endif
+      when 'concentration', 'التركيز'
+        if concentration == blank
+          assign concentration = val
+        endif
+      when 'tête', 'tete', 'top', 'head', 'القمة', 'الافتتاحية'
+        if note_top == blank
+          assign note_top = val
+        endif
+      when 'cœur', 'coeur', 'heart', 'القلب'
+        if note_heart == blank
+          assign note_heart = val
+        endif
+      when 'fond', 'base', 'القاعدة', 'القاع'
+        if note_base == blank
+          assign note_base = val
+        endif
+      when 'tenue', 'longévité', 'longevite', 'longevity', 'الثبات'
+        if p_tenue == blank
+          assign p_tenue = val
+        endif
+      when 'sillage', 'projection', 'الانتشار', 'الأثر'
+        if p_sillage == blank
+          assign p_sillage = val
+        endif
+      when 'intensité', 'intensite', 'intensity', 'القوة', 'الشدة'
+        if p_intensite == blank
+          assign p_intensite = val
+        endif
+    endcase
+  endfor
+
+  assign genre = genre | join: ', '
+  assign famille = famille | join: ', '
+  assign concentration = concentration | join: ', '
+  assign note_top = note_top | join: ' · '
+  assign note_heart = note_heart | join: ' · '
+  assign note_base = note_base | join: ' · '
+  assign n_tenue = p_tenue | plus: 0
+  assign n_sillage = p_sillage | plus: 0
+  assign n_intensite = p_intensite | plus: 0
+  assign romans = 'I,II,III' | split: ','
+-%}
+{%- case mode -%}
+  {%- when 'line' -%}
+    {%- if famille != blank or genre != blank -%}
+      <p class="pc-facts">{{ famille | escape }}{% if famille != blank and genre != blank %} <i aria-hidden="true">/</i> {% endif %}{{ genre | escape }}</p>
+    {%- endif -%}
+  {%- when 'chips' -%}
+    {%- if genre != blank or famille != blank or concentration != blank -%}
+      <ul class="facts">
+        {%- if genre != blank -%}<li><small>{{ 'products.fact_genre' | t }}</small><b>{{ genre | escape }}</b></li>{%- endif -%}
+        {%- if famille != blank -%}<li><small>{{ 'products.fact_family' | t }}</small><b>{{ famille | escape }}</b></li>{%- endif -%}
+        {%- if concentration != blank -%}<li><small>{{ 'products.fact_concentration' | t }}</small><b>{{ concentration | escape }}</b></li>{%- endif -%}
+      </ul>
+    {%- endif -%}
+  {%- when 'notes' -%}
+    {%- if note_top != blank or note_heart != blank or note_base != blank -%}
+      {%- assign step = 0 -%}
+      <div class="notes3">
+        <h2 class="notes3-title">{{ 'products.notes_title' | t }}</h2>
+        <ol class="notes3-list">
+          {%- if note_top != blank -%}<li><i>{{ romans[step] }}</i><small>{{ 'products.note_top' | t }}</small><b>{{ note_top | escape }}</b></li>{%- assign step = step | plus: 1 -%}{%- endif -%}
+          {%- if note_heart != blank -%}<li><i>{{ romans[step] }}</i><small>{{ 'products.note_heart' | t }}</small><b>{{ note_heart | escape }}</b></li>{%- assign step = step | plus: 1 -%}{%- endif -%}
+          {%- if note_base != blank -%}<li><i>{{ romans[step] }}</i><small>{{ 'products.note_base' | t }}</small><b>{{ note_base | escape }}</b></li>{%- assign step = step | plus: 1 -%}{%- endif -%}
+        </ol>
+      </div>
+    {%- endif -%}
+  {%- when 'profile' -%}
+    {%- if n_tenue > 0 or n_sillage > 0 or n_intensite > 0 -%}
+      <div class="profile">
+        <h2 class="profile-title">{{ 'products.profile_title' | t }}</h2>
+        <ul class="profile-list">
+          {%- if n_tenue > 0 -%}
+            <li><span>{{ 'products.profile_tenue' | t }}</span><i class="dots" role="img" aria-label="{{ n_tenue }} / 5">{%- for i in (1..5) -%}<b{% if i <= n_tenue %} class="on"{% endif %}></b>{%- endfor -%}</i></li>
+          {%- endif -%}
+          {%- if n_sillage > 0 -%}
+            <li><span>{{ 'products.profile_sillage' | t }}</span><i class="dots" role="img" aria-label="{{ n_sillage }} / 5">{%- for i in (1..5) -%}<b{% if i <= n_sillage %} class="on"{% endif %}></b>{%- endfor -%}</i></li>
+          {%- endif -%}
+          {%- if n_intensite > 0 -%}
+            <li><span>{{ 'products.profile_intensite' | t }}</span><i class="dots" role="img" aria-label="{{ n_intensite }} / 5">{%- for i in (1..5) -%}<b{% if i <= n_intensite %} class="on"{% endif %}></b>{%- endfor -%}</i></li>
+          {%- endif -%}
+        </ul>
+      </div>
+    {%- endif -%}
+{%- endcase -%}

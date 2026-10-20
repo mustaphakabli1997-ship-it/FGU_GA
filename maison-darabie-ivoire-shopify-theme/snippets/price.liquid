@@ -12,8 +12,8 @@
 -%}
 <span class="price">
   {%- if show_from -%}<small class="price-from">{{ 'products.from' | t }}</small>{%- endif -%}
-  <bdi dir="ltr" class="money">{{ target.price | money }}</bdi>
+  {% render 'money', amount: target.price %}
   {%- if compare > target.price %}
-    <s><bdi dir="ltr" class="money">{{ compare | money }}</bdi></s>
+    <s>{% render 'money', amount: compare %}</s>
   {%- endif -%}
 </span>

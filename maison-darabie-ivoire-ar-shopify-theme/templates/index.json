@@ -1,0 +1,235 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "f1": {
+          "type": "fact",
+          "settings": {
+            "icon": "shield",
+            "text": "أصلي 100%"
+          }
+        },
+        "f2": {
+          "type": "fact",
+          "settings": {
+            "icon": "cash",
+            "text": "الدفع عند الاستلام"
+          }
+        },
+        "f3": {
+          "type": "fact",
+          "settings": {
+            "icon": "truck",
+            "text": "58 ولاية"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "settings": {
+        "eyebrow": "أصلية 100% · عطور استثنائية",
+        "title_1": "فنّ العطر",
+        "title_2": "العربي الأصيل",
+        "subtitle": "عود وعنبر ومسك ووردة: تشكيلة من العطور الأصلية 100%، تصلك إلى 58 ولاية مع الدفع عند الاستلام.",
+        "button_1_label": "اكتشف التشكيلة",
+        "button_1_link": "/collections/all",
+        "button_2_label": "عوالمنا",
+        "button_2_link": "/collections",
+        "tag": "تشكيلة جديدة",
+        "seal_text": "100% أصلي • عطور أصلية •"
+      }
+    },
+    "perks": {
+      "type": "perks",
+      "blocks": {
+        "p1": {
+          "type": "perk",
+          "settings": {
+            "icon": "shield",
+            "title": "أصلي 100%",
+            "text": "عطور أصلية، مختارة بعناية."
+          }
+        },
+        "p2": {
+          "type": "perk",
+          "settings": {
+            "icon": "truck",
+            "title": "توصيل لكل مكان",
+            "text": "إلى 58 ولاية، حتى باب بيتك أو نقطة الاستلام."
+          }
+        },
+        "p3": {
+          "type": "perk",
+          "settings": {
+            "icon": "cash",
+            "title": "الدفع عند الاستلام",
+            "text": "لا تدفع إلا عند استلام طلبك."
+          }
+        },
+        "p4": {
+          "type": "perk",
+          "settings": {
+            "icon": "gift",
+            "title": "تغليف الهدايا",
+            "text": "علبة أنيقة لكل مناسبة."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "scheme": "ivory"
+      }
+    },
+    "categories": {
+      "type": "collection-list",
+      "settings": {
+        "index": "02",
+        "eyebrow": "العوالم",
+        "title": "اختر بصمتك العطرية",
+        "scheme": "ivory"
+      }
+    },
+    "latest": {
+      "type": "featured-collection",
+      "settings": {
+        "index": "03",
+        "eyebrow": "وصل حديثًا",
+        "title": "أحدث عطورنا",
+        "products_to_show": 8,
+        "scheme": "sand"
+      }
+    },
+    "editorial": {
+      "type": "signature",
+      "settings": {
+        "index": "04",
+        "eyebrow": "العطر المميّز",
+        "button_label": "اكتشف هذا العطر"
+      }
+    },
+    "manifesto": {
+      "type": "statement",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": "100%",
+            "label": "عطور أصلية"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": "58",
+            "label": "ولاية نوصل إليها"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": "COD",
+            "label": "الدفع عند الاستلام"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "index": "05",
+        "eyebrow": "الدار",
+        "line_1": "العطر ليس تفصيلًا،",
+        "line_2": "إنه توقيعك.",
+        "subtitle": "نفحات القمة والقلب والقاعدة: اختر العطر الذي يشبهك، أصلي 100% ويصلك حتى باب بيتك."
+      }
+    },
+    "banner": {
+      "type": "image-banner",
+      "settings": {
+        "index": "06",
+        "eyebrow": "الهدايا",
+        "title": "علب هدايا وتغليف فاخر",
+        "text": "أضف تغليف الهدية إلى طلبك واكتب كلمة خاصة: العطر أجمل الرسائل.",
+        "button_label": "شاهد التشكيلة",
+        "button_link": "/collections/all",
+        "height": 520
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "هل العطور أصلية؟",
+            "answer": "<p>نعم، جميع عطورنا أصلية 100%.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "كيف أطلب؟",
+            "answer": "<p>اختر عطرك، واضغط على «اطلب الآن»، ثم أدخل اسمك ورقم هاتفك وعنوانك. نتصل بك لتأكيد الطلب قبل الشحن.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "هل يصل التوصيل إلى ولايتي؟",
+            "answer": "<p>نعم، نوصل إلى 58 ولاية. يختلف سعر التوصيل ومدته حسب ولايتك وطريقة الاستلام (المنزل أو نقطة الاستلام).</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "كيف أدفع؟",
+            "answer": "<p>الدفع عند الاستلام نقدًا، حين يصلك طلبك.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "settings": {
+        "index": "07",
+        "eyebrow": "مساعدة",
+        "title": "الأسئلة الشائعة",
+        "scheme": "ivory",
+        "open_first": false
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "index": "08",
+        "title": "الدار تكتب إليك",
+        "text": "اشتراك اختياري: كن أول من يعلم بالعطور الجديدة والعروض الخاصة."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "perks",
+    "categories",
+    "latest",
+    "editorial",
+    "manifesto",
+    "banner",
+    "faq",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,138 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+  {%- liquid
+    assign has_filters = false
+    if section.settings.enable_filtering and collection.filters != empty
+      assign has_filters = true
+    endif
+    assign has_menu = false
+    if section.settings.menu != blank and linklists[section.settings.menu].links.size > 0
+      assign has_menu = true
+    endif
+  -%}
+  <section class="page-head">
+    <div class="container ph-in">
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ collection.title | escape }}</span></nav>
+      <h1 class="display reveal">{{ collection.title | escape }}</h1>
+      <p class="ph-count">{{ 'collection.results' | t: count: collection.products_count }}</p>
+      {%- if collection.description != blank -%}
+        <div class="lead rte ph-lead">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <section class="section tight no-top">
+    <div class="container">
+      <div class="coll-bar">
+        {%- if has_menu -%}
+          <div class="coll-chips">
+            <a class="chip" href="{{ routes.collections_url }}/all">{{ 'general.all' | t }}</a>
+            {%- for link in linklists[section.settings.menu].links -%}
+              <a class="chip{% if link.active or link.child_active %} on{% endif %}" href="{{ link.url }}">{{ link.title | escape }}</a>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <div class="coll-tools">
+          {%- if has_filters -%}
+            <button class="chip coll-filter-btn" type="button" data-toggle="#coll-side" aria-expanded="false" aria-controls="coll-side">{{ 'collection.filters' | t }}</button>
+          {%- endif -%}
+          {%- if section.settings.enable_sorting -%}
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            <label class="select"><span class="sr">{{ 'collection.sort_by' | t }}</span>
+              <select name="sort_by" form="collection-filters" data-auto-submit>
+                {%- for option in collection.sort_options -%}
+                  <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+                {%- endfor -%}
+              </select>
+            </label>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="coll{% unless has_filters %} no-side{% endunless %}">
+        <aside class="coll-side" id="coll-side"{% unless has_filters %} hidden{% endunless %}>
+          <form class="coll-form" id="collection-filters" method="get" data-auto-submit-form>
+            {%- if has_filters -%}
+              <p class="coll-side-title">{{ 'collection.filters_title' | t }}</p>
+              {%- for filter in collection.filters -%}
+                {%- case filter.type -%}
+                  {%- when 'list', 'boolean' -%}
+                    <details class="fg" open>
+                      <summary><span>{{ filter.label | escape }}{% if filter.active_values.size > 0 %} <em>{{ filter.active_values.size }}</em>{% endif %}</span><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+                      <div class="fg-body">
+                        {%- for value in filter.values -%}
+                          <label class="check">
+                            <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                            <i></i>
+                            <span>{{ value.label | escape }} <small>({{ value.count }})</small></span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    </details>
+                  {%- when 'price_range' -%}
+                    <details class="fg" open>
+                      <summary><span>{{ filter.label | escape }}</span><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+                      <div class="fg-body price-range">
+                        <label class="field"><span>{{ 'collection.price_from' | t }}</span>
+                          <input type="number" name="{{ filter.min_value.param_name }}" inputmode="numeric" min="0" max="{{ filter.range_max | divided_by: 100 }}" placeholder="0" value="{% if filter.min_value.value != null %}{{ filter.min_value.value | divided_by: 100 }}{% endif %}"></label>
+                        <label class="field"><span>{{ 'collection.price_to' | t }}</span>
+                          <input type="number" name="{{ filter.max_value.param_name }}" inputmode="numeric" min="0" max="{{ filter.range_max | divided_by: 100 }}" placeholder="{{ filter.range_max | divided_by: 100 }}" value="{% if filter.max_value.value != null %}{{ filter.max_value.value | divided_by: 100 }}{% endif %}"></label>
+                      </div>
+                    </details>
+                {%- endcase -%}
+              {%- endfor -%}
+              <noscript><button class="btn btn--line btn-block" type="submit">{{ 'collection.apply' | t }}</button></noscript>
+              <a class="link-btn" href="{{ collection.url }}">{{ 'collection.clear' | t }}</a>
+            {%- endif -%}
+          </form>
+        </aside>
+
+        <div class="coll-main">
+          {%- if has_filters -%}
+            {%- capture active_chips -%}
+              {%- for filter in collection.filters -%}
+                {%- for value in filter.active_values -%}
+                  <a class="chip on" href="{{ value.url_to_remove }}">{{ value.label | escape }}<svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></a>
+                {%- endfor -%}
+                {%- if filter.type == 'price_range' -%}
+                  {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                    <a class="chip on" href="{{ filter.url_to_remove }}">{{ filter.label | escape }}<svg class="ico" aria-hidden="true"><use href="#i-close"/></svg></a>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- if active_chips != blank -%}
+              <div class="coll-active">{{ active_chips }}</div>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if collection.products.size > 0 -%}
+            <div class="grid">
+              {%- for product in collection.products -%}
+                {% render 'product-card', product: product, index: forloop.index0 %}
+              {%- endfor -%}
+            </div>
+            {% render 'pagination', paginate: paginate %}
+          {%- else -%}
+            <div class="empty wide">
+              <svg class="ico big" aria-hidden="true"><use href="#i-search"/></svg>
+              <p>{{ 'collection.empty' | t }}</p>
+              <a class="btn btn--line" href="{{ collection.url }}">{{ 'collection.clear' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Page collection",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "default": 24, "label": "Produits par page" },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Activer le tri", "default": true },
+    { "type": "checkbox", "id": "enable_filtering", "label": "Activer les filtres", "info": "Les filtres se configurent dans l'application Search & Discovery.", "default": true },
+    { "type": "link_list", "id": "menu", "label": "Menu des catégories (pastilles)", "default": "main-menu" }
+  ]
+}
+{% endschema %}

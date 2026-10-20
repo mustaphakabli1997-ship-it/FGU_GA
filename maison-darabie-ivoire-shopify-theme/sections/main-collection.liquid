@@ -11,7 +11,7 @@
   -%}
   <section class="page-head">
     <div class="container ph-in">
-      <nav class="crumbs" aria-label="breadcrumb"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ collection.title | escape }}</span></nav>
+      <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a><i>/</i><span>{{ collection.title | escape }}</span></nav>
       <h1 class="display reveal">{{ collection.title | escape }}</h1>
       <p class="ph-count">{{ 'collection.results' | t: count: collection.products_count }}</p>
       {%- if collection.description != blank -%}

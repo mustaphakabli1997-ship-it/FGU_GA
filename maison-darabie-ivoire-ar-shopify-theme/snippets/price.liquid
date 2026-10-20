@@ -1,0 +1,19 @@
+{%- comment -%}
+  Renders a price. Params: product (optional), variant (optional, defaults to the product's selected/first available variant),
+  from (optional, true = prefix « À partir de » when the variants have different prices).
+{%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign compare = target.compare_at_price | default: 0
+  assign show_from = false
+  if from and product.price_varies
+    assign show_from = true
+  endif
+-%}
+<span class="price">
+  {%- if show_from -%}<small class="price-from">{{ 'products.from' | t }}</small>{%- endif -%}
+  {% render 'money', amount: target.price %}
+  {%- if compare > target.price %}
+    <s>{% render 'money', amount: compare %}</s>
+  {%- endif -%}
+</span>

@@ -1,0 +1,61 @@
+{%- if section.blocks.size > 0 -%}
+  <section class="section sec-rev section--{{ section.settings.scheme }}" id="reviews">
+    <div class="container">
+      <header class="sec-head reveal">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          <h2 class="display">{{ section.settings.title | escape }}</h2>
+        </div>
+      </header>
+      <div class="rev-grid">
+        {%- for block in section.blocks -%}
+          <figure class="rev reveal" style="--d: {{ forloop.index0 | times: 90 }}ms" {{ block.shopify_attributes }}>
+            <div class="stars" role="img" aria-label="{{ block.settings.rating }} / 5">
+              {%- for i in (1..5) -%}
+                <svg class="orn{% if i > block.settings.rating %} off{% endif %}" aria-hidden="true"><use href="#md-star"/></svg>
+              {%- endfor -%}
+            </div>
+            <blockquote>{{ block.settings.quote | escape }}</blockquote>
+            <figcaption><b>{{ block.settings.name | escape }}</b>{% if block.settings.detail != blank %}<span>{{ block.settings.detail | escape }}</span>{% endif %}</figcaption>
+          </figure>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Avis clients",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "08" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "آراء" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "وثقوا بنا" },
+    { "type": "paragraph", "content": "N'ajoutez que des avis réels de vos clients (captures WhatsApp, messages…). Les textes par défaut sont des exemples à remplacer." },
+    { "type": "select", "id": "scheme", "label": "Fond", "default": "sand", "options": [ { "value": "ivory", "label": "Ivoire" }, { "value": "sand", "label": "Sable" } ] }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Avis",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Avis", "default": "استبدل هذا النص برأي حقيقي من أحد زبائنك." },
+        { "type": "text", "id": "name", "label": "Nom", "default": "الاسم ن." },
+        { "type": "text", "id": "detail", "label": "Détail (ville, parfum…)", "default": "الولاية" },
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "default": 5, "label": "Note" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Avis clients",
+      "blocks": [
+        { "type": "review" },
+        { "type": "review" },
+        { "type": "review" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,42 @@
+{%- liquid
+  assign related_source = product.collections.first
+  assign shown = 0
+-%}
+{%- if related_source != blank and related_source.products_count > 1 -%}
+  <section class="section sec-rail section--sand" id="{{ section.id }}">
+    <div class="container">
+      <header class="sec-head reveal">
+        <div>
+          <p class="eyebrow">{{ related_source.title | escape }}</p>
+          <h2 class="display sm">{{ 'products.related' | t }}</h2>
+        </div>
+        <div class="sec-tools">
+          <div class="rail-ctl">
+            <button type="button" class="rail-btn prev" data-rail-prev aria-label="{{ 'general.previous' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button type="button" class="rail-btn next" data-rail-next aria-label="{{ 'general.next' | t }}"><svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+      </header>
+    </div>
+    <div class="rail" data-rail>
+      <div class="rail-track" tabindex="-1">
+        {%- for item in related_source.products -%}
+          {%- if item.id != product.id and shown < section.settings.limit -%}
+            <div class="rail-item">{% render 'product-card', product: item, index: shown %}</div>
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="container"><div class="rail-bar" aria-hidden="true"><i data-rail-bar></i></div></div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Produits similaires",
+  "settings": [
+    { "type": "range", "id": "limit", "min": 2, "max": 12, "step": 1, "default": 8, "label": "Nombre de produits" }
+  ]
+}
+{% endschema %}

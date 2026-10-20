@@ -1,0 +1,49 @@
+{
+  "name": "En-tête",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "m1": {
+          "type": "message",
+          "settings": {
+            "text": "عطور أصلية 100%"
+          }
+        },
+        "m2": {
+          "type": "message",
+          "settings": {
+            "text": "التوصيل إلى 58 ولاية"
+          }
+        },
+        "m3": {
+          "type": "message",
+          "settings": {
+            "text": "الدفع عند الاستلام"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {
+        "label": "إعلانات",
+        "link": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "show_newsletter_bell": false
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

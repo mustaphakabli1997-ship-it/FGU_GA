@@ -1,0 +1,34 @@
+{%- comment -%}
+  Studio illustration of Maison D'Arabie bottles on a polished surface, with their reflection.
+  Shown until a real photo is uploaded (hero, signature section). Param: single (true = one bottle only).
+{%- endcomment -%}
+{%- liquid
+  if single
+    assign fx = 150
+    assign fy = 46
+    assign fw = 260
+    assign fh = 412
+    assign shadow_x = 280
+    assign shadow_w = 170
+  else
+    assign fx = 112
+    assign fy = 58
+    assign fw = 252
+    assign fh = 399
+    assign shadow_x = 262
+    assign shadow_w = 215
+  endif
+-%}
+<svg class="bottle-art" viewBox="0 0 560 520" role="img" aria-label="{{ shop.name | escape }}" preserveAspectRatio="xMidYMax meet">
+  <rect x="0" y="440" width="560" height="80" fill="url(#md-floor)"/>
+  <path d="M0 440.5h560" stroke="#e6d29a" stroke-opacity=".6"/>
+  <g mask="url(#md-refl-mask)" opacity=".36">
+    <g transform="translate(0 880) scale(1 -1)">
+      {%- unless single -%}<use href="#md-bottle-b" x="322" y="140" width="190" height="301"/>{%- endunless -%}
+      <use href="#md-bottle-a" x="{{ fx }}" y="{{ fy }}" width="{{ fw }}" height="{{ fh }}"/>
+    </g>
+  </g>
+  <ellipse cx="{{ shadow_x }}" cy="445" rx="{{ shadow_w }}" ry="8" fill="#000" fill-opacity=".55"/>
+  {%- unless single -%}<use href="#md-bottle-b" x="322" y="140" width="190" height="301"/>{%- endunless -%}
+  <use href="#md-bottle-a" x="{{ fx }}" y="{{ fy }}" width="{{ fw }}" height="{{ fh }}"/>
+</svg>

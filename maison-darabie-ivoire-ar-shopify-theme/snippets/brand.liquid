@@ -1,0 +1,32 @@
+{%- comment -%}
+  The Maison D'Arabie logo. An uploaded logo in the theme settings replaces it.
+  Params: variant ('horizontal' default, or 'stacked'), tone ('ink' default for light backgrounds, or 'gold' for dark ones).
+{%- endcomment -%}
+{%- liquid
+  assign tone_key = tone | default: 'ink'
+  assign shape = variant | default: 'horizontal'
+  assign logo_w = 233
+  assign logo_h = 46
+  assign file = 'logo-horizontal-ink.svg'
+  if shape == 'horizontal' and tone_key == 'gold'
+    assign file = 'logo-horizontal.svg'
+  elsif shape == 'stacked'
+    assign logo_w = 220
+    assign logo_h = 152
+    assign file = 'logo-stacked-ink.svg'
+    if tone_key == 'gold'
+      assign file = 'logo-stacked.svg'
+    endif
+  endif
+  assign custom = settings.logo
+  if tone_key == 'gold'
+    assign custom = settings.logo_footer
+  endif
+-%}
+<a class="brand brand--{{ shape }}" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+  {%- if custom != blank -%}
+    {{ custom | image_url: width: 640 | image_tag: class: 'brand-logo', alt: shop.name, widths: '320, 640', loading: 'eager' }}
+  {%- else -%}
+    <img class="brand-logo" src="{{ file | asset_url }}" alt="{{ shop.name | escape }}" width="{{ logo_w }}" height="{{ logo_h }}">
+  {%- endif -%}
+</a>

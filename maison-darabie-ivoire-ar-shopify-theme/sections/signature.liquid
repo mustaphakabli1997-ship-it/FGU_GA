@@ -1,0 +1,64 @@
+{%- liquid
+  assign item = section.settings.product | default: collections['all'].products.first
+  assign panel_class = 'spot-panel'
+  assign show_vendor = false
+  if item.vendor != blank
+    assign vendor_key = item.vendor | downcase
+    assign shop_key = shop.name | downcase
+    if vendor_key != shop_key
+      assign show_vendor = true
+    endif
+  endif
+  if section.settings.image == blank and item.featured_image
+    assign panel_class = 'spot-panel is-light'
+  endif
+-%}
+{%- if item != blank -%}
+  <section class="spot on-dark{% if section.settings.reverse %} is-reverse{% endif %}">
+    <div class="spot-bg" aria-hidden="true"></div>
+    <div class="container spot-in">
+      <div class="spot-media oct reveal">
+        <div class="{{ panel_class }}">
+          {%- if section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'spot-img', widths: '500, 800, 1000', sizes: '(min-width: 960px) 42vw, 90vw', alt: item.title }}
+          {%- elsif item.featured_image -%}
+            {{ item.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'spot-img is-contain', widths: '500, 800, 1000', sizes: '(min-width: 960px) 42vw, 90vw', alt: item.title }}
+          {%- else -%}
+            {% render 'bottle-art', single: true %}
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="spot-copy reveal" style="--d: 140ms">
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow"><span class="idx">{{ section.settings.index | escape }}</span>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if show_vendor -%}<p class="spot-vendor">{{ item.vendor | escape }}</p>{%- endif -%}
+        <h2 class="display">{{ item.title | escape }}</h2>
+        {%- if item.description != blank -%}
+          <p class="lead">{{ item.description | replace: '</p>', ' </p>' | replace: '<br>', ' ' | replace: '<br />', ' ' | strip_html | strip | truncate: 200 }}</p>
+        {%- endif -%}
+        {% render 'product-facts', product: item, mode: 'chips' %}
+        {% render 'product-facts', product: item, mode: 'notes' %}
+        <div class="spot-buy">
+          <div class="spot-price">{% render 'price', product: item, from: true %}</div>
+          <a class="btn btn--gold" href="{{ item.url }}">{{ section.settings.button_label | escape }} <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Parfum signature",
+  "settings": [
+    { "type": "text", "id": "index", "label": "Numéro de section", "default": "04" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "العطر المميّز" },
+    { "type": "product", "id": "product", "label": "Produit", "info": "Sans choix : le premier produit de la boutique." },
+    { "type": "image_picker", "id": "image", "label": "Image éditoriale (optionnel)", "info": "Sans image : la photo du produit (ou l'illustration des flacons)." },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "اكتشف هذا العطر" },
+    { "type": "checkbox", "id": "reverse", "label": "Inverser (image à droite)", "default": false }
+  ],
+  "presets": [
+    { "name": "Parfum signature" }
+  ]
+}
+{% endschema %}

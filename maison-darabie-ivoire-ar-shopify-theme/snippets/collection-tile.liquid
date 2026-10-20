@@ -1,0 +1,24 @@
+{%- comment -%} A collection as a framed picture. Params: collection, index (starts at 0). {%- endcomment -%}
+{%- liquid
+  assign n = index | default: 0 | plus: 1
+  assign delay = index | default: 0 | modulo: 3 | times: 80
+  assign img = collection.image | default: collection.products.first.featured_image
+  assign img_class = 'ct-img'
+  if collection.image == blank
+    assign img_class = 'ct-img is-contain'
+  endif
+-%}
+<a class="ct reveal" style="--d: {{ delay }}ms" href="{{ collection.url }}">
+  <div class="ct-media oct oct--dark">
+    {%- if img -%}
+      {{ img | image_url: width: 900 | image_tag: class: img_class, widths: '450, 700, 900', sizes: '(min-width: 960px) 30vw, 90vw', loading: 'lazy', alt: collection.title }}
+    {%- else -%}
+      <span class="ct-fallback"><img src="{{ 'monogram.svg' | asset_url }}" alt="" width="715" height="711" loading="lazy"></span>
+    {%- endif -%}
+  </div>
+  <div class="ct-info">
+    <span class="ct-n">{% if n < 10 %}0{% endif %}{{ n }}</span>
+    <h3 class="ct-name">{{ collection.title | escape }}</h3>
+    <span class="ct-c">{{ 'general.pieces' | t: count: collection.products_count }}</span>
+  </div>
+</a>

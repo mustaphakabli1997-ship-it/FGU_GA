@@ -1,0 +1,24 @@
+{%- comment -%}
+  A price that reads correctly in right-to-left pages. Digit groups ("12 500") are joined with a no-break space so the
+  bidirectional algorithm cannot swap them, and the element follows the direction of its own text
+  (number first in Arabic, "12 500 DA" in Latin). Params: amount (in cents).
+{%- endcomment -%}
+{%- liquid
+  assign digits = '0123456789'
+  assign parts = amount | money | split: ' '
+  assign text = ''
+  for part in parts
+    if forloop.first
+      assign text = part
+    else
+      assign last_char = text | slice: -1
+      assign first_char = part | slice: 0
+      if last_char != blank and first_char != blank and digits contains last_char and digits contains first_char
+        assign text = text | append: '&nbsp;' | append: part
+      else
+        assign text = text | append: ' ' | append: part
+      endif
+    endif
+  endfor
+-%}
+<bdi class="money">{{ text }}</bdi>
