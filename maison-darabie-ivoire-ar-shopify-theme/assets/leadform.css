@@ -1,0 +1,311 @@
+/* Maison D'Arabie — Ivoire · COD LeadForm (leadform-cod.com)
+   Dresses the order form injected by the LeadForm app embed in the house identity: ivory paper, octagon hairline,
+   black-marble summary slip, ink + gold. The same rules cover the sticky "order now" bar, the cart-drawer button,
+   the thank-you window and the popup / side-panel modes of the app.
+   - The app paints most of its colours inline (some with !important) and its stylesheet loads after the theme's, so the rules
+     below use !important on purpose and every selector starts with `body` to stay ahead of the app's own selectors.
+   - Only the app's own class names are touched. Switch it all off in Theme settings > Cart and delivery > "Habiller le formulaire COD LeadForm". */
+
+/* -------------------------------------------------------------- tokens (on <body>: the app also adds elements outside the form — overlays, sticky bar, cart-drawer button) */
+body {
+  --lf-ink: var(--ink, #101010);
+  --lf-ivory: var(--ivory, #f8f2e6);
+  --lf-paper: var(--paper, #fffdf7);
+  --lf-stone: var(--stone, #f0e8d8);
+  --lf-gold: var(--gold, #c9ab6f);
+  --lf-gold-light: var(--gold-light, #e6d29a);
+  --lf-gold-dark: var(--gold-dark, #a07c3c);
+  --lf-accent: var(--accent-ink, #876629);
+  --lf-text: #15130f;
+  --lf-muted: #6a6254;
+  --lf-hair: rgba(21, 19, 15, .14);
+  --lf-hair-2: rgba(21, 19, 15, .3);
+  --lf-danger: #b8392f;
+  --lf-serif: var(--serif, 'Marcellus', 'Cormorant Garamond', Georgia, serif);
+  --lf-sans: var(--sans, 'Jost', 'Helvetica Neue', Arial, system-ui, sans-serif);
+  --lf-ease: var(--ease, cubic-bezier(.22, .8, .24, 1));
+}
+html[lang|='ar'] body {
+  --lf-serif: var(--serif, 'Amiri', 'Marcellus', 'Cairo', serif);
+  --lf-sans: var(--sans, 'Cairo', 'Jost', system-ui, sans-serif);
+}
+
+/* -------------------------------------------------------------- the card
+   The app draws its own border / radius / shadow on .leadform-container (inline !important), so the card is
+   drawn by the wrapper and the container is clipped 4px inside to hide the app's frame. */
+body #leadform-embedded-container, body .leadform-popup, body .leadform-sidebar {
+  position: relative; background: var(--lf-paper) !important; color: var(--lf-text); font-family: var(--lf-sans);
+  box-shadow: 0 34px 80px -54px rgba(40, 30, 10, .45);
+}
+body #leadform-embedded-container { scroll-margin-top: calc(var(--hd-h, 86px) + 12px); max-width: 720px; margin: 26px auto 8px; padding: clamp(30px, 4.6vw, 40px) clamp(16px, 4vw, 28px) clamp(20px, 3.6vw, 28px); }
+body #leadform-embedded-container::after {
+  content: ''; position: absolute; inset: 10px; z-index: 1; border: 24px solid transparent; pointer-events: none;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M.5 40V16.5L16.5 .5h31l16 16v31l-16 16h-31L.5 47.5Z' fill='none' stroke='%23a07c3c' stroke-opacity='.9'/%3E%3C/svg%3E") 24 / 24px stretch;
+}
+body .leadform-popup, body .leadform-sidebar { padding: 14px 12px; outline: 1px solid rgba(160, 124, 60, .9); outline-offset: -10px; }
+body .leadform-container { clip-path: inset(4px); padding: 8px !important; font-family: var(--lf-sans) !important; color: var(--lf-text); }
+body .leadform-container > .leadform-bg-layer, body #leadform-embedded-container .leadform-container > .leadform-bg-layer { display: none !important; }
+/* after an order the app hides the container: take the empty card away with it */
+body #leadform-embedded-container:has(> .leadform-container[style*='display: none']) { display: none; }
+
+/* -------------------------------------------------------------- title */
+body .leadform-container .leadform-title { margin: 0 0 26px !important; text-align: center !important; }
+body .leadform-container .leadform-title h2 {
+  margin: 0 !important; font-family: var(--lf-serif) !important; font-size: clamp(1.5rem, 3.4vw, 1.85rem) !important; font-weight: 400 !important;
+  line-height: 1.25 !important; letter-spacing: .02em; color: var(--lf-text) !important; text-align: center !important;
+}
+body .leadform-container .leadform-title h2::after {
+  content: ''; display: block; width: min(100%, 200px); height: 14px; margin: 16px auto 14px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cg fill='none' stroke='%23a07c3c' stroke-width='.9'%3E%3Crect x='2.6' y='2.6' width='8.8' height='8.8'/%3E%3Crect x='2.6' y='2.6' width='8.8' height='8.8' transform='rotate(45 7 7)'/%3E%3C/g%3E%3C/svg%3E") center / 14px 14px no-repeat,
+    linear-gradient(90deg, transparent, var(--lf-gold-dark)) left center / calc(50% - 14px) 1px no-repeat,
+    linear-gradient(270deg, transparent, var(--lf-gold-dark)) right center / calc(50% - 14px) 1px no-repeat;
+}
+body .leadform-container .leadform-title p {
+  margin: 0 !important; font-family: var(--lf-sans) !important; font-size: .95rem !important; font-weight: 400 !important; line-height: 1.6 !important;
+  color: var(--lf-muted) !important; text-align: center !important;
+}
+
+/* -------------------------------------------------------------- the order (mini cart) */
+body .leadform-container .leadform-cart {
+  direction: inherit !important; margin: 0 0 18px !important; padding: 18px 0 !important; background: transparent !important;
+  border: 0 !important; border-top: 1px solid var(--lf-hair) !important; border-bottom: 1px solid var(--lf-hair) !important; border-radius: 0 !important; box-shadow: none !important;
+}
+body .leadform-container .cart-header { gap: 10px; margin-bottom: 16px; }
+body .leadform-container .cart-header svg { width: 18px; height: 18px; color: var(--lf-accent); fill: currentColor; }
+body .leadform-container .cart-title {
+  margin: 0; font-family: var(--lf-sans) !important; font-size: .68rem !important; font-weight: 500 !important; letter-spacing: .26em; text-transform: uppercase; color: var(--lf-accent) !important;
+}
+body .leadform-container .cart-item { gap: 14px; }
+body .leadform-container .cart-product-image { width: 64px; height: 64px; border: 1px solid var(--lf-hair-2); border-radius: 0; background-color: var(--lf-stone); object-fit: cover; }
+body .leadform-container .cart-product-name {
+  font-family: var(--lf-serif) !important; font-size: 1.08rem !important; font-weight: 400 !important; line-height: 1.4; color: var(--lf-text) !important;
+}
+body .leadform-container .cart-product-price { margin-top: 2px; font-size: .84rem !important; color: var(--lf-muted) !important; }
+body .leadform-container .cart-quantity-selector { border: 1px solid var(--lf-hair-2) !important; border-radius: 0 !important; background: transparent !important; }
+body .leadform-container .cart-quantity-btn { width: 34px; padding: 10px 0; background: transparent !important; color: var(--lf-text); transition: background-color .25s, color .25s; }
+body .leadform-container .cart-quantity-btn svg { color: currentColor; }
+body .leadform-container .cart-quantity-btn:hover:not(:disabled) { background: var(--lf-ink) !important; color: var(--lf-gold-light); }
+body .leadform-container .cart-quantity-btn:disabled { opacity: .35; cursor: default; }
+body .leadform-container .cart-qty-btn-trash, body .leadform-container .cart-qty-btn-trash svg { color: var(--lf-danger); }
+body .leadform-container .cart-quantity-display {
+  min-width: 34px; padding: 4px 0; font-family: var(--lf-serif); font-size: 1rem; font-weight: 400; color: var(--lf-text) !important; -webkit-text-fill-color: var(--lf-text) !important;
+  border-color: var(--lf-hair-2) !important; background: transparent !important;
+}
+
+/* -------------------------------------------------------------- summary: a black-marble slip with gold figures */
+body .leadform-container .leadform-summary {
+  direction: inherit !important; margin: 0 0 22px !important; padding: 16px 22px !important; color: #f6efe0 !important;
+  background: linear-gradient(rgba(11, 10, 9, .7), rgba(11, 10, 9, .7)), #0b0a09 var(--marble, none) center / cover !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  outline: 1px solid rgba(201, 171, 111, .5); outline-offset: -7px;
+}
+body .leadform-container .summary-row { padding: 7px 0 !important; font-size: .9rem !important; }
+body .leadform-container .summary-label { gap: 10px; color: rgba(246, 239, 224, .78); }
+body .leadform-container .summary-label svg { width: 18px; height: 18px; color: var(--lf-gold); fill: currentColor; }
+body .leadform-container .summary-value { color: #f6efe0; }
+body .leadform-container .leadform-original-price { color: #9a917f !important; }
+body .leadform-container .summary-row-shipping .leadform-shipping, body .leadform-container .leadform-shipping.summary-shipping {
+  color: var(--lf-gold-light) !important; font-size: .74rem !important; font-weight: 500 !important; letter-spacing: .22em; text-transform: uppercase;
+}
+body .leadform-container .summary-row.total { margin-top: 8px !important; padding-top: 14px !important; border-top: 1px solid rgba(201, 171, 111, .5) !important; font-weight: 400 !important; }
+body .leadform-container .summary-row.total .summary-label { color: var(--lf-gold-light); font-family: var(--lf-serif); font-size: 1.05rem; letter-spacing: .06em; }
+body .leadform-container .leadform-total { font-family: var(--lf-serif); font-size: 1.5rem !important; font-weight: 400 !important; line-height: 1.2; color: var(--lf-gold-light); }
+
+/* -------------------------------------------------------------- fields */
+body .leadform-container .form-field, body .leadform-container .form-field:last-of-type { margin: 0 0 16px !important; }
+body .leadform-container .form-label {
+  direction: inherit !important; display: block; margin: 0 0 8px !important; font-family: var(--lf-sans) !important; font-size: .68rem !important; font-weight: 500 !important;
+  line-height: 1.3; letter-spacing: .24em; text-transform: uppercase; color: var(--lf-muted) !important;
+}
+body .leadform-container .required-asterisk { margin: 0 4px; color: var(--lf-gold-dark) !important; }
+body .leadform-container .input-container {
+  min-height: 52px; border: 1px solid var(--lf-hair-2) !important; border-radius: 0 !important; background: var(--lf-ivory) !important;
+  transition: border-color .3s, background-color .3s, box-shadow .3s;
+}
+body .leadform-container .input-container:hover { border-color: var(--lf-text) !important; }
+body .leadform-container .input-container:focus-within { border-color: var(--lf-ink) !important; background: #fff !important; box-shadow: 0 0 0 3px rgba(201, 171, 111, .3); }
+body .leadform-container .input-icon {
+  align-self: stretch; width: 48px !important; height: auto !important; background: transparent !important; color: var(--lf-accent) !important;
+  border: 0 !important; border-inline-end: 1px solid var(--lf-hair) !important; border-radius: 0 !important;
+}
+body .leadform-container .input-icon svg { width: 19px; height: 19px; }
+body .leadform-container .form-input, body .leadform-container .form-select {
+  border-radius: 0 !important; background-color: transparent !important; color: var(--lf-text) !important; font-family: var(--lf-sans) !important; padding: 13px 16px; box-shadow: none !important;
+  --placeholder-color: #9a917f !important;
+}
+body .leadform-container .form-input:focus, body .leadform-container .form-input:focus-visible, body .leadform-container .form-select:focus { box-shadow: none !important; border-radius: 0 !important; }
+body .leadform-container .form-input::placeholder { color: #9a917f !important; opacity: 1; }
+body .leadform-container .location-select {
+  padding: 13px 40px 13px 16px !important; border-radius: 0 !important; background-color: transparent !important; color: var(--lf-text) !important; font-family: var(--lf-sans) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23876629' stroke-width='1.4' d='M2 4.2l4 4 4-4'/%3E%3C/svg%3E") !important;
+  background-position: right 16px center !important; background-size: 12px !important;
+}
+body .leadform-container .form-input.error, body .leadform-container .form-select.error { background-color: transparent !important; }
+body .leadform-container .input-container:has(.error) { border-color: var(--lf-danger) !important; background: #fbf0ee !important; }
+body .leadform-container .input-container:has(.error-icon) .form-input { padding-right: 46px; }
+html[dir='rtl'] body .leadform-container .input-container:has(.error-icon) .form-input { padding-right: 16px; padding-left: 46px; }
+body .leadform-container .error-message, body .leadform-container .phone-validation-message { margin-top: 6px; font-size: .78rem !important; color: var(--lf-danger) !important; }
+
+/* -------------------------------------------------------------- delivery */
+body .leadform-container .leadform-delivery-container {
+  direction: inherit !important; margin: 4px 0 20px !important; padding: 14px 18px 8px !important; background: transparent !important;
+  border: 1px solid var(--lf-hair-2) !important; border-radius: 0 !important; box-shadow: none !important;
+}
+body .leadform-container .leadform-delivery-header { gap: 10px !important; margin-bottom: 8px !important; padding-bottom: 12px !important; border-bottom: 1px solid var(--lf-hair) !important; }
+body .leadform-container .leadform-delivery-header > span:first-child { color: var(--lf-accent) !important; }
+body .leadform-container .leadform-delivery-header > span:last-child {
+  font-family: var(--lf-sans); font-size: .68rem !important; font-weight: 500 !important; letter-spacing: .24em; text-transform: uppercase; color: var(--lf-text) !important;
+}
+body .leadform-container .leadform-shipping-option { direction: inherit !important; padding: 12px 0 !important; border-radius: 0 !important; font-family: var(--lf-sans); }
+body .leadform-container .leadform-shipping-option input[type='radio'] { accent-color: var(--lf-gold-dark) !important; }
+body .leadform-container .leadform-shipping-option > div > span { font-size: .92rem !important; font-weight: 500 !important; color: var(--lf-text) !important; }
+body .leadform-container .leadform-shipping-option > span {
+  font-size: .72rem !important; font-weight: 500 !important; letter-spacing: .2em; text-transform: uppercase; color: var(--lf-accent) !important;
+}
+
+/* -------------------------------------------------------------- the order button */
+body .leadform-container .leadform-form-buttons, body .leadform-container .leadform-action-buttons { gap: 10px; margin-top: 6px; }
+body .leadform-container .leadform-button, body .leadform-container .leadform-action-button {
+  position: relative; isolation: isolate; overflow: hidden; min-height: 60px; padding: 0 28px !important; border: 1px solid var(--lf-ink) !important; border-radius: 0 !important;
+  background: var(--lf-ink) !important; color: var(--lf-ivory) !important; font-family: var(--lf-sans) !important; font-size: .76rem !important; font-weight: 500 !important;
+  line-height: 1.2; letter-spacing: .26em; text-transform: uppercase; box-shadow: none !important; animation: none !important;
+  transition: color .45s var(--lf-ease), border-color .45s var(--lf-ease);
+}
+body .leadform-container .leadform-button::before, body .leadform-container .leadform-action-button::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; background: var(--lf-gold); transform: translateY(101%); transition: transform .55s var(--lf-ease);
+}
+body .leadform-container .leadform-button:hover, body .leadform-container .leadform-action-button:hover { transform: none; filter: none; color: var(--lf-ink) !important; border-color: var(--lf-gold) !important; }
+body .leadform-container .leadform-button:hover::before, body .leadform-container .leadform-action-button:hover::before { transform: none; }
+body .leadform-container .leadform-button .btn-icon svg { width: 20px; height: 20px; color: var(--lf-gold); fill: currentColor; transition: color .45s var(--lf-ease); }
+body .leadform-container .leadform-button:hover .btn-icon svg { color: var(--lf-ink); }
+body .leadform-container .leadform-button:disabled { opacity: .7; }
+body .leadform-container .lf-spinner { border-color: rgba(201, 171, 111, .35); border-top-color: var(--lf-gold); }
+
+/* sticky "order now" bar (the app shows it while the form is out of view) — the theme's own bar steps aside */
+body:has(#lfcod-sticky) .sticky-buy { display: none !important; }
+body #lfcod-sticky .lfcod-sticky-inner {
+  padding: 10px 14px calc(12px + env(safe-area-inset-bottom, 0px)) !important; background: var(--lf-ink) !important;
+  box-shadow: 0 -1px 0 rgba(201, 171, 111, .55), 0 -22px 40px -26px rgba(0, 0, 0, .6) !important;
+}
+body #lfcod-sticky-btn {
+  min-height: 54px; border: 1px solid var(--lf-gold) !important; border-radius: 0 !important; background: var(--lf-gold) !important; color: var(--lf-ink) !important;
+  font-family: var(--lf-sans) !important; font-size: .76rem !important; font-weight: 600 !important; letter-spacing: .24em !important; text-transform: uppercase !important; box-shadow: none !important; animation: none !important;
+}
+body #lfcod-sticky-btn:hover { background: var(--lf-gold-light) !important; border-color: var(--lf-gold-light) !important; opacity: 1 !important; transform: none !important; }
+body #lfcod-sticky-btn .sticky-btn-icon { color: var(--lf-ink); fill: currentColor; }
+
+/* the app's cash-on-delivery button inside the cart drawer: gold, so it reads apart from the black checkout button */
+body .leadform-cart-drawer-btn-wrapper { padding: 0 0 12px !important; }
+body .leadform-cart-drawer-btn-wrapper .leadform-cart-drawer-btn {
+  min-height: 56px !important; padding: 0 22px !important; border: 1px solid var(--lf-gold) !important; border-radius: 0 !important; background: var(--lf-gold) !important; color: var(--lf-ink) !important;
+  font-family: var(--lf-sans) !important; font-size: .74rem !important; font-weight: 600 !important; letter-spacing: .24em !important; text-transform: uppercase !important;
+  box-shadow: none !important; animation: none !important; transition: color .35s, background-color .35s, border-color .35s !important;
+}
+body .leadform-cart-drawer-btn-wrapper .leadform-cart-drawer-btn:hover { border-color: var(--lf-ink) !important; background: var(--lf-ink) !important; color: var(--lf-gold-light) !important; opacity: 1 !important; transform: none !important; }
+body .leadform-cart-drawer-btn-wrapper .leadform-cart-drawer-btn svg { color: currentColor; fill: currentColor; }
+html[lang|='ar'] body .leadform-cart-drawer-btn-wrapper .leadform-cart-drawer-btn { font-size: 1.02rem !important; font-weight: 700 !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+/* -------------------------------------------------------------- thank-you, popups and notices */
+body .leadform-thankyou-overlay, body .leadform-upsell-overlay { background: rgba(10, 9, 8, .74) !important; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+body .leadform-thankyou-modal, body .leadform-upsell-modal {
+  position: relative; max-width: 520px; background: var(--lf-paper) !important; color: var(--lf-text); border-radius: 0 !important; box-shadow: 0 40px 100px -40px rgba(0, 0, 0, .65) !important; font-family: var(--lf-sans);
+}
+body .leadform-thankyou-modal::after, body .leadform-upsell-modal::after {
+  content: ''; position: absolute; inset: 10px; z-index: 1; border: 24px solid transparent; pointer-events: none;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M.5 40V16.5L16.5 .5h31l16 16v31l-16 16h-31L.5 47.5Z' fill='none' stroke='%23a07c3c' stroke-opacity='.9'/%3E%3C/svg%3E") 24 / 24px stretch;
+}
+body .leadform-thankyou-content { padding: 54px 36px 40px; text-align: center; }
+body .leadform-thankyou-content::before { content: ''; display: block; width: 64px; height: 64px; margin: 0 auto 22px; background: url(monogram-ink.svg) center / contain no-repeat; }
+body .leadform-thankyou-message { font-size: .98rem; line-height: 1.8; color: var(--lf-text); }
+body .leadform-thankyou-message b, body .leadform-thankyou-message strong { font-family: var(--lf-serif); font-size: 1.4rem; font-weight: 400; line-height: 1.4; }
+body .leadform-thankyou-message figure.image:has(img[src*='Blue_and_Green_Flat_Typographic']) { display: none; }
+body .leadform-container .leadform-close-btn,
+body .leadform-popup .leadform-close-btn,
+body .leadform-thankyou-modal .leadform-close-btn,
+body .leadform-upsell-modal .leadform-close-btn {
+  top: 16px; inset-inline-end: 16px; inset-inline-start: auto; z-index: 5; width: 34px; height: 34px; border: 1px solid var(--lf-hair-2); border-radius: 0; background: transparent; color: var(--lf-text); font-size: 22px;
+  transition: background-color .3s, color .3s, border-color .3s;
+}
+body .leadform-thankyou-modal .leadform-close-btn:hover,
+body .leadform-popup .leadform-close-btn:hover,
+body .leadform-upsell-modal .leadform-close-btn:hover { background: var(--lf-ink); border-color: var(--lf-ink); color: var(--lf-gold-light); transform: none; }
+body .leadform-popup-overlay, body .leadform-sidebar-overlay { background: rgba(10, 9, 8, .74) !important; }
+body .lf-oos-modal { border-radius: 0 !important; background: var(--lf-paper) !important; font-family: var(--lf-sans) !important; }
+body .lf-oos-icon { border-radius: 0 !important; background: rgba(184, 57, 47, .12) !important; color: var(--lf-danger) !important; }
+body .lf-oos-title { font-family: var(--lf-serif) !important; font-size: 1.25rem !important; font-weight: 400 !important; color: var(--lf-text) !important; }
+body .lf-oos-list { border-radius: 0 !important; border-color: var(--lf-hair-2) !important; background: var(--lf-ivory) !important; }
+body .lf-oos-list .lf-oos-item { border-color: var(--lf-hair) !important; }
+body .lf-oos-list .lf-oos-item b { color: var(--lf-danger) !important; }
+body .lf-oos-ok { border-radius: 0 !important; background: var(--lf-ink) !important; font-size: .72rem !important; letter-spacing: .22em; text-transform: uppercase; }
+body .lf-oos-ok:hover { background: var(--lf-gold-dark) !important; }
+body .lf-msearch-sheet { border-radius: 0; background: var(--lf-paper); font-family: var(--lf-sans); }
+body .lf-msearch-input, body .lf-msearch-close { border-radius: 0; border-color: var(--lf-hair-2); }
+body .lf-msearch-close { background: transparent; border: 1px solid var(--lf-hair-2); color: var(--lf-text); }
+body .lf-msearch-item { border-color: var(--lf-hair); }
+body .lf-msearch-item.is-selected { background: var(--lf-stone); color: var(--lf-ink); }
+
+/* -------------------------------------------------------------- optional blocks of the app (variants, coupon, quantity, offers) */
+body .leadform-container .lf-variant-label, body .leadform-container .lf-variant-option-name {
+  font-family: var(--lf-sans); font-size: .68rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--lf-muted);
+}
+body .leadform-container .lf-variant-btn { border-radius: 0; border-color: var(--lf-hair-2); background: transparent; color: var(--lf-text); }
+body .leadform-container .lf-variant-btn:hover:not(:disabled):not(.active) { background: var(--lf-stone); }
+body .leadform-container .lf-variant-btn.active { background: var(--lf-ink); border-color: var(--lf-ink); color: var(--lf-gold-light); }
+body .leadform-container .lf-variant-option-select { border-radius: 0; border-color: var(--lf-hair-2); background-color: var(--lf-ivory); }
+body .leadform-container .lf-variant-radio-input { accent-color: var(--lf-gold-dark); }
+body .leadform-container .coupon-input { border-radius: 0; border-color: var(--lf-hair-2); background: var(--lf-ivory); }
+body .leadform-container .coupon-input:focus { box-shadow: 0 0 0 3px rgba(201, 171, 111, .3); border-radius: 0; }
+body .leadform-container .coupon-btn { border-radius: 0; background: var(--lf-ink); color: var(--lf-ivory); font-size: .72rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; box-shadow: none; }
+body .leadform-container .coupon-btn:hover { transform: none; box-shadow: none; background: var(--lf-gold-dark); }
+body .leadform-container .coupon-message { border-radius: 0; }
+body .leadform-container .lf-quantity-selector { border-radius: 0 !important; }
+body .leadform-container .qty-btn, body .leadform-container .qty-btn.qty-minus, body .leadform-container .qty-btn.qty-plus { border-radius: 0 !important; }
+body .leadform-container .lfcod-bundle-item, body .leadform-container .lf-pbundle-card { border-radius: 0 !important; }
+
+/* -------------------------------------------------------------- right-to-left (Arabic storefront) */
+html[dir='rtl'] body .leadform-container .input-container { direction: rtl !important; }
+html[dir='rtl'] body .leadform-container .location-select { padding: 13px 16px 13px 40px !important; background-position: left 16px center !important; text-align: right !important; direction: rtl !important; }
+html[dir='rtl'] body .leadform-container .error-icon { right: auto !important; left: 12px !important; }
+html[dir='rtl'] body .leadform-container .form-input[name='phone'], html[dir='rtl'] body .leadform-container .form-input[type='tel'] { text-align: right; }
+html[lang|='ar'] body .leadform-container .form-label,
+html[lang|='ar'] body .leadform-container .cart-title,
+html[lang|='ar'] body .leadform-container .leadform-delivery-header > span:last-child,
+html[lang|='ar'] body .leadform-container .leadform-shipping-option > span,
+html[lang|='ar'] body .leadform-container .summary-row-shipping .leadform-shipping,
+html[lang|='ar'] body .leadform-container .leadform-shipping.summary-shipping,
+html[lang|='ar'] body .leadform-container .leadform-button,
+html[lang|='ar'] body .leadform-container .leadform-action-button,
+html[lang|='ar'] body #lfcod-sticky-btn,
+html[lang|='ar'] body .leadform-container .lf-variant-label,
+html[lang|='ar'] body .leadform-container .lf-variant-option-name,
+html[lang|='ar'] body .leadform-container .coupon-btn,
+html[lang|='ar'] body .lf-oos-ok { letter-spacing: 0 !important; text-transform: none !important; }
+html[lang|='ar'] body .leadform-container .form-label,
+html[lang|='ar'] body .leadform-container .cart-title,
+html[lang|='ar'] body .leadform-container .leadform-delivery-header > span:last-child {
+  font-size: .92rem !important; font-weight: 600 !important;
+}
+html[lang|='ar'] body .leadform-container .leadform-button,
+html[lang|='ar'] body .leadform-container .leadform-action-button,
+html[lang|='ar'] body #lfcod-sticky-btn { font-size: 1.05rem !important; font-weight: 700 !important; }
+html[lang|='ar'] body .leadform-container .leadform-title h2 { font-size: clamp(1.75rem, 3.8vw, 2.15rem) !important; letter-spacing: 0; line-height: 1.5 !important; }
+html[lang|='ar'] body .leadform-container .leadform-title p { line-height: 1.8 !important; }
+html[lang|='ar'] body .leadform-container .summary-row-shipping .leadform-shipping,
+html[lang|='ar'] body .leadform-container .leadform-shipping.summary-shipping { font-size: .9rem !important; font-weight: 600 !important; }
+html[lang|='ar'] body .leadform-container .leadform-shipping-option > span { font-size: .92rem !important; font-weight: 600 !important; }
+
+/* -------------------------------------------------------------- small screens, reduced motion */
+@media (max-width: 480px) {
+  body #leadform-embedded-container { margin-top: 22px; padding: 34px 10px 20px; }
+  body #leadform-embedded-container::after { inset: 8px; }
+  body .leadform-container .leadform-summary { padding: 14px 18px !important; }
+  body .leadform-container .cart-item { gap: 10px; }
+  body .leadform-container .cart-product-image { width: 52px; height: 52px; }
+  body .leadform-container .cart-product-name { font-size: 1rem !important; }
+  body .leadform-container .cart-quantity-btn { width: 30px; }
+  body .leadform-container .cart-quantity-display { min-width: 30px; }
+  body .leadform-container .leadform-button, body .leadform-container .leadform-action-button { padding: 0 14px !important; font-size: .72rem !important; letter-spacing: .18em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body .leadform-container .leadform-button::before, body .leadform-container .leadform-action-button::before { transition: none; }
+}

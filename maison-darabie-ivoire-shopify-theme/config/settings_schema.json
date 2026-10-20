@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Maison D'Arabie Ivoire",
-    "theme_version": "1.1.0",
+    "theme_version": "1.2.0",
     "theme_author": "Maison D'Arabie",
     "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/tree/claude/boutique-sekhri-store/maison-darabie-ivoire-shopify-theme",
     "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
@@ -190,6 +190,13 @@
         "id": "gift_wrap_label",
         "label": "Texte de l'emballage cadeau",
         "info": "Laisser vide pour le texte par défaut."
+      },
+      {
+        "type": "checkbox",
+        "id": "leadform_style",
+        "label": "Habiller le formulaire COD LeadForm",
+        "info": "Applique le style de la maison au formulaire de l'application LeadForm (paiement à la livraison), fait mener « Commander maintenant » vers ce formulaire et affiche ses libellés en arabe sur une boutique arabe.",
+        "default": true
       }
     ]
   },

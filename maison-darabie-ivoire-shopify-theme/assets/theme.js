@@ -316,6 +316,62 @@
     updateStickyBars();
   }
 
+  // ------------------------------------------------------- COD LeadForm (leadform-cod.com)
+  // The LeadForm app puts its own order form under the buy buttons. The theme does two things for it:
+  // "Commander maintenant" scrolls to that form instead of going to the checkout, and on an Arabic storefront the app's
+  // French / English default labels are shown in Arabic (the app rewrites its own texts, so this runs again after every change).
+  const LEADFORM_AR = {
+    'Paiement à la livraison': 'الدفع عند الاستلام', 'Cash on Delivery': 'الدفع عند الاستلام',
+    Panier: 'طلبيتك', Cart: 'طلبيتك', 'Sous-total': 'المجموع الفرعي', Subtotal: 'المجموع الفرعي', 'Réduction': 'التخفيض', Discount: 'التخفيض',
+    Livraison: 'التوصيل', Shipping: 'التوصيل', Total: 'المجموع',
+    'Prénom': 'الاسم الأول', 'First Name': 'الاسم الأول', 'Nom de famille': 'اللقب', 'Last Name': 'اللقب', Nom: 'الاسم', Name: 'الاسم', 'Nom complet': 'الاسم الكامل', 'Full Name': 'الاسم الكامل',
+    'Téléphone': 'رقم الهاتف', Phone: 'رقم الهاتف', 'E-mail': 'البريد الإلكتروني', Email: 'البريد الإلكتروني',
+    'Adresse ligne 1': 'العنوان', 'Adresse ligne 2': 'تفاصيل العنوان', Adresse: 'العنوان', 'Address Line 1': 'العنوان', 'Address Line 2': 'تفاصيل العنوان', Address: 'العنوان',
+    Note: 'ملاحظة', 'Code postal': 'الرمز البريدي', 'Zip Code': 'الرمز البريدي', Pays: 'البلد', Country: 'البلد',
+    wilaya: 'الولاية', Wilaya: 'الولاية', Province: 'الولاية', baladia: 'البلدية', Baladia: 'البلدية', Commune: 'البلدية', City: 'البلدية', Ville: 'المدينة',
+    'Options de livraison': 'خيارات التوصيل', 'Delivery options': 'خيارات التوصيل', 'Shipping options': 'خيارات التوصيل',
+    'Livraison gratuite': 'توصيل مجاني', 'Free Shipping': 'توصيل مجاني', GRATUIT: 'مجاني', Gratuit: 'مجاني', FREE: 'مجاني',
+    'Livraison à domicile': 'التوصيل إلى المنزل', 'Home delivery': 'التوصيل إلى المنزل', 'Door Delivery': 'التوصيل إلى المنزل', 'Stop Desk': 'التوصيل إلى المكتب', 'Livraison au bureau': 'التوصيل إلى المكتب',
+    'Commander Maintenant': 'اطلب الآن', 'Order Now': 'اطلب الآن', 'Ajouter au panier': 'أضف إلى السلة', 'Payer en ligne': 'ادفع عبر الإنترنت', Appliquer: 'تطبيق', 'Entrez le code promo': 'أدخل رمز الخصم',
+    'Votre commande a été passée avec succès': 'تم تسجيل طلبك بنجاح', "Merci d'avoir acheté chez nous": 'شكرًا لثقتكم بنا',
+    'Your order has been placed successfully': 'تم تسجيل طلبك بنجاح', 'Thank you for shopping with us': 'شكرًا لثقتكم بنا',
+    Required: 'هذا الحقل مطلوب',
+  };
+  const LEADFORM_ROOTS = '#leadform-embedded-container, .leadform-popup-overlay, .leadform-sidebar-overlay, .leadform-thankyou-overlay, #lfcod-sticky';
+  const isArabic = () => /^ar\b/i.test(document.documentElement.lang);
+
+  function translateLeadform() {
+    $$(LEADFORM_ROOTS).forEach((root) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: (n) => (n.nodeValue.trim() && !n.parentElement.closest('option, script, style') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+      });
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        const key = n.nodeValue.trim();
+        const out = LEADFORM_AR[key] || (/^(Price|Prix)\s*:/i.test(key) ? key.replace(/^(Price|Prix)\s*:\s*/i, 'السعر: ') : '');
+        if (out) n.nodeValue = n.nodeValue.replace(key, out);
+      }
+      $$('[data-required-message]', root).forEach((el) => { if (LEADFORM_AR[el.dataset.requiredMessage]) el.dataset.requiredMessage = LEADFORM_AR[el.dataset.requiredMessage]; });
+    });
+  }
+
+  function initLeadform() {
+    if (!theme.leadform || !isArabic()) return;
+    let queued = false;
+    new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; translateLeadform(); });
+    }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    translateLeadform();
+  }
+
+  function goToLeadform() {
+    const form = theme.leadform && $('#leadform-embedded-container');
+    if (!form) return false;
+    form.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    return true;
+  }
+
   // ----------------------------------------------------------------- events
   document.addEventListener('click', (e) => {
     const t = e.target;
@@ -367,7 +423,7 @@
     if (root) {
       const thumb = t.closest('[data-thumb]');
       if (thumb) { showMedia(root, thumb.dataset.thumb); return; }
-      if (t.closest('[data-buy-now]')) { submitProduct(root, { buyNow: true }); return; }
+      if (t.closest('[data-buy-now]')) { if (!goToLeadform()) submitProduct(root, { buyNow: true }); return; }
       if (t.closest('[data-sticky-add]')) { submitProduct(root); return; }
     }
 
@@ -412,5 +468,6 @@
   initIndex();
   initGallery();
   initStickyBuy();
+  initLeadform();
   onScroll();
 })();

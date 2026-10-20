@@ -60,6 +60,9 @@
     {% endstyle %}
 
     {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {%- if settings.leadform_style -%}
+      {{ 'leadform.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
 
     {%- if settings.custom_css != blank %}
       {% style %}{{ settings.custom_css | replace: '</style', '' }}{% endstyle %}
@@ -69,6 +72,7 @@
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
       window.mdTheme = {
         cartType: {{ settings.cart_type | json }},
+        leadform: {{ settings.leadform_style | json }},
         routes: {
           cart: {{ routes.cart_url | json }},
           cartAdd: {{ routes.cart_add_url | json }},
