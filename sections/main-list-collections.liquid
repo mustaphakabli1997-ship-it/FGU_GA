@@ -2,8 +2,8 @@
   <div class="container">
     <div class="section__head">
       <div>
-        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} Boutique</p>
-        <h1 class="title-chrome section__title">Collections</h1>
+        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} المتجر</p>
+        <h1 class="title-chrome section__title">المجموعات</h1>
       </div>
     </div>
     <div class="grid">
@@ -19,7 +19,7 @@
             </a>
             <div class="card__body">
               <h2 class="card__name"><a href="{{ collection.url }}">{{ collection.title | escape }}</a></h2>
-              <a class="btn btn--white btn--block" href="{{ collection.url }}">Voir</a>
+              <a class="btn btn--white btn--block" href="{{ collection.url }}">عرض</a>
             </div>
           </article>
         {%- endunless -%}
@@ -30,6 +30,6 @@
 
 {% schema %}
 {
-  "name": "Liste des collections"
+  "name": "قائمة المجموعات"
 }
 {% endschema %}

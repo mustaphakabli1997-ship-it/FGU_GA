@@ -1,4 +1,4 @@
-<section class="trust" aria-label="Nos engagements">
+<section class="trust" aria-label="التزاماتنا">
   <div class="container trust__grid">
     {%- for block in section.blocks -%}
       <div class="trust__item" {{ block.shopify_attributes }}>
@@ -14,42 +14,42 @@
 
 {% schema %}
 {
-  "name": "Barre d'engagements",
+  "name": "شريط الالتزامات",
   "max_blocks": 4,
   "blocks": [
     {
       "type": "item",
-      "name": "Engagement",
+      "name": "التزام",
       "settings": [
         {
           "type": "select",
           "id": "icon",
-          "label": "Icône",
+          "label": "الأيقونة",
           "options": [
-            { "value": "truck", "label": "Camion" },
-            { "value": "shield", "label": "Bouclier" },
-            { "value": "phone", "label": "Téléphone" },
-            { "value": "repeat", "label": "Échange" },
-            { "value": "package", "label": "Colis" },
-            { "value": "clock", "label": "Horloge" },
-            { "value": "pin", "label": "Position" },
-            { "value": "lock", "label": "Cadenas" }
+            { "value": "truck", "label": "شاحنة" },
+            { "value": "shield", "label": "درع" },
+            { "value": "phone", "label": "هاتف" },
+            { "value": "check", "label": "علامة صح" },
+            { "value": "cash", "label": "نقود" },
+            { "value": "package", "label": "طرد" },
+            { "value": "clock", "label": "ساعة" },
+            { "value": "pin", "label": "موقع" }
           ],
           "default": "truck"
         },
-        { "type": "text", "id": "title", "label": "Titre", "default": "Livraison 58 wilayas" },
-        { "type": "text", "id": "text", "label": "Texte", "default": "À domicile ou en Stop Desk" }
+        { "type": "text", "id": "title", "label": "العنوان", "default": "التوصيل إلى 58 ولاية" },
+        { "type": "text", "id": "text", "label": "النص", "default": "إلى المنزل أو إلى المكتب" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Barre d'engagements",
+      "name": "شريط الالتزامات",
       "blocks": [
-        { "type": "item", "settings": { "icon": "truck", "title": "Livraison 58 wilayas", "text": "À domicile ou en Stop Desk" } },
-        { "type": "item", "settings": { "icon": "shield", "title": "Paiement à la livraison", "text": "Espèces · pas de carte bancaire" } },
-        { "type": "item", "settings": { "icon": "phone", "title": "Confirmation sous 24 h", "text": "Notre équipe vous appelle" } },
-        { "type": "item", "settings": { "icon": "check", "title": "Garantie", "text": "Produit défectueux dédommagé" } }
+        { "type": "item", "settings": { "icon": "truck", "title": "التوصيل إلى 58 ولاية", "text": "إلى المنزل أو إلى المكتب (Stop Desk)" } },
+        { "type": "item", "settings": { "icon": "shield", "title": "الدفع عند الاستلام", "text": "نقدًا · بدون بطاقة بنكية" } },
+        { "type": "item", "settings": { "icon": "phone", "title": "تأكيد خلال 24 ساعة", "text": "فريقنا يتصل بك" } },
+        { "type": "item", "settings": { "icon": "check", "title": "الضمان", "text": "تعويض المنتج المعطوب" } }
       ]
     }
   ]

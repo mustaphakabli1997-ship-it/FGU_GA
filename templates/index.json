@@ -13,32 +13,32 @@
           "type": "item",
           "settings": {
             "icon": "truck",
-            "title": "Livraison 58 wilayas",
-            "text": "À domicile ou en Stop Desk"
+            "title": "التوصيل إلى 58 ولاية",
+            "text": "إلى المنزل أو إلى المكتب (Stop Desk)"
           }
         },
         "item_2": {
           "type": "item",
           "settings": {
             "icon": "shield",
-            "title": "Paiement à la livraison",
-            "text": "Espèces · pas de carte bancaire"
+            "title": "الدفع عند الاستلام",
+            "text": "نقدًا · بدون بطاقة بنكية"
           }
         },
         "item_3": {
           "type": "item",
           "settings": {
             "icon": "phone",
-            "title": "Confirmation sous 24 h",
-            "text": "Notre équipe vous appelle"
+            "title": "تأكيد خلال 24 ساعة",
+            "text": "فريقنا يتصل بك"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
             "icon": "check",
-            "title": "Garantie",
-            "text": "Produit défectueux dédommagé"
+            "title": "الضمان",
+            "text": "تعويض المنتج المعطوب"
           }
         }
       },
@@ -61,19 +61,19 @@
         "feature_1": {
           "type": "feature",
           "settings": {
-            "text": "Matériaux de haute qualité, pour une durabilité qui dure"
+            "text": "خامات عالية الجودة لمتانة تدوم طويلًا"
           }
         },
         "feature_2": {
           "type": "feature",
           "settings": {
-            "text": "Légères, avec une semelle confortable et antidérapante"
+            "text": "خفيفة الوزن بنعل مريح مانع للانزلاق"
           }
         },
         "feature_3": {
           "type": "feature",
           "settings": {
-            "text": "Coloris raffinés pour un look casual au quotidien"
+            "text": "ألوان راقية لإطلالة كاجوال يومية"
           }
         }
       },
@@ -90,24 +90,24 @@
           "type": "step",
           "settings": {
             "icon": "package",
-            "title": "Choisissez votre paire",
-            "text": "Parcourez la collection, sélectionnez votre modèle et votre pointure."
+            "title": "اختر حذاءك",
+            "text": "تصفّح التشكيلة واختر الموديل واللون والمقاس."
           }
         },
         "step_2": {
           "type": "step",
           "settings": {
             "icon": "pin",
-            "title": "Remplissez le formulaire",
-            "text": "Nom, téléphone, wilaya et adresse : c'est tout. Le total s'affiche en direct."
+            "title": "املأ الاستمارة",
+            "text": "الاسم، الهاتف، الولاية والعنوان فقط. المجموع يظهر مباشرة."
           }
         },
         "step_3": {
           "type": "step",
           "settings": {
             "icon": "truck",
-            "title": "Recevez & payez",
-            "text": "Nous vous appelons pour confirmer, puis vous payez à la livraison."
+            "title": "استلم وادفع",
+            "text": "نتصل بك خلال 24 ساعة للتأكيد، ثم تدفع نقدًا عند الاستلام."
           }
         }
       },
@@ -129,25 +129,25 @@
         "point_1": {
           "type": "point",
           "settings": {
-            "text": "Au livreur si vous choisissez la livraison à domicile"
+            "text": "للموزّع إذا اخترت التوصيل إلى المنزل"
           }
         },
         "point_2": {
           "type": "point",
           "settings": {
-            "text": "Au bureau du transporteur si vous choisissez Stop Desk"
+            "text": "في مكتب شركة التوصيل إذا اخترت Stop Desk"
           }
         },
         "point_3": {
           "type": "point",
           "settings": {
-            "text": "Le montant exact s'affiche avant de confirmer"
+            "text": "المبلغ الكامل يظهر قبل تأكيد الطلب"
           }
         },
         "point_4": {
           "type": "point",
           "settings": {
-            "text": "Une facture signée et cachetée accompagne votre colis"
+            "text": "ترفق مع طلبيتك فاتورة موقّعة ومصادق عليها"
           }
         }
       },
@@ -167,64 +167,64 @@
         "q_1": {
           "type": "question",
           "settings": {
-            "question": "Comment passer commande ?",
-            "answer": "<p>Choisissez votre modèle, votre couleur et votre pointure, remplissez le formulaire (nom, téléphone, wilaya, adresse) puis validez. Aucun paiement en ligne n'est demandé.</p>"
+            "question": "كيف أطلب؟",
+            "answer": "<p>اختر الموديل واللون والمقاس، املأ الاستمارة (الاسم، الهاتف، الولاية، العنوان) ثم أكّد الطلب. لا نطلب أي دفع عبر الإنترنت.</p>"
           }
         },
         "q_2": {
           "type": "question",
           "settings": {
-            "question": "Comment se passe le paiement ?",
-            "answer": "<p>Nous ne demandons aucun paiement à l'avance. Vous payez uniquement à la livraison, en espèces : au livreur (livraison à domicile) ou au bureau du transporteur (Stop Desk). Une facture signée et cachetée par la société accompagne votre commande.</p>"
+            "question": "كيف يتم الدفع؟",
+            "answer": "<p>نعتمد سياسة الدفع عند الاستلام: لا نطلب أي مبلغ مسبق، وتدفع ثمن المنتج نقدًا عند تسليمه فقط، للموزّع (التوصيل إلى المنزل) أو في مكتب شركة التوصيل (Stop Desk). ترفق مع طلبيتك فاتورة موقّعة ومصادق عليها من طرف الشركة.</p>"
           }
         },
         "q_3": {
           "type": "question",
           "settings": {
-            "question": "Puis-je payer par carte bancaire ?",
-            "answer": "<p>Non. Nous n'acceptons aucun paiement par carte : il n'y a pas de paiement en ligne et aucune donnée bancaire ne vous est demandée. Vous payez en espèces à la réception.</p>"
+            "question": "هل يمكنني الدفع بالبطاقة البنكية؟",
+            "answer": "<p>لا. لا نقبل الدفع بالبطاقة: لا يوجد دفع عبر الإنترنت ولا نطلب منك أي معلومات بنكية. تدفع نقدًا عند الاستلام.</p>"
           }
         },
         "q_4": {
           "type": "question",
           "settings": {
-            "question": "Combien coûte la livraison ?",
-            "answer": "<p>400 DA en Stop Desk (retrait au bureau du transporteur) et 600 DA pour la livraison à domicile, partout en Algérie (58 wilayas).</p>"
+            "question": "كم سعر التوصيل؟",
+            "answer": "<p>400 دج للتوصيل إلى المكتب (Stop Desk) و600 دج للتوصيل إلى المنزل، في كل الولايات الـ58.</p>"
           }
         },
         "q_5": {
           "type": "question",
           "settings": {
-            "question": "Quels sont les délais de livraison ?",
-            "answer": "<p>Notre équipe vous appelle dans les 24 heures suivant votre commande pour la confirmer avec vous. La livraison est ensuite effectuée en 2 à 7 jours selon votre wilaya.</p>"
+            "question": "متى تصلني طلبيتي؟",
+            "answer": "<p>نتصل بك خلال 24 ساعة من وضع الطلبية لتأكيدها هاتفيًا، ثم تُسلَّم الطلبية في غضون 2 إلى 7 أيام حسب الولاية.</p>"
           }
         },
         "q_6": {
           "type": "question",
           "settings": {
-            "question": "Domicile ou Stop Desk, que choisir ?",
-            "answer": "<p>À domicile : le livreur vous appelle et vous apporte le colis. Stop Desk : vous récupérez le colis au bureau du transporteur de votre commune, pour un tarif plus bas.</p>"
+            "question": "المنزل أم المكتب، ماذا أختار؟",
+            "answer": "<p>إلى المنزل: الموزّع يتصل بك ويوصل الطلبية إليك. إلى المكتب (Stop Desk): تستلم طلبيتك من مكتب شركة التوصيل في بلديتك بسعر أقل.</p>"
           }
         },
         "q_7": {
           "type": "question",
           "settings": {
-            "question": "Comment choisir ma pointure ?",
-            "answer": "<p>Les pointures disponibles sont indiquées sur chaque fiche produit. Si vous hésitez entre deux tailles, contactez-nous avant de commander.</p>"
+            "question": "كيف أختار المقاس؟",
+            "answer": "<p>المقاسات المتوفرة مذكورة في صفحة كل منتج. إذا ترددت بين مقاسين، تواصل معنا قبل الطلب.</p>"
           }
         },
         "q_8": {
           "type": "question",
           "settings": {
-            "question": "Que faire si mon produit est défectueux ?",
-            "answer": "<p>Si votre produit est endommagé, cassé ou présente un défaut, nous nous engageons à vous dédommager. Contactez-nous dès la réception.</p>"
+            "question": "ماذا لو كان المنتج معطوبًا؟",
+            "answer": "<p>نلتزم بتعويض زبائننا إذا وُجد المنتج معطوبًا أو مكسورًا أو فيه خلل. تواصل معنا عند الاستلام.</p>"
           }
         },
         "q_9": {
           "type": "question",
           "settings": {
-            "question": "Ma commande est-elle confirmée par téléphone ?",
-            "answer": "<p>Oui. Après votre commande, notre équipe vous appelle pour confirmer les détails. Vérifiez bien votre numéro de téléphone dans le formulaire.</p>"
+            "question": "هل يتم تأكيد طلبي بالهاتف؟",
+            "answer": "<p>نعم. بعد الطلب يتصل بك فريقنا لتأكيد التفاصيل، لذا تأكد من رقم هاتفك في الاستمارة.</p>"
           }
         }
       },

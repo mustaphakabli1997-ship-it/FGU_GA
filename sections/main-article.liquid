@@ -6,12 +6,12 @@
       {{ article.image | image_url: width: 1000 | image_tag: loading: 'eager', alt: article.title }}
     {%- endif -%}
     <div class="rte">{{ article.content }}</div>
-    <p><a class="btn" href="{{ blog.url }}">&larr; Retour</a></p>
+    <p><a class="btn" href="{{ blog.url }}">العودة إلى المدونة</a></p>
   </div>
 </article>
 
 {% schema %}
 {
-  "name": "Article"
+  "name": "مقال"
 }
 {% endschema %}

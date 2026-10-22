@@ -3,97 +3,49 @@
     "name": "theme_info",
     "theme_name": "YOUZ Streetwear",
     "theme_author": "YOUZ",
-    "theme_version": "1.0.0",
+    "theme_version": "2.0.0",
     "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
     "theme_support_url": "https://help.shopify.com/"
   },
   {
-    "name": "Marque",
+    "name": "العلامة",
     "settings": [
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo (en-tête et pied de page)",
-        "info": "PNG transparent recommandé. Vide = logo YOUZ du thème."
-      },
-      {
-        "type": "image_picker",
-        "id": "favicon",
-        "label": "Favicon",
-        "info": "PNG 64×64 px. Vide = étoile YOUZ du thème."
-      },
-      {
-        "type": "image_picker",
-        "id": "share_image",
-        "label": "Image de partage (Facebook / WhatsApp)",
-        "info": "1200×630 px."
-      }
+      { "type": "image_picker", "id": "logo", "label": "الشعار (الهيدر والفوتر)", "info": "PNG شفاف. فارغ = شعار YOUZ الكروم." },
+      { "type": "image_picker", "id": "favicon", "label": "أيقونة الموقع (Favicon)", "info": "PNG بحجم 64×64. فارغ = نجمة YOUZ." },
+      { "type": "image_picker", "id": "share_image", "label": "صورة المشاركة (فيسبوك / واتساب)", "info": "1200×630 بكسل." }
     ]
   },
   {
-    "name": "Contact et réseaux",
+    "name": "التواصل والشبكات",
     "settings": [
-      {
-        "type": "text",
-        "id": "whatsapp_number",
-        "label": "Numéro WhatsApp",
-        "info": "Format international sans « + » ni espaces, ex. 213550123456. Vide = boutons WhatsApp masqués."
-      },
-      {
-        "type": "text",
-        "id": "phone_display",
-        "label": "Téléphone affiché (pied de page)",
-        "info": "Ex. 0550 12 34 56. Vide = masqué."
-      },
-      {
-        "type": "url",
-        "id": "instagram_url",
-        "label": "Instagram"
-      },
-      {
-        "type": "url",
-        "id": "tiktok_url",
-        "label": "TikTok"
-      },
-      {
-        "type": "url",
-        "id": "facebook_url",
-        "label": "Facebook"
-      }
+      { "type": "text", "id": "whatsapp_number", "label": "رقم واتساب", "info": "بالصيغة الدولية بدون + ولا فراغات، مثال 213550123456. فارغ = أزرار واتساب مخفية." },
+      { "type": "text", "id": "phone_display", "label": "الهاتف المعروض في الفوتر", "info": "مثال 0550 12 34 56. فارغ = مخفي." },
+      { "type": "url", "id": "instagram_url", "label": "Instagram" },
+      { "type": "url", "id": "tiktok_url", "label": "TikTok" },
+      { "type": "url", "id": "facebook_url", "label": "Facebook" }
     ]
   },
   {
-    "name": "Formulaire COD et livraison",
+    "name": "استمارة الطلب والتوصيل",
     "settings": [
       {
         "type": "paragraph",
-        "content": "Le formulaire de commande (paiement à la livraison uniquement) ajoute les frais de livraison à la commande Shopify. Créez un produit « Frais de livraison » (voir le guide d'installation) et saisissez son handle ci-dessous."
+        "content": "استمارة الطلب (الدفع عند الاستلام فقط) تضيف مصاريف التوصيل إلى طلبية Shopify عبر منتج «مصاريف التوصيل». ملف الاستيراد المرفق يُنشئه تلقائيًا."
       },
       {
         "type": "text",
         "id": "delivery_product_handle",
-        "label": "Handle du produit « Frais de livraison »",
+        "label": "handle منتج «مصاريف التوصيل»",
         "default": "frais-de-livraison",
-        "info": "Handle = fin de l'URL du produit. Si le produit est introuvable, le formulaire n'ajoute aucun frais de livraison."
+        "info": "آخر جزء من رابط المنتج. إذا لم يوجد المنتج لن تُضاف مصاريف التوصيل للطلبية."
       },
-      {
-        "type": "text",
-        "id": "currency_suffix",
-        "label": "Symbole de la devise",
-        "default": "DA"
-      },
-      {
-        "type": "number",
-        "id": "free_delivery_over",
-        "label": "Livraison offerte à partir de (DA)",
-        "default": 0,
-        "info": "0 = désactivé."
-      },
-      { "type": "number", "id": "fee_home", "label": "Livraison à domicile (DA)", "default": 600 },
-      { "type": "number", "id": "fee_desk", "label": "Livraison Stop Desk / bureau (DA)", "default": 400 },
+      { "type": "text", "id": "currency_suffix", "label": "رمز العملة", "default": "دج" },
+      { "type": "number", "id": "free_delivery_over", "label": "توصيل مجاني ابتداءً من (دج)", "default": 0, "info": "0 = معطّل." },
+      { "type": "number", "id": "fee_home", "label": "التوصيل إلى المنزل (دج)", "default": 600 },
+      { "type": "number", "id": "fee_desk", "label": "التوصيل إلى المكتب Stop Desk (دج)", "default": 400 },
       {
         "type": "paragraph",
-        "content": "Tarifs uniques pour les 58 wilayas. Chaque tarif doit exister comme variante (au même prix) du produit « Frais de livraison » : 400 DA et 600 DA."
+        "content": "سعر واحد لكل الولايات الـ58. يجب أن يوجد كل سعر كـ variant (بنفس السعر) في منتج «مصاريف التوصيل»: 400 و600 دج."
       }
     ]
   }

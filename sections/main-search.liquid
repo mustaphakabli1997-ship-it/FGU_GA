@@ -2,16 +2,16 @@
   <div class="container">
     <div class="section__head">
       <div>
-        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} Recherche</p>
-        <h1 class="title-chrome section__title">{% if search.performed %}« {{ search.terms | escape }} »{% else %}Rechercher{% endif %}</h1>
+        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} بحث</p>
+        <h1 class="title-chrome section__title">{% if search.performed %}«{{ search.terms | escape }}»{% else %}ابحث{% endif %}</h1>
       </div>
     </div>
 
     <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
-      <label class="sr-only" for="SearchInput">Rechercher</label>
-      <input class="input" id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Nom du modèle…">
+      <label class="sr-only" for="SearchInput">ابحث</label>
+      <input class="input" id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="اسم الموديل…">
       <input type="hidden" name="type" value="product">
-      <button class="btn btn--white" type="submit">Rechercher</button>
+      <button class="btn btn--white" type="submit">بحث</button>
     </form>
 
     {%- if search.performed -%}
@@ -22,14 +22,14 @@
               {% render 'product-card', product: item %}
             {%- endif -%}
           {%- else -%}
-            <p class="empty">Aucun résultat pour « {{ search.terms | escape }} ».</p>
+            <p class="empty">لا توجد نتائج لـ «{{ search.terms | escape }}».</p>
           {%- endfor -%}
         </div>
         {%- if paginate.pages > 1 -%}
-          <nav class="pagination" aria-label="Pagination">
-            {%- if paginate.previous -%}<a class="btn btn--sm" href="{{ paginate.previous.url }}">Précédent</a>{%- endif -%}
-            <span class="pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
-            {%- if paginate.next -%}<a class="btn btn--sm" href="{{ paginate.next.url }}">Suivant</a>{%- endif -%}
+          <nav class="pagination" aria-label="الصفحات">
+            {%- if paginate.previous -%}<a class="btn btn--sm" href="{{ paginate.previous.url }}">السابق</a>{%- endif -%}
+            <span class="pagination__info">صفحة {{ paginate.current_page }} / {{ paginate.pages }}</span>
+            {%- if paginate.next -%}<a class="btn btn--sm" href="{{ paginate.next.url }}">التالي</a>{%- endif -%}
           </nav>
         {%- endif -%}
       {%- endpaginate -%}
@@ -39,6 +39,6 @@
 
 {% schema %}
 {
-  "name": "Recherche"
+  "name": "البحث"
 }
 {% endschema %}

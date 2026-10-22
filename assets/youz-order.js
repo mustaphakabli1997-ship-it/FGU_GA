@@ -1,4 +1,5 @@
 /* ==========================================================================
+   YOUZ — استمارة الطلب (الدفع عند الاستلام فقط)
    YOUZ — formulaire de commande (PAIEMENT À LA LIVRAISON UNIQUEMENT)
    Utilisé sur la fiche produit (mode « page ») et sur l'accueil (mode « home »,
    avec choix du modèle).
@@ -31,7 +32,7 @@
     form.hidden = true;
     var empty = document.createElement("p");
     empty.className = "order__sub";
-    empty.textContent = "Aucun modèle disponible pour le moment.";
+    empty.textContent = "لا توجد موديلات متوفرة حاليًا.";
     form.parentNode.appendChild(empty);
     return;
   }
@@ -43,18 +44,18 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fmt(n) {
-    return Number(n).toLocaleString("fr-FR").replace(/[  ]/g, " ") + " " + (cfg.currency || "DA");
+    return Number(n).toLocaleString("fr-FR").replace(/[  ]/g, " ") + " " + (cfg.currency || "دج");
   }
   function setText(sel, txt) { var el = $(sel); if (el) el.textContent = txt; }
 
-  var DELIVERY_LABEL = { home: "À domicile", desk: "Stop Desk" };
+  var DELIVERY_LABEL = { home: "إلى المنزل", desk: "إلى المكتب (Stop Desk)" };
 
   /* ---------- frais de livraison : tarif → variante du produit « Frais de livraison » ---------- */
   var deliveryByPrice = {};
   (cfg.delivery || []).forEach(function (d) { if (d.available) deliveryByPrice[Math.round(d.price)] = d.id; });
   var deliveryReady = Object.keys(deliveryByPrice).length > 0;
   if (!deliveryReady && window.console) {
-    console.warn("[YOUZ] Produit « Frais de livraison » introuvable ou sans variante : les frais ne seront PAS ajoutés à la commande. Voir le guide d'installation.");
+    console.warn("[YOUZ] منتج «مصاريف التوصيل» غير موجود أو بدون variants: لن تُضاف مصاريف التوصيل إلى الطلبية. راجع دليل التثبيت.");
   }
   function fee(type, subtotal) {
     if (!deliveryReady) return null;
@@ -66,10 +67,12 @@
   $("#wilaya").insertAdjacentHTML("beforeend", WIL.map(function (w) {
     return '<option value="' + w[0] + '">' + (w[0] < 10 ? "0" : "") + w[0] + " — " + esc(w[1]) + "</option>";
   }).join(""));
-  function wilayaName(code) {
-    for (var i = 0; i < WIL.length; i++) if (String(WIL[i][0]) === String(code)) return WIL[i][1];
-    return "";
+  function wilaya(code) {
+    for (var i = 0; i < WIL.length; i++) if (String(WIL[i][0]) === String(code)) return WIL[i];
+    return null;
   }
+  function wilayaName(code) { var w = wilaya(code); return w ? w[1] : ""; }        // arabe (affichage)
+  function wilayaLatin(code) { var w = wilaya(code); return w ? (w[2] || w[1]) : ""; } // latin (adresse transporteur)
 
   /* ---------- état : produit courant ---------- */
   var product = null;
@@ -98,7 +101,7 @@
     host.innerHTML = product.options.map(function (name, i) {
       var vals = [];
       product.variants.forEach(function (v) { if (vals.indexOf(v.options[i]) < 0) vals.push(v.options[i]); });
-      var isSize = /pointure|taille|size/i.test(name);
+      var isSize = /pointure|taille|size|مقاس|قياس/i.test(name);
       var firstAvail = null;
       if (!isSize) {
         var f = product.variants.filter(function (v) { return v.available; })[0];
@@ -192,18 +195,18 @@
 
     ["home", "desk"].forEach(function (t) {
       var v = fee(t, sub);
-      setText("#fee-" + t, v === null ? "À la commande" : v === 0 ? "Offerte" : fmt(v));
+      setText("#fee-" + t, v === null ? "عند الطلب" : v === 0 ? "مجاني" : fmt(v));
     });
     $("#f-address").hidden = s.type === "desk";
 
     setText("#sum-label", product.title + " × " + s.qty);
     setText("#sum-sub", fmt(sub));
     var feeEl = $("#sum-fee");
-    feeEl.textContent = f === null ? "Calculée à l'étape suivante" : f === 0 ? "Offerte" : fmt(f);
+    feeEl.textContent = f === null ? "تُحسب في الخطوة التالية" : f === 0 ? "مجاني" : fmt(f);
     feeEl.classList.toggle("free", f === 0);
-    setText("#sum-total", f === null ? fmt(sub) + " + livraison" : fmt(sub + f));
+    setText("#sum-total", f === null ? fmt(sub) + " + التوصيل" : fmt(sub + f));
     var label = $("#submit-label");
-    label.textContent = f === null ? label.getAttribute("data-default") : "Confirmer · " + fmt(sub + f);
+    label.textContent = f === null ? label.getAttribute("data-default") : "تأكيد الطلب · " + fmt(sub + f);
 
     var wa = $("#wa-order");
     if (wa && cfg.whatsapp) wa.href = "https://wa.me/" + cfg.whatsapp + "?text=" + encodeURIComponent(waMessage(s, sub, f));
@@ -212,15 +215,15 @@
   $("#submit-label").setAttribute("data-default", $("#submit-label").textContent);
 
   function waMessage(s, sub, f) {
-    var lines = ["Bonjour, je souhaite commander (paiement à la livraison) :", "• Modèle : " + product.title];
+    var lines = ["السلام عليكم، أريد أن أطلب (الدفع عند الاستلام) :", "• الموديل : " + product.title];
     product.options.forEach(function (name, i) { if (s.options[i]) lines.push("• " + name + " : " + s.options[i]); });
-    lines.push("• Quantité : " + s.qty);
-    if (s.wilaya) lines.push("• Wilaya : " + wilayaName(s.wilaya));
-    if (s.commune) lines.push("• Commune : " + s.commune);
-    lines.push("• Livraison : " + DELIVERY_LABEL[s.type]);
-    lines.push("• Total : " + (f === null ? fmt(sub) + " + livraison" : fmt(sub + f)));
-    if (s.name) lines.push("Nom : " + s.name);
-    if (s.phone) lines.push("Téléphone : " + s.phone);
+    lines.push("• الكمية : " + s.qty);
+    if (s.wilaya) lines.push("• الولاية : " + wilayaName(s.wilaya));
+    if (s.commune) lines.push("• البلدية : " + s.commune);
+    lines.push("• التوصيل : " + DELIVERY_LABEL[s.type]);
+    lines.push("• المجموع : " + (f === null ? fmt(sub) + " + التوصيل" : fmt(sub + f)));
+    if (s.name) lines.push("الاسم : " + s.name);
+    if (s.phone) lines.push("الهاتف : " + s.phone);
     return lines.join("\n");
   }
 
@@ -240,16 +243,16 @@
         boxes.push("f-option-" + i);
         if (s.options[i - 1] === null) {
           var fs = document.getElementById("f-option-" + i);
-          bad("f-option-" + i, "Choisissez votre " + String(fs.getAttribute("data-option-name")).toLowerCase() + ".", "#f-option-" + i + " input:not(:disabled)");
+          bad("f-option-" + i, "اختر " + String(fs.getAttribute("data-option-name")) + ".", "#f-option-" + i + " input:not(:disabled)");
         }
       }
     }
     boxes.push("f-name", "f-phone", "f-wilaya", "f-commune", "f-address");
-    if (s.name.length < 3 || !/[A-Za-zÀ-ɏ؀-ۿ]/.test(s.name)) bad("f-name", "Entrez votre nom et prénom.", "#name");
-    if (!/^0[567]\d{8}$/.test(s.phone)) bad("f-phone", "Numéro invalide : 10 chiffres commençant par 05, 06 ou 07.", "#phone");
-    if (!s.wilaya) bad("f-wilaya", "Choisissez votre wilaya.", "#wilaya");
-    if (s.commune.length < 2) bad("f-commune", "Entrez votre commune.", "#commune");
-    if (s.type === "home" && s.address.length < 6) bad("f-address", "Entrez votre adresse complète.", "#address");
+    if (s.name.length < 3 || !/[A-Za-zÀ-ɏ؀-ۿ]/.test(s.name)) bad("f-name", "أدخل الاسم واللقب.", "#name");
+    if (!/^0[567]\d{8}$/.test(s.phone)) bad("f-phone", "رقم غير صحيح: 10 أرقام تبدأ بـ 05 أو 06 أو 07.", "#phone");
+    if (!s.wilaya) bad("f-wilaya", "اختر الولاية.", "#wilaya");
+    if (s.commune.length < 2) bad("f-commune", "أدخل البلدية.", "#commune");
+    if (s.type === "home" && s.address.length < 6) bad("f-address", "أدخل العنوان الكامل.", "#address");
     boxes.forEach(function (b) {
       var hit = errs.filter(function (e) { return e.box === b; })[0];
       setErr(b, hit ? hit.msg : "");
@@ -272,22 +275,22 @@
       "checkout[shipping_address][first_name]=" + q(first),
       "checkout[shipping_address][last_name]=" + q(last),
       "checkout[shipping_address][address1]=" + q(s.type === "home" ? s.address : "STOP DESK — " + s.commune),
-      "checkout[shipping_address][address2]=" + q("Wilaya " + wilaya),
+      "checkout[shipping_address][address2]=" + q("Wilaya " + (s.wilaya < 10 ? "0" : "") + s.wilaya + " - " + wilayaLatin(s.wilaya)),
       "checkout[shipping_address][city]=" + q(s.commune),
       "checkout[shipping_address][country]=Algeria",
       "checkout[shipping_address][phone]=" + q(s.phone)
     ];
     var attrs = {
-      "Nom": s.name,
-      "Téléphone": s.phone,
-      "Wilaya": (s.wilaya < 10 ? "0" : "") + s.wilaya + " - " + wilaya,
-      "Commune": s.commune,
-      "Livraison": DELIVERY_LABEL[s.type],
-      "Adresse": s.type === "home" ? s.address : "Stop Desk",
-      "Paiement": "À la livraison (espèces)"
+      "الاسم": s.name,
+      "الهاتف": s.phone,
+      "الولاية": (s.wilaya < 10 ? "0" : "") + s.wilaya + " - " + wilaya + " (" + wilayaLatin(s.wilaya) + ")",
+      "البلدية": s.commune,
+      "التوصيل": DELIVERY_LABEL[s.type],
+      "العنوان": s.type === "home" ? s.address : "Stop Desk",
+      "الدفع": "عند الاستلام (نقدًا)"
     };
     Object.keys(attrs).forEach(function (k) { params.push("attributes[" + q(k) + "]=" + q(attrs[k])); });
-    params.push("note=" + q("COD — " + s.name + " — " + s.phone + " — " + wilaya + " / " + s.commune + " — " + DELIVERY_LABEL[s.type]));
+    params.push("note=" + q("الدفع عند الاستلام — " + s.name + " — " + s.phone + " — " + wilaya + " / " + s.commune + " — " + DELIVERY_LABEL[s.type]));
     return base + "?" + params.join("&");
   }
 
@@ -330,12 +333,12 @@
       return;
     }
     if (!calc.s.variant) {
-      showMsg("Cette combinaison n'est pas disponible. Choisissez une autre option.");
+      showMsg("هذا الاختيار غير متوفر. اختر خيارًا آخر.");
       return;
     }
     if (calc.fee > 0 && !deliveryByPrice[calc.fee]) {
-      if (window.console) console.error("[YOUZ] Aucune variante « Frais de livraison » au prix de " + calc.fee + " DA.");
-      showMsg("Le tarif de livraison est momentanément indisponible. Contactez-nous pour passer commande.");
+      if (window.console) console.error("[YOUZ] لا يوجد variant في «مصاريف التوصيل» بسعر " + calc.fee + " دج.");
+      showMsg("سعر التوصيل غير متوفر حاليًا. تواصل معنا لإتمام الطلب.");
       return;
     }
 

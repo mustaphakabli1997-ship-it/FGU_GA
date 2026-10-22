@@ -1,12 +1,12 @@
 {%- comment -%}
-  Formulaire de commande — PAIEMENT À LA LIVRAISON UNIQUEMENT (aucune carte bancaire).
+  استمارة الطلب — الدفع عند الاستلام فقط (لا بطاقة بنكية).
 
-  Paramètres :
-    mode          : 'page' (fiche produit : produit fixe) ou 'home' (accueil : choix du modèle)
-    product       : produit courant (mode page)
-    collection    : collection source des modèles (mode home)
-    limit         : nombre max de modèles proposés (mode home)
-    title, subtitle, button_label : textes
+  المعاملات :
+    mode          : 'page' (صفحة منتج: منتج ثابت) أو 'home' (الرئيسية: اختيار الموديل)
+    product       : المنتج الحالي (mode page)
+    collection    : مجموعة الموديلات (mode home)
+    limit         : أقصى عدد موديلات (mode home)
+    title, subtitle, button_label : النصوص
 {%- endcomment -%}
 {%- liquid
   assign delivery = all_products[settings.delivery_product_handle]
@@ -29,13 +29,13 @@
 
     <p class="paynote">
       {% render 'icon', name: 'cash' %}
-      <span><strong>Paiement à la livraison uniquement.</strong> Aucun paiement par carte bancaire : vous payez en espèces à la réception de votre colis.</span>
+      <span><strong>الدفع عند الاستلام فقط.</strong> لا دفع بالبطاقة البنكية: تدفع نقدًا عند استلام طلبيتك.</span>
     </p>
 
     <form id="order-form" novalidate>
       {%- if mode == 'home' -%}
         <fieldset class="fieldset" id="f-product">
-          <legend>Votre modèle</legend>
+          <legend>الموديل</legend>
           <div class="models" id="models"></div>
           <p class="err" role="alert"></p>
         </fieldset>
@@ -44,58 +44,58 @@
       <div id="options"></div>
 
       <div class="fieldset">
-        <span class="label" id="qty-label">Quantité</span>
+        <span class="label" id="qty-label">الكمية</span>
         <div class="qty" role="group" aria-labelledby="qty-label">
-          <button type="button" id="qty-minus" aria-label="Diminuer la quantité">{% render 'icon', name: 'minus' %}</button>
+          <button type="button" id="qty-minus" aria-label="إنقاص الكمية">{% render 'icon', name: 'minus' %}</button>
           <input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="10" value="1" aria-live="polite" aria-labelledby="qty-label">
-          <button type="button" id="qty-plus" aria-label="Augmenter la quantité">{% render 'icon', name: 'plus' %}</button>
+          <button type="button" id="qty-plus" aria-label="زيادة الكمية">{% render 'icon', name: 'plus' %}</button>
         </div>
       </div>
 
       <div class="field" id="f-name">
-        <label class="label" for="name">Nom et prénom</label>
-        <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="Ex. Karim Benali" maxlength="80" required>
+        <label class="label" for="name">الاسم واللقب</label>
+        <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="مثال: كريم بن علي" maxlength="80" required>
         <p class="err" role="alert"></p>
       </div>
 
       <div class="field" id="f-phone">
-        <label class="label" for="phone">Téléphone <small>mobile</small></label>
-        <input class="input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 XX XX XX XX" maxlength="20" required>
+        <label class="label" for="phone">رقم الهاتف <small>موبايل</small></label>
+        <input class="input input--ltr" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="05 / 06 / 07 XX XX XX XX" maxlength="20" required>
         <p class="err" role="alert"></p>
       </div>
 
       <div class="row2">
         <div class="field" id="f-wilaya">
-          <label class="label" for="wilaya">Wilaya</label>
+          <label class="label" for="wilaya">الولاية</label>
           <select class="input" id="wilaya" name="wilaya" autocomplete="address-level1" required>
-            <option value="">Choisir…</option>
+            <option value="">اختر…</option>
           </select>
           <p class="err" role="alert"></p>
         </div>
         <div class="field" id="f-commune">
-          <label class="label" for="commune">Commune</label>
-          <input class="input" id="commune" name="commune" type="text" autocomplete="address-level2" placeholder="Votre commune" maxlength="60" required>
+          <label class="label" for="commune">البلدية</label>
+          <input class="input" id="commune" name="commune" type="text" autocomplete="address-level2" placeholder="بلديتك" maxlength="60" required>
           <p class="err" role="alert"></p>
         </div>
       </div>
 
       <fieldset class="fieldset" id="f-type">
-        <legend>Mode de livraison</legend>
+        <legend>طريقة التوصيل</legend>
         <div class="opts">
           <label class="opt">
             <input type="radio" name="type" value="home" checked>
-            <span><b>{% render 'icon', name: 'home' %} À domicile</b><small>Le livreur vous apporte le colis</small><em id="fee-home">{% render 'price', amount: fee_home_cents %}</em></span>
+            <span><b>{% render 'icon', name: 'home' %} إلى المنزل</b><small>الموزّع يوصل الطلبية إلى بابك</small><em id="fee-home">{% render 'price', amount: fee_home_cents %}</em></span>
           </label>
           <label class="opt">
             <input type="radio" name="type" value="desk">
-            <span><b>{% render 'icon', name: 'pin' %} Stop Desk</b><small>Retrait au bureau du transporteur</small><em id="fee-desk">{% render 'price', amount: fee_desk_cents %}</em></span>
+            <span><b>{% render 'icon', name: 'pin' %} إلى المكتب (Stop Desk)</b><small>استلام من مكتب شركة التوصيل</small><em id="fee-desk">{% render 'price', amount: fee_desk_cents %}</em></span>
           </label>
         </div>
       </fieldset>
 
       <div class="field" id="f-address">
-        <label class="label" for="address">Adresse complète</label>
-        <textarea class="input" id="address" name="address" autocomplete="street-address" placeholder="Rue, quartier, n° de bâtiment…" maxlength="200" rows="2"></textarea>
+        <label class="label" for="address">العنوان الكامل</label>
+        <textarea class="input" id="address" name="address" autocomplete="street-address" placeholder="الحي، الشارع، رقم العمارة…" maxlength="200" rows="2"></textarea>
         <p class="err" role="alert"></p>
       </div>
 
@@ -103,8 +103,8 @@
 
       <dl class="summary" aria-live="polite">
         <div><dt id="sum-label"></dt><dd id="sum-sub"></dd></div>
-        <div><dt>Livraison</dt><dd id="sum-fee"></dd></div>
-        <div class="total"><dt>Total à payer à la livraison</dt><dd id="sum-total"></dd></div>
+        <div><dt>مصاريف التوصيل</dt><dd id="sum-fee"></dd></div>
+        <div class="total"><dt>المجموع عند الاستلام</dt><dd id="sum-total"></dd></div>
       </dl>
 
       <button class="btn btn--white btn--lg btn--block" id="submit" type="submit">
@@ -115,17 +115,17 @@
 
       {%- if wa_number != blank -%}
         <div>
-          <div class="or">ou</div>
+          <div class="or">أو</div>
           <a class="btn btn--lg btn--block" id="wa-order" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">
-            {% render 'icon', name: 'whatsapp' %} Commander via WhatsApp
+            {% render 'icon', name: 'whatsapp' %} اطلب عبر واتساب
           </a>
         </div>
       {%- endif -%}
 
       <div class="order__assure">
-        <span>{% render 'icon', name: 'cash' %} Paiement en espèces à la livraison</span>
-        <span>{% render 'icon', name: 'card-off' %} Pas de paiement par carte</span>
-        <span>{% render 'icon', name: 'phone' %} Confirmation par téléphone</span>
+        <span>{% render 'icon', name: 'cash' %} الدفع نقدًا عند الاستلام</span>
+        <span>{% render 'icon', name: 'card-off' %} لا دفع بالبطاقة</span>
+        <span>{% render 'icon', name: 'phone' %} تأكيد بالهاتف</span>
       </div>
     </form>
   </div>
@@ -149,7 +149,7 @@
 </script>
 <script type="application/json" id="YouzConfig">
   {
-    "currency": {{ settings.currency_suffix | default: 'DA' | json }},
+    "currency": {{ settings.currency_suffix | default: 'دج' | json }},
     "freeOver": {{ settings.free_delivery_over | default: 0 }},
     "fees": { "home": {{ fee_home_value }}, "desk": {{ fee_desk_value }} },
     "delivery": [

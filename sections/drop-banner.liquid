@@ -44,40 +44,40 @@
 
 {% schema %}
 {
-  "name": "Le drop (éditorial)",
+  "name": "قسم التشكيلة",
   "tag": "div",
   "max_blocks": 6,
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Le drop" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Le confort à chaque pas" },
+    { "type": "text", "id": "eyebrow", "label": "عنوان صغير", "default": "تشكيلتنا" },
+    { "type": "text", "id": "heading", "label": "العنوان", "default": "أناقة وراحة كل يوم" },
     {
       "type": "textarea",
       "id": "text",
-      "label": "Texte",
-      "default": "Baskets, sabots et mocassins au design moderne : des modèles légers, avec une semelle confortable et antidérapante, pour un look casual au quotidien."
+      "label": "النص",
+      "default": "أحذية رياضية، صابو وموكاسان بتصميم عصري يجمع بين الراحة والأناقة: خفيفة الوزن، بنعل مريح مانع للانزلاق، وبألوان راقية لإطلالة كاجوال مثالية للاستخدام اليومي."
     },
-    { "type": "text", "id": "stamp", "label": "Tampon", "default": "Nouvelle collection" },
-    { "type": "text", "id": "button_label", "label": "Bouton — texte", "default": "Voir la collection" },
-    { "type": "url", "id": "button_link", "label": "Bouton — lien" },
-    { "type": "image_picker", "id": "image_1", "label": "Photo 1", "info": "Vide = photo d'exemple du thème." },
-    { "type": "image_picker", "id": "image_2", "label": "Photo 2", "info": "Vide = photo d'exemple du thème." }
+    { "type": "text", "id": "stamp", "label": "الختم", "default": "تشكيلة جديدة" },
+    { "type": "text", "id": "button_label", "label": "الزر — النص", "default": "شاهد التشكيلة" },
+    { "type": "url", "id": "button_link", "label": "الزر — الرابط" },
+    { "type": "image_picker", "id": "image_1", "label": "الصورة 1", "info": "فارغ = صورة من منتجاتك مدمجة في الثيم." },
+    { "type": "image_picker", "id": "image_2", "label": "الصورة 2", "info": "فارغ = صورة من منتجاتك مدمجة في الثيم." }
   ],
   "blocks": [
     {
       "type": "feature",
-      "name": "Point fort",
+      "name": "ميزة",
       "settings": [
-        { "type": "text", "id": "text", "label": "Texte", "default": "Matériaux de haute qualité, pour une durabilité qui dure" }
+        { "type": "text", "id": "text", "label": "النص", "default": "خامات عالية الجودة لمتانة تدوم طويلًا" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Le drop (éditorial)",
+      "name": "قسم التشكيلة",
       "blocks": [
-        { "type": "feature", "settings": { "text": "Matériaux de haute qualité, pour une durabilité qui dure" } },
-        { "type": "feature", "settings": { "text": "Légères, avec une semelle confortable et antidérapante" } },
-        { "type": "feature", "settings": { "text": "Coloris raffinés pour un look casual au quotidien" } }
+        { "type": "feature", "settings": { "text": "خامات عالية الجودة لمتانة تدوم طويلًا" } },
+        { "type": "feature", "settings": { "text": "خفيفة الوزن بنعل مريح مانع للانزلاق" } },
+        { "type": "feature", "settings": { "text": "ألوان راقية لإطلالة كاجوال يومية" } }
       ]
     }
   ]

@@ -3,7 +3,7 @@
 
 <header class="site-header">
   <div class="container site-header__in">
-    <button class="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+    <button class="burger" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
 
     <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
       {%- if settings.logo != blank -%}
@@ -13,24 +13,24 @@
       {%- endif -%}
     </a>
 
-    <nav class="nav" id="nav" aria-label="Navigation principale">
+    <nav class="nav" id="nav" aria-label="القائمة الرئيسية">
       {%- if menu.links.size > 0 -%}
         {%- for link in menu.links -%}
           <a href="{{ link.url }}"{% if link.active %} class="is-active" aria-current="page"{% endif %}>{{ link.title | escape }}</a>
         {%- endfor -%}
       {%- else -%}
-        <a href="{{ routes.all_products_collection_url }}">Boutique</a>
+        <a href="{{ routes.all_products_collection_url }}">المتجر</a>
       {%- endif -%}
     </nav>
 
     <div class="header-actions">
       {%- if wa_number != blank -%}
-        <a class="icon-btn" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">{% render 'icon', name: 'whatsapp' %}</a>
+        <a class="icon-btn" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener" aria-label="راسلنا على واتساب">{% render 'icon', name: 'whatsapp' %}</a>
       {%- endif -%}
       {%- if request.page_type == 'product' -%}
-        <a class="btn btn--white btn--sm" href="#commande">Commander</a>
+        <a class="btn btn--white btn--sm" href="#commande">اطلب الآن</a>
       {%- else -%}
-        <a class="btn btn--white btn--sm" href="{{ routes.root_url }}#passer-commande">Commander</a>
+        <a class="btn btn--white btn--sm" href="{{ routes.root_url }}#passer-commande">اطلب الآن</a>
       {%- endif -%}
     </div>
   </div>
@@ -38,14 +38,9 @@
 
 {% schema %}
 {
-  "name": "En-tête",
+  "name": "الهيدر",
   "settings": [
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "Menu principal",
-      "default": "main-menu"
-    }
+    { "type": "link_list", "id": "menu", "label": "القائمة الرئيسية", "default": "main-menu" }
   ]
 }
 {% endschema %}

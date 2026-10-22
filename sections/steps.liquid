@@ -25,50 +25,50 @@
 
 {% schema %}
 {
-  "name": "Comment commander",
+  "name": "كيف أطلب؟",
   "tag": "div",
   "max_blocks": 6,
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Simple & rapide" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Comment commander" },
+    { "type": "text", "id": "eyebrow", "label": "عنوان صغير", "default": "بسيط وسريع" },
+    { "type": "text", "id": "heading", "label": "العنوان", "default": "كيف أطلب؟" },
     {
       "type": "textarea",
       "id": "intro",
-      "label": "Introduction",
-      "default": "Pas de compte, pas de carte bancaire : vous remplissez un formulaire et vous payez en espèces à la réception."
+      "label": "مقدمة",
+      "default": "بدون حساب وبدون بطاقة بنكية: تملأ الاستمارة وتدفع نقدًا عند الاستلام."
     }
   ],
   "blocks": [
     {
       "type": "step",
-      "name": "Étape",
+      "name": "خطوة",
       "settings": [
         {
           "type": "select",
           "id": "icon",
-          "label": "Icône",
+          "label": "الأيقونة",
           "options": [
-            { "value": "package", "label": "Colis" },
-            { "value": "pin", "label": "Position" },
-            { "value": "truck", "label": "Camion" },
-            { "value": "phone", "label": "Téléphone" },
-            { "value": "shield", "label": "Bouclier" },
-            { "value": "check", "label": "Validation" }
+            { "value": "package", "label": "طرد" },
+            { "value": "pin", "label": "موقع" },
+            { "value": "truck", "label": "شاحنة" },
+            { "value": "phone", "label": "هاتف" },
+            { "value": "shield", "label": "درع" },
+            { "value": "check", "label": "علامة صح" }
           ],
           "default": "package"
         },
-        { "type": "text", "id": "title", "label": "Titre", "default": "Choisissez votre paire" },
-        { "type": "textarea", "id": "text", "label": "Texte", "default": "Parcourez la collection, sélectionnez votre modèle et votre pointure." }
+        { "type": "text", "id": "title", "label": "العنوان", "default": "اختر حذاءك" },
+        { "type": "textarea", "id": "text", "label": "النص", "default": "تصفّح التشكيلة واختر الموديل واللون والمقاس." }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Comment commander",
+      "name": "كيف أطلب؟",
       "blocks": [
-        { "type": "step", "settings": { "icon": "package", "title": "Choisissez votre paire", "text": "Parcourez la collection, sélectionnez votre modèle et votre pointure." } },
-        { "type": "step", "settings": { "icon": "pin", "title": "Remplissez le formulaire", "text": "Nom, téléphone, wilaya et adresse : c'est tout. Le total s'affiche en direct." } },
-        { "type": "step", "settings": { "icon": "truck", "title": "Recevez & payez", "text": "Nous vous appelons pour confirmer, puis vous payez à la livraison." } }
+        { "type": "step", "settings": { "icon": "package", "title": "اختر حذاءك", "text": "تصفّح التشكيلة واختر الموديل واللون والمقاس." } },
+        { "type": "step", "settings": { "icon": "pin", "title": "املأ الاستمارة", "text": "الاسم، الهاتف، الولاية والعنوان فقط. المجموع يظهر مباشرة." } },
+        { "type": "step", "settings": { "icon": "truck", "title": "استلم وادفع", "text": "نتصل بك خلال 24 ساعة للتأكيد، ثم تدفع نقدًا عند الاستلام." } }
       ]
     }
   ]

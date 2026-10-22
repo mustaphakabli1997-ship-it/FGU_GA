@@ -5,9 +5,9 @@
 -%}
 
 <div class="container">
-  <nav class="crumbs" aria-label="Fil d'Ariane">
-    <a href="{{ routes.root_url }}">Accueil</a><span aria-hidden="true">/</span>
-    <a href="{{ routes.all_products_collection_url }}">Boutique</a><span aria-hidden="true">/</span>
+  <nav class="crumbs" aria-label="مسار التصفح">
+    <a href="{{ routes.root_url }}">الرئيسية</a><span aria-hidden="true">/</span>
+    <a href="{{ routes.all_products_collection_url }}">المتجر</a><span aria-hidden="true">/</span>
     <span aria-current="page">{{ product.title | escape }}</span>
   </nav>
 
@@ -15,11 +15,11 @@
     <div class="gallery">
       <div class="gallery__main">
         {%- if product.available == false -%}
-          <span class="stamp">Épuisé</span>
+          <span class="stamp">نفدت الكمية</span>
         {%- elsif tags_down contains '|limited|' -%}
-          <span class="stamp">Limited Edition</span>
-        {%- elsif tags_down contains '|new|' or tags_down contains '|nouveau|' -%}
-          <span class="stamp stamp--solid">Nouveau</span>
+          <span class="stamp">إصدار محدود</span>
+        {%- elsif tags_down contains '|new|' or tags_down contains '|nouveau|' or tags_down contains '|جديد|' -%}
+          <span class="stamp stamp--solid">جديد</span>
         {%- endif -%}
         {%- if images.size > 0 -%}
           {{
@@ -40,7 +40,7 @@
       {%- if images.size > 1 -%}
         <div class="gallery__thumbs" id="p-thumbs">
           {%- for media in images -%}
-            <button type="button" data-src="{{ media | image_url: width: 1000 }}" data-alt="{{ media.alt | default: product.title | escape }}" aria-label="Voir la photo {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+            <button type="button" data-src="{{ media | image_url: width: 1000 }}" data-alt="{{ media.alt | default: product.title | escape }}" aria-label="عرض الصورة {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
               {{ media | image_url: width: 240 | image_tag: loading: 'lazy', alt: '' }}
             </button>
           {%- endfor -%}
@@ -55,7 +55,7 @@
       <div class="pdp__price">
         <strong id="p-price">{% render 'price', amount: current_variant.price %}</strong>
         <s id="p-old"{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{% render 'price', amount: current_variant.compare_at_price %}</s>
-        <span class="save" id="p-save" hidden></span>
+        <span class="save" id="p-save" dir="ltr" hidden></span>
       </div>
 
       {%- if product.description != blank -%}
@@ -65,9 +65,9 @@
       {%- if product.available == false -%}
         <section class="order" id="commande">
           <div class="order__in">
-            <div class="order__head">{% render 'icon', name: 'info' %}<h2>Modèle épuisé</h2></div>
-            <p class="order__sub">Ce modèle n'est plus disponible pour le moment. Découvrez le reste de la collection.</p>
-            <a class="btn btn--white btn--block" href="{{ routes.all_products_collection_url }}">Voir la collection</a>
+            <div class="order__head">{% render 'icon', name: 'info' %}<h2>نفدت الكمية</h2></div>
+            <p class="order__sub">هذا الموديل غير متوفر حاليًا. اكتشف بقية التشكيلة.</p>
+            <a class="btn btn--white btn--block" href="{{ routes.all_products_collection_url }}">شاهد التشكيلة</a>
           </div>
         </section>
       {%- else -%}
@@ -86,7 +86,7 @@
 {%- if product.available and section.settings.show_sticky_bar -%}
   <div class="sticky-cta" id="sticky">
     <div class="sticky-cta__t"><b>{{ product.title | escape }}</b><span id="s-price">{% render 'price', amount: current_variant.price %}</span></div>
-    <a class="btn btn--white" href="#commande">Commander</a>
+    <a class="btn btn--white" href="#commande">اطلب الآن</a>
   </div>
 {%- endif -%}
 
@@ -96,17 +96,12 @@
 
 {% schema %}
 {
-  "name": "Produit + formulaire COD",
+  "name": "المنتج + استمارة الطلب",
   "settings": [
-    { "type": "text", "id": "order_title", "label": "Titre du formulaire", "default": "Commandez maintenant" },
-    {
-      "type": "text",
-      "id": "order_subtitle",
-      "label": "Sous-titre du formulaire",
-      "default": "Remplissez le formulaire : vous payez en espèces à la livraison."
-    },
-    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Confirmer la commande" },
-    { "type": "checkbox", "id": "show_sticky_bar", "label": "Barre « Commander » collante sur mobile", "default": true }
+    { "type": "text", "id": "order_title", "label": "عنوان الاستمارة", "default": "اطلب الآن" },
+    { "type": "text", "id": "order_subtitle", "label": "النص تحت العنوان", "default": "املأ الاستمارة: تدفع نقدًا عند الاستلام." },
+    { "type": "text", "id": "button_label", "label": "نص الزر", "default": "تأكيد الطلب" },
+    { "type": "checkbox", "id": "show_sticky_bar", "label": "زر «اطلب الآن» ثابت أسفل الشاشة على الهاتف", "default": true }
   ]
 }
 {% endschema %}

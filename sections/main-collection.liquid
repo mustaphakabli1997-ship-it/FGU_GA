@@ -2,7 +2,7 @@
   <div class="container">
     <div class="section__head">
       <div>
-        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} Collection</p>
+        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} مجموعة</p>
         <h1 class="title-chrome section__title">{{ collection.title | escape }}</h1>
         {%- if collection.description != blank -%}
           <div class="rte section__intro">{{ collection.description }}</div>
@@ -11,7 +11,7 @@
       {%- if collection.sort_options.size > 1 and collection.products_count > 1 -%}
         {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
         <div class="sort">
-          <label class="sr-only" for="SortBy">Trier par</label>
+          <label class="sr-only" for="SortBy">ترتيب حسب</label>
           <select class="input input--sm" id="SortBy">
             {%- for option in collection.sort_options -%}
               <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
@@ -28,18 +28,18 @@
             {% render 'product-card', product: product %}
           {%- endunless -%}
         {%- else -%}
-          <p class="empty">Aucun produit dans cette collection pour le moment.</p>
+          <p class="empty">لا توجد منتجات في هذه المجموعة حاليًا.</p>
         {%- endfor -%}
       </div>
 
       {%- if paginate.pages > 1 -%}
-        <nav class="pagination" aria-label="Pagination">
+        <nav class="pagination" aria-label="الصفحات">
           {%- if paginate.previous -%}
-            <a class="btn btn--sm" href="{{ paginate.previous.url }}">Précédent</a>
+            <a class="btn btn--sm" href="{{ paginate.previous.url }}">السابق</a>
           {%- endif -%}
-          <span class="pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+          <span class="pagination__info">صفحة {{ paginate.current_page }} / {{ paginate.pages }}</span>
           {%- if paginate.next -%}
-            <a class="btn btn--sm" href="{{ paginate.next.url }}">Suivant</a>
+            <a class="btn btn--sm" href="{{ paginate.next.url }}">التالي</a>
           {%- endif -%}
         </nav>
       {%- endif -%}
@@ -49,9 +49,9 @@
 
 {% schema %}
 {
-  "name": "Collection",
+  "name": "المجموعة",
   "settings": [
-    { "type": "range", "id": "products_per_page", "label": "Produits par page", "min": 8, "max": 36, "step": 4, "default": 12 }
+    { "type": "range", "id": "products_per_page", "label": "عدد المنتجات في الصفحة", "min": 8, "max": 36, "step": 4, "default": 12 }
   ]
 }
 {% endschema %}

@@ -10,7 +10,7 @@
         <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
       </div>
       {%- if section.settings.show_view_all -%}
-        <a class="btn btn--sm" href="{{ collection_to_show.url }}">Voir tout {% render 'icon', name: 'arrow' %}</a>
+        <a class="btn btn--sm" href="{{ collection_to_show.url }}">عرض الكل {% render 'icon', name: 'arrow' %}</a>
       {%- endif -%}
     </div>
 
@@ -24,7 +24,7 @@
           {%- endif -%}
         {%- endunless -%}
       {%- else -%}
-        <p class="empty">Ajoutez vos produits dans la collection « {{ collection_to_show.title | default: 'Tous les produits' }} » pour les voir ici.</p>
+        <p class="empty">أضف منتجاتك إلى مجموعة «{{ collection_to_show.title | default: 'كل المنتجات' }}» لتظهر هنا.</p>
       {%- endfor -%}
     </div>
   </div>
@@ -32,17 +32,17 @@
 
 {% schema %}
 {
-  "name": "Grille de produits",
+  "name": "شبكة المنتجات",
   "tag": "div",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "La collection" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Nouveautés" },
-    { "type": "collection", "id": "collection", "label": "Collection", "info": "Vide = tous les produits." },
-    { "type": "range", "id": "product_count", "label": "Nombre de produits", "min": 4, "max": 24, "step": 4, "default": 12 },
-    { "type": "checkbox", "id": "show_view_all", "label": "Afficher « Voir tout »", "default": true }
+    { "type": "text", "id": "eyebrow", "label": "عنوان صغير", "default": "التشكيلة" },
+    { "type": "text", "id": "heading", "label": "العنوان", "default": "جديدنا" },
+    { "type": "collection", "id": "collection", "label": "المجموعة", "info": "فارغ = كل المنتجات." },
+    { "type": "range", "id": "product_count", "label": "عدد المنتجات", "min": 4, "max": 24, "step": 4, "default": 12 },
+    { "type": "checkbox", "id": "show_view_all", "label": "إظهار «عرض الكل»", "default": true }
   ],
   "presets": [
-    { "name": "Grille de produits" }
+    { "name": "شبكة المنتجات" }
   ]
 }
 {% endschema %}

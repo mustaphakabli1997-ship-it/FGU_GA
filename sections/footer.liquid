@@ -57,41 +57,41 @@
       {%- endif -%}
 
       <div>
-        <h4>Contact</h4>
+        <h4>تواصل معنا</h4>
         <ul>
           {%- if wa_number != blank -%}
-            <li><a href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">واتساب</a></li>
           {%- endif -%}
           {%- if settings.phone_display != blank -%}
-            <li><a href="tel:{{ settings.phone_display | remove: ' ' }}">{{ settings.phone_display | escape }}</a></li>
+            <li><a href="tel:{{ settings.phone_display | remove: ' ' }}" dir="ltr">{{ settings.phone_display | escape }}</a></li>
           {%- endif -%}
-          <li><span class="footer__plain">Paiement à la livraison (espèces)</span></li>
-          <li><span class="footer__plain">Pas de paiement par carte</span></li>
+          <li><span class="footer__plain">الدفع نقدًا عند الاستلام</span></li>
+          <li><span class="footer__plain">لا دفع بالبطاقة البنكية</span></li>
         </ul>
       </div>
     </div>
 
     <div class="footer__bottom">
-      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. Tous droits réservés.</span>
-      <span>Vos données servent uniquement au traitement de votre commande.</span>
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. جميع الحقوق محفوظة.</span>
+      <span>معلوماتك تُستعمل فقط لمعالجة طلبك.</span>
     </div>
   </div>
 </footer>
 
 {% schema %}
 {
-  "name": "Pied de page",
+  "name": "الفوتر",
   "settings": [
     {
       "type": "textarea",
       "id": "tagline",
-      "label": "Texte sous le logo",
-      "default": "Chaussures tendance, confortables et à prix accessibles. Livrées dans les 58 wilayas d'Algérie."
+      "label": "نص تحت الشعار",
+      "default": "أحذية عصرية، مريحة، وبأسعار تناسب الجميع. التوصيل إلى 58 ولاية في الجزائر."
     },
-    { "type": "text", "id": "menu_1_title", "label": "Titre colonne 1", "default": "Boutique" },
-    { "type": "link_list", "id": "menu_1", "label": "Menu colonne 1", "default": "footer" },
-    { "type": "text", "id": "menu_2_title", "label": "Titre colonne 2", "default": "Infos" },
-    { "type": "link_list", "id": "menu_2", "label": "Menu colonne 2" }
+    { "type": "text", "id": "menu_1_title", "label": "عنوان العمود 1", "default": "المتجر" },
+    { "type": "link_list", "id": "menu_1", "label": "قائمة العمود 1", "default": "footer" },
+    { "type": "text", "id": "menu_2_title", "label": "عنوان العمود 2", "default": "معلومات" },
+    { "type": "link_list", "id": "menu_2", "label": "قائمة العمود 2" }
   ]
 }
 {% endschema %}

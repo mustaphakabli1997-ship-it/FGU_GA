@@ -12,19 +12,19 @@
       {%- endif -%}
 
       <ol class="order-points">
-        <li><span>1</span> Choisissez votre modèle et votre pointure</li>
-        <li><span>2</span> Remplissez vos informations de livraison</li>
-        <li><span>3</span> Payez en espèces à la réception de votre colis</li>
+        <li><span>1</span> اختر الموديل واللون والمقاس</li>
+        <li><span>2</span> املأ معلومات التوصيل</li>
+        <li><span>3</span> ادفع نقدًا عند استلام طلبيتك</li>
       </ol>
 
       <div class="paycard">
         <div class="paycard__row paycard__row--yes">
           {% render 'icon', name: 'cash' %}
-          <div><strong>Paiement à la livraison</strong><span>Espèces, au livreur ou au bureau du transporteur.</span></div>
+          <div><strong>الدفع عند الاستلام</strong><span>نقدًا، للموزّع أو في مكتب شركة التوصيل.</span></div>
         </div>
         <div class="paycard__row paycard__row--no">
           {% render 'icon', name: 'card-off' %}
-          <div><strong>Pas de paiement par carte</strong><span>Aucun paiement en ligne, aucune donnée bancaire demandée.</span></div>
+          <div><strong>لا دفع بالبطاقة</strong><span>لا دفع عبر الإنترنت ولا نطلب أي معلومات بنكية.</span></div>
         </div>
       </div>
     </div>
@@ -44,30 +44,25 @@
 
 {% schema %}
 {
-  "name": "Passer commande (accueil)",
+  "name": "اطلب الآن (الرئيسية)",
   "tag": "div",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Commande en 1 minute" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Passer commande" },
+    { "type": "text", "id": "eyebrow", "label": "عنوان صغير", "default": "الطلب في دقيقة" },
+    { "type": "text", "id": "heading", "label": "العنوان", "default": "اطلب الآن" },
     {
       "type": "textarea",
       "id": "text",
-      "label": "Texte",
-      "default": "Choisissez votre paire ici, sans quitter la page. Le paiement se fait uniquement à la livraison, en espèces."
+      "label": "النص",
+      "default": "اختر حذاءك من هنا دون مغادرة الصفحة. الدفع يكون فقط عند الاستلام، نقدًا."
     },
-    { "type": "collection", "id": "collection", "label": "Modèles proposés", "info": "Vide = tous les produits disponibles." },
-    { "type": "range", "id": "product_count", "label": "Nombre de modèles", "min": 2, "max": 24, "step": 1, "default": 12 },
-    { "type": "text", "id": "form_title", "label": "Titre du formulaire", "default": "Votre commande" },
-    {
-      "type": "text",
-      "id": "form_subtitle",
-      "label": "Sous-titre du formulaire",
-      "default": "Remplissez le formulaire : vous payez en espèces à la livraison."
-    },
-    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Confirmer la commande" }
+    { "type": "collection", "id": "collection", "label": "الموديلات المعروضة", "info": "فارغ = كل المنتجات المتوفرة." },
+    { "type": "range", "id": "product_count", "label": "عدد الموديلات", "min": 2, "max": 24, "step": 1, "default": 12 },
+    { "type": "text", "id": "form_title", "label": "عنوان الاستمارة", "default": "طلبيتك" },
+    { "type": "text", "id": "form_subtitle", "label": "النص تحت العنوان", "default": "املأ الاستمارة: تدفع نقدًا عند الاستلام." },
+    { "type": "text", "id": "button_label", "label": "نص الزر", "default": "تأكيد الطلب" }
   ],
   "presets": [
-    { "name": "Passer commande (accueil)" }
+    { "name": "اطلب الآن (الرئيسية)" }
   ]
 }
 {% endschema %}

@@ -1,8 +1,9 @@
 {%- comment -%}
-  Icône SVG en ligne.
-  Usage : {% render 'icon', name: 'truck' %}  ou  {% render 'icon', name: 'star', class: 'i--fill' %}
+  أيقونة SVG.
+  الاستعمال : {% render 'icon', name: 'truck' %}  أو  {% render 'icon', name: 'star', class: 'i--fill' %}
+  السهم ينقلب تلقائيًا في اتجاه RTL.
 {%- endcomment -%}
-<svg class="i {{ class }}" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+<svg class="i {{ class }}{% if name == 'arrow' %} i--flip{% endif %}" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
   {%- case name -%}
     {%- when 'star' -%}
       <path fill="currentColor" stroke="none" d="M12 1c.6 5.6 5.4 10.4 11 11-5.6.6-10.4 5.4-11 11-.6-5.6-5.4-10.4-11-11C6.6 11.4 11.4 6.6 12 1z"/>
