@@ -26,14 +26,30 @@
 ## التثبيت (≈ 20 دقيقة)
 
 ### 1) استيراد المنتجات (يُنشئ أيضًا منتج «Frais de livraison»)
-Shopify Admin ← **Produits → Importer** ← اختر `import/produits-youz.csv` ← **Importer**. بعد الانتهاء تحقق أن عندك:
-- **8 منتجات منشورة**: Sabot (1 600) · Trappeur Hermes (2 700) · Mind 001 (2 200) · Adidas Campus (2 700) · Sabot (2 300) · Hermes Bouncing (2 800) · Nike Air Force (3 000) · New Balance 740 (2 600) — بأسعارها القديمة (Prix comparé) وألوانها ومقاساتها وصورها (كل لون بصورته).
-- **3 منتجات كـ Brouillon (غير ظاهرة)**: Sabot UGG · ASICS GEL NYC · NIKE DUNK — لأنها مخفية في موقعك الحالي. انشرها عندما تريد.
-- **منتج `frais-de-livraison`** (منشور) بـ variantين: Stop Desk = 400 DA و À domicile = 600 DA. **لا تحذفه ولا تغيّر handle ولا السعرين** — الفورم يعتمد عليه.
+Shopify Admin ← **Produits → Importer** ← اختر `import/produits-youz.csv` ← **Importer**.
+الملف يطابق موقعك الحالي **حرفيًا** (12 منتجًا من 12، بلا أي حذف أو تعديل): نفس الأسماء، الأسعار، الأسعار القديمة (Prix comparé)، المقاسات، الألوان، وكل الصور (كل لون بصورته):
+
+| المنتج | السعر / القديم | المقاسات | الألوان | الحالة |
+|---|---|---|---|---|
+| Sabot | 1 600 / 2 300 | 40 → 44 | Noir, Beige | منشور |
+| Trappeur Hermes | 2 700 / 3 500 | 39 → 44 | Noir, Beige, Tabac, Marron | منشور |
+| Mind 001 | 2 200 / 4 200 | 37 → 42 | Noir, Blanc | منشور |
+| Adidas Campus | 2 700 / 3 500 | 39 → 44 | Noir, Beige/blanc, Beige/noir, Gris | منشور |
+| Sabot (الثاني) | 2 300 / 3 200 | 40 → 45 | Noir/Orange, Noir/Gris, Gris/Noir | منشور |
+| Hermes Bouncing | 2 800 / 3 800 | 40 → 44 | Noir, Beige, Bleu | منشور |
+| Nike Air Force | 3 000 / 4 200 | 40 → 44 | Gris | منشور |
+| New Balance 740 | 2 600 / 3 500 | 36 → 44 | Noir, Bleu nuit, Rose | منشور |
+| Mind 001 (الثاني) | 2 200 / 4 200 | 37 → 42 | Noir, Blanc | منشور |
+| Sabot UGG | 2 200 / 3 200 | 36 → 40 | Noir, Vert, Camel, Beige, Marron | Brouillon (مخفي كما في موقعك) |
+| ASICS GEL NYC | 5 500 / 7 000 | 40 → 44 | Noir, Vert, Gris | Brouillon (مخفي كما في موقعك) |
+| NIKE DUNK | 2 200 / 4 200 | 35 → 40 | Noir, Beige, Marron, Gris | Brouillon (مخفي كما في موقعك) |
+
+- المنتجات الثلاثة المخفية في موقعك الحالي تُستورد **كمسودة** (غير ظاهرة للزبائن) — انشرها من Shopify متى شئت.
+- منتج **`frais-de-livraison`** (منشور) بـ variantين: Stop Desk = 400 DA و À domicile = 600 DA. **لا تحذفه ولا تغيّر handle ولا السعرين** — الفورم يعتمد عليه.
+- الأوصاف: ترجمة فرنسية لوصفك العربي مع إبقاء النص العربي الأصلي تحتها.
 - المخزون غير متتبَّع (المنتجات دائمًا متوفرة) لأن أرقام الكمية في موقعك القديم غير موثوقة (قيم سالبة). فعّل تتبع المخزون في كل منتج إن أردت.
 - الصور تُجلب أثناء الاستيراد من روابط Foorweb ثم تُنسخ إلى Shopify: **استورد قبل أن تغلق/تحذف موقع Foorweb القديم**.
-
-> ما لم أستورده: نسخة مكررة «Mind 001 (copy)» (نفس المنتج بنفس الصور). وبما أن منتجين اسمهما «Sabot» عدّل اسم أحدهما في Shopify ليتمايزا للزبون.
+- يوجد منتجان باسم «Sabot» ومنتجان باسم «Mind 001» (كما في موقعك). إن أردت تمييزهما للزبون غيّر الاسم في Shopify.
 
 ### 2) رفع الثيم
 **Boutique en ligne → Thèmes → Ajouter un thème → Importer un fichier zip** ← `youz-shopify-theme.zip` ← **Personnaliser** ← جرّب المعاينة ثم **Publier**.
