@@ -29,16 +29,16 @@
           "type": "item",
           "settings": {
             "icon": "phone",
-            "title": "Confirmation rapide",
+            "title": "Confirmation sous 24 h",
             "text": "Notre équipe vous appelle"
           }
         },
         "item_4": {
           "type": "item",
           "settings": {
-            "icon": "repeat",
-            "title": "Échange de pointure",
-            "text": "Selon conditions"
+            "icon": "check",
+            "title": "Garantie",
+            "text": "Produit défectueux dédommagé"
           }
         }
       },
@@ -61,19 +61,19 @@
         "feature_1": {
           "type": "feature",
           "settings": {
-            "text": "Semelle épaisse ultra-amortissante"
+            "text": "Matériaux de haute qualité, pour une durabilité qui dure"
           }
         },
         "feature_2": {
           "type": "feature",
           "settings": {
-            "text": "Empiècements effet chrome"
+            "text": "Légères, avec une semelle confortable et antidérapante"
           }
         },
         "feature_3": {
           "type": "feature",
           "settings": {
-            "text": "Maille respirante, légère toute la journée"
+            "text": "Coloris raffinés pour un look casual au quotidien"
           }
         }
       },
@@ -143,12 +143,19 @@
           "settings": {
             "text": "Le montant exact s'affiche avant de confirmer"
           }
+        },
+        "point_4": {
+          "type": "point",
+          "settings": {
+            "text": "Une facture signée et cachetée accompagne votre colis"
+          }
         }
       },
       "block_order": [
         "point_1",
         "point_2",
-        "point_3"
+        "point_3",
+        "point_4"
       ]
     },
     "delivery": {
@@ -161,14 +168,14 @@
           "type": "question",
           "settings": {
             "question": "Comment passer commande ?",
-            "answer": "<p>Ouvrez le modèle qui vous plaît, choisissez votre pointure, remplissez le formulaire (nom, téléphone, wilaya, adresse) puis validez. Aucun paiement en ligne n'est demandé.</p>"
+            "answer": "<p>Choisissez votre modèle, votre couleur et votre pointure, remplissez le formulaire (nom, téléphone, wilaya, adresse) puis validez. Aucun paiement en ligne n'est demandé.</p>"
           }
         },
         "q_2": {
           "type": "question",
           "settings": {
             "question": "Comment se passe le paiement ?",
-            "answer": "<p>Le paiement se fait uniquement à la livraison, en espèces : au livreur (livraison à domicile) ou au bureau du transporteur (Stop Desk).</p>"
+            "answer": "<p>Nous ne demandons aucun paiement à l'avance. Vous payez uniquement à la livraison, en espèces : au livreur (livraison à domicile) ou au bureau du transporteur (Stop Desk). Une facture signée et cachetée par la société accompagne votre commande.</p>"
           }
         },
         "q_3": {
@@ -189,28 +196,28 @@
           "type": "question",
           "settings": {
             "question": "Quels sont les délais de livraison ?",
-            "answer": "<p>En général 24 à 72 h pour le Nord et 3 à 7 jours pour le Sud, après confirmation téléphonique de votre commande.</p>"
+            "answer": "<p>Notre équipe vous appelle dans les 24 heures suivant votre commande pour la confirmer avec vous. La livraison est ensuite effectuée en 2 à 7 jours selon votre wilaya.</p>"
           }
         },
         "q_6": {
           "type": "question",
           "settings": {
             "question": "Domicile ou Stop Desk, que choisir ?",
-            "answer": "<p>À domicile : le livreur vous appelle et vous apporte le colis. Stop Desk : vous récupérez le colis au bureau du transporteur de votre commune, généralement moins cher.</p>"
+            "answer": "<p>À domicile : le livreur vous appelle et vous apporte le colis. Stop Desk : vous récupérez le colis au bureau du transporteur de votre commune, pour un tarif plus bas.</p>"
           }
         },
         "q_7": {
           "type": "question",
           "settings": {
             "question": "Comment choisir ma pointure ?",
-            "answer": "<p>Nos pointures sont en EU (39 à 45). Si vous hésitez entre deux tailles, prenez la plus grande : nos modèles chunky taillent plutôt près du pied.</p>"
+            "answer": "<p>Les pointures disponibles sont indiquées sur chaque fiche produit. Si vous hésitez entre deux tailles, contactez-nous avant de commander.</p>"
           }
         },
         "q_8": {
           "type": "question",
           "settings": {
-            "question": "Puis-je échanger ma pointure ?",
-            "answer": "<p>Oui, l'échange de pointure est possible sous 7 jours si la paire n'a pas été portée et est dans son emballage d'origine. Contactez-nous pour organiser l'échange.</p>"
+            "question": "Que faire si mon produit est défectueux ?",
+            "answer": "<p>Si votre produit est endommagé, cassé ou présente un défaut, nous nous engageons à vous dédommager. Contactez-nous dès la réception.</p>"
           }
         },
         "q_9": {

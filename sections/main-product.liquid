@@ -1,7 +1,7 @@
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign images = product.media | where: 'media_type', 'image'
-  assign tags_down = product.tags | join: ',' | downcase
+  assign tags_down = product.tags | join: '|' | downcase | prepend: '|' | append: '|'
 -%}
 
 <div class="container">
@@ -16,9 +16,9 @@
       <div class="gallery__main">
         {%- if product.available == false -%}
           <span class="stamp">Épuisé</span>
-        {%- elsif tags_down contains 'limited' -%}
+        {%- elsif tags_down contains '|limited|' -%}
           <span class="stamp">Limited Edition</span>
-        {%- elsif tags_down contains 'new' or tags_down contains 'nouveau' -%}
+        {%- elsif tags_down contains '|new|' or tags_down contains '|nouveau|' -%}
           <span class="stamp stamp--solid">Nouveau</span>
         {%- endif -%}
         {%- if images.size > 0 -%}

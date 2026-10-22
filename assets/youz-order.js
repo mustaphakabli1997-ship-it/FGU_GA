@@ -188,6 +188,7 @@
       } else { old.hidden = true; save.hidden = true; }
     }
     setText("#s-price", fmt(unit.price));
+    if (s.variant && s.variant.image) document.dispatchEvent(new CustomEvent("youz:variantimage", { detail: { url: s.variant.image, alt: product.title + " — " + s.variant.title } }));
 
     ["home", "desk"].forEach(function (t) {
       var v = fee(t, sub);

@@ -8,14 +8,14 @@
         {%- if section.settings.image_1 != blank -%}
           {{ section.settings.image_1 | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 900px) 22vw, 45vw', alt: section.settings.image_1.alt | default: section.settings.heading }}
         {%- else -%}
-          <img src="{{ 'youz-look-1.jpg' | asset_url }}" alt="" width="478" height="473" loading="lazy">
+          <img src="{{ 'youz-look-1.jpg' | asset_url }}" alt="" width="800" height="880" loading="lazy">
         {%- endif -%}
       </figure>
       <figure>
         {%- if section.settings.image_2 != blank -%}
           {{ section.settings.image_2 | image_url: width: 700 | image_tag: loading: 'lazy', widths: '350, 500, 700', sizes: '(min-width: 900px) 22vw, 45vw', alt: section.settings.image_2.alt | default: section.settings.heading }}
         {%- else -%}
-          <img src="{{ 'youz-look-2.jpg' | asset_url }}" alt="" width="475" height="473" loading="lazy">
+          <img src="{{ 'youz-look-2.jpg' | asset_url }}" alt="" width="800" height="880" loading="lazy">
         {%- endif -%}
       </figure>
     </div>
@@ -49,14 +49,14 @@
   "max_blocks": 6,
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Le drop" },
-    { "type": "text", "id": "heading", "label": "Titre", "default": "Conçues pour la rue" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Le confort à chaque pas" },
     {
       "type": "textarea",
       "id": "text",
       "label": "Texte",
-      "default": "Chrome, mesh et semelle épaisse : chaque paire YOUZ mélange l'esprit graffiti et le confort du quotidien. Séries limitées, stock réduit — quand c'est parti, c'est parti."
+      "default": "Baskets, sabots et mocassins au design moderne : des modèles légers, avec une semelle confortable et antidérapante, pour un look casual au quotidien."
     },
-    { "type": "text", "id": "stamp", "label": "Tampon", "default": "Limited Edition" },
+    { "type": "text", "id": "stamp", "label": "Tampon", "default": "Nouvelle collection" },
     { "type": "text", "id": "button_label", "label": "Bouton — texte", "default": "Voir la collection" },
     { "type": "url", "id": "button_link", "label": "Bouton — lien" },
     { "type": "image_picker", "id": "image_1", "label": "Photo 1", "info": "Vide = photo d'exemple du thème." },
@@ -67,7 +67,7 @@
       "type": "feature",
       "name": "Point fort",
       "settings": [
-        { "type": "text", "id": "text", "label": "Texte", "default": "Semelle épaisse ultra-amortissante" }
+        { "type": "text", "id": "text", "label": "Texte", "default": "Matériaux de haute qualité, pour une durabilité qui dure" }
       ]
     }
   ],
@@ -75,9 +75,9 @@
     {
       "name": "Le drop (éditorial)",
       "blocks": [
-        { "type": "feature", "settings": { "text": "Semelle épaisse ultra-amortissante" } },
-        { "type": "feature", "settings": { "text": "Empiècements effet chrome" } },
-        { "type": "feature", "settings": { "text": "Maille respirante, légère toute la journée" } }
+        { "type": "feature", "settings": { "text": "Matériaux de haute qualité, pour une durabilité qui dure" } },
+        { "type": "feature", "settings": { "text": "Légères, avec une semelle confortable et antidérapante" } },
+        { "type": "feature", "settings": { "text": "Coloris raffinés pour un look casual au quotidien" } }
       ]
     }
   ]

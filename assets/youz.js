@@ -33,6 +33,27 @@
   // l'éditeur de thème recharge les sections à la volée
   document.addEventListener("shopify:section:load", function (e) { reveal(e.target); });
 
+  /* ---------- galerie produit : vignettes + photo de la couleur choisie ---------- */
+  var mainImg = $("#p-img"), thumbs = $$("#p-thumbs button");
+  function baseUrl(u) { return String(u || "").split("?")[0]; }
+  function showImage(url, alt) {
+    if (!mainImg || !url) return;
+    mainImg.removeAttribute("srcset");
+    mainImg.src = url;
+    if (alt) mainImg.alt = alt;
+    thumbs.forEach(function (b) { b.setAttribute("aria-current", baseUrl(b.getAttribute("data-src")) === baseUrl(url) ? "true" : "false"); });
+  }
+  thumbs.forEach(function (b) {
+    b.addEventListener("click", function () { showImage(b.getAttribute("data-src"), b.getAttribute("data-alt")); });
+  });
+  var lastVariantImage = null;
+  document.addEventListener("youz:variantimage", function (e) {
+    var url = e.detail && e.detail.url;
+    if (!url || baseUrl(url) === lastVariantImage) return;
+    lastVariantImage = baseUrl(url);
+    showImage(url, e.detail.alt);
+  });
+
   /* ---------- tri des collections ---------- */
   var sort = $("#SortBy");
   if (sort) {

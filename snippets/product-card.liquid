@@ -4,13 +4,13 @@
   Badges automatiques via les tags du produit : « limited » → Limited Edition, « new » ou « nouveau » → Nouveau.
 {%- endcomment -%}
 {%- liquid
-  assign tags_down = product.tags | join: ',' | downcase
+  assign tags_down = product.tags | join: '|' | downcase | prepend: '|' | append: '|'
   assign is_limited = false
   assign is_new = false
-  if tags_down contains 'limited'
+  if tags_down contains '|limited|'
     assign is_limited = true
   endif
-  if tags_down contains 'new' or tags_down contains 'nouveau'
+  if tags_down contains '|new|' or tags_down contains '|nouveau|'
     assign is_new = true
   endif
 -%}

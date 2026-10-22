@@ -17,9 +17,14 @@
   "options": {{ p.options | json }},
   "variants": [
     {%- for v in p.variants -%}
+      {%- assign vimg = '' -%}
+      {%- if v.featured_image != blank -%}
+        {%- assign vimg = v.featured_image | image_url: width: 1000 -%}
+      {%- endif -%}
       {
         "id": {{ v.id }},
         "title": {{ v.title | json }},
+        "image": {{ vimg | json }},
         "price": {{ v.price | divided_by: 100.0 }},
         "compare": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
         "available": {{ v.available }},

@@ -1,37 +1,43 @@
-# YOUZ Streetwear — Thème Shopify
+# YOUZ Streetwear — Thème Shopify + import des produits
 
-ثيم Shopify (Online Store 2.0) بالفرنسية لمتجر **YOUZ** للأحذية: تصميم فخم بهوية اللوقو (أسود · فضي كروم · أبيض)، **الدفع عند الاستلام فقط (لا دفع بالبطاقة)**، وتوصيل بسعر ثابت لـ 58 ولاية.
+ثيم Shopify (Online Store 2.0) بالفرنسية لمتجر **YOUZ**: تصميم فخم بهوية اللوقو (أسود · فضي كروم · أبيض)، **الدفع عند الاستلام فقط (لا دفع بالبطاقة)**، وتوصيل بسعر ثابت لـ 58 ولاية.
 
-الملف الجاهز للرفع: **`youz-shopify-theme.zip`**
+الملفان الجاهزان:
+| الملف | الدور |
+|---|---|
+| **`youz-shopify-theme.zip`** | الثيم — يُرفع من Boutique en ligne ← Thèmes |
+| **`import/produits-youz.csv`** | منتجاتك الحقيقية (أسماء، أسعار، ألوان، مقاسات، صور) + منتج «Frais de livraison» — يُستورد من Produits ← Importer |
 
 ## ما الذي فيه
 - **الصفحة الرئيسية**: Hero · شريط الالتزامات · شبكة المنتجات · قسم Le drop · شريط YOUZ الكبير · Comment commander ·
-  **Passer commande** (فورم الطلب مباشرة في الصفحة الرئيسية مع اختيار الموديل) · **Modes de paiement** · Livraison · FAQ.
-- **صفحة المنتج**: معرض صور + اختيار المقاس/اللون + **فورم الطلب** (الاسم، الهاتف، الولاية الـ58، البلدية، domicile / Stop Desk، العنوان) مع ملخص حي للثمن.
-- **الدفع**: يُذكر بوضوح في كل مكان (Hero، الفورم، قسم خاص، FAQ، الفوتر): **«Paiement à la livraison uniquement — pas de paiement par carte»**.
+  **Passer commande** (فورم الطلب مباشرة في الرئيسية مع اختيار الموديل) · **Modes de paiement** · Livraison · FAQ.
+- **صفحة المنتج**: معرض صور + اختيار اللون (تتغير الصورة حسب اللون) والمقاس + **فورم الطلب** (الاسم، الهاتف، الولاية الـ58، البلدية، domicile / Stop Desk، العنوان) مع ملخص حي للثمن.
+- **الدفع**: يُذكر بوضوح في كل مكان: **«Paiement à la livraison uniquement — pas de paiement par carte»**، ولا دفع مسبق.
 - **التوصيل (سعر ثابت لكل الولايات)**: **Stop Desk 400 DA · À domicile 600 DA**.
+- نصوص FAQ مبنية على سياسات متجرك الحالي: الاتصال خلال 24 ساعة، التوصيل 2–7 أيام حسب الولاية، فاتورة موقّعة ومختومة، تعويض المنتج المعطوب.
 - مكان الطلب في الرابط: الرئيسية `/#passer-commande` — صفحة المنتج `…/products/<handle>#commande` (هذا الرابط تضعه في الإعلانات) — اختيار موديل مسبق: `/?model=<handle>#passer-commande`.
 
 ## كيف يعمل الفورم
 الزبون يملأ الفورم ← الثيم يفرغ السلة ويحوّله إلى **checkout Shopify** عبر
 [cart permalink](https://shopify.dev/docs/apps/build/checkout/create-cart-permalinks) يحتوي على: المتغيّر المختار + **سطر «Frais de livraison»** (400 أو 600 DA) +
 معلومات الزبون معبّأة مسبقًا + `attributes`/`note` (Nom, Téléphone, Wilaya, Commune, Livraison, Paiement) تظهر داخل الطلب في لوحة Shopify.
-الزبون يضغط مرة واحدة على «Compléter la commande» (الدفع عند الاستلام) فيُنشأ الطلب في Shopify مع المخزون والإشعارات وتطبيقات شركات التوصيل.
+الزبون يضغط مرة واحدة على «Compléter la commande» (الدفع عند الاستلام) فيُنشأ الطلب في Shopify مع الإشعارات وتطبيقات شركات التوصيل.
 
-## التثبيت (≈ 15 دقيقة)
+## التثبيت (≈ 20 دقيقة)
 
-### 1) رفع الثيم
-Shopify Admin ← **Boutique en ligne → Thèmes → Ajouter un thème → Importer un fichier zip** ← `youz-shopify-theme.zip` ← **Personnaliser** ← جرّب المعاينة ثم **Publier**.
+### 1) استيراد المنتجات (يُنشئ أيضًا منتج «Frais de livraison»)
+Shopify Admin ← **Produits → Importer** ← اختر `import/produits-youz.csv` ← **Importer**. بعد الانتهاء تحقق أن عندك:
+- **8 منتجات منشورة**: Sabot (1 600) · Trappeur Hermes (2 700) · Mind 001 (2 200) · Adidas Campus (2 700) · Sabot (2 300) · Hermes Bouncing (2 800) · Nike Air Force (3 000) · New Balance 740 (2 600) — بأسعارها القديمة (Prix comparé) وألوانها ومقاساتها وصورها (كل لون بصورته).
+- **3 منتجات كـ Brouillon (غير ظاهرة)**: Sabot UGG · ASICS GEL NYC · NIKE DUNK — لأنها مخفية في موقعك الحالي. انشرها عندما تريد.
+- **منتج `frais-de-livraison`** (منشور) بـ variantين: Stop Desk = 400 DA و À domicile = 600 DA. **لا تحذفه ولا تغيّر handle ولا السعرين** — الفورم يعتمد عليه.
+- المخزون غير متتبَّع (المنتجات دائمًا متوفرة) لأن أرقام الكمية في موقعك القديم غير موثوقة (قيم سالبة). فعّل تتبع المخزون في كل منتج إن أردت.
+- الصور تُجلب أثناء الاستيراد من روابط Foorweb ثم تُنسخ إلى Shopify: **استورد قبل أن تغلق/تحذف موقع Foorweb القديم**.
 
-### 2) إنشاء منتج «Frais de livraison» (ضروري)
-Produits ← Ajouter un produit:
-- العنوان: `Frais de livraison` — والـ handle (رابط المنتج) يجب أن يكون **`frais-de-livraison`**
-- Option باسم `Frais` ولها **variantان فقط** بهذين السعرين بالضبط: **400 DA** و **600 DA**
-- ألغِ تتبّع المخزون، وألغِ «Ce produit est un produit physique»
-- يجب أن يكون **منشورًا في Boutique en ligne** (وإلا لا يمكن إضافته للسلة). لا تضعه في أي collection؛ الثيم يخفيه من الشبكات والبحث.
+> ما لم أستورده: نسخة مكررة «Mind 001 (copy)» (نفس المنتج بنفس الصور). وبما أن منتجين اسمهما «Sabot» عدّل اسم أحدهما في Shopify ليتمايزا للزبون.
 
-> إذا لم يوجد هذا المنتج: الفورم يعمل لكنه **لا يضيف** رسوم التوصيل للطلب (ويكتب تحذيرًا في console المتصفح).
-> إذا غيّرت السعرين في *Paramètres du thème → Formulaire COD et livraison* أنشئ variants بنفس الأسعار الجديدة.
+### 2) رفع الثيم
+**Boutique en ligne → Thèmes → Ajouter un thème → Importer un fichier zip** ← `youz-shopify-theme.zip` ← **Personnaliser** ← جرّب المعاينة ثم **Publier**.
+في الـ Hero اختر «Produit vedette»، وفي «Passer commande» اختر الـ collection (الفارغ = كل المنتجات).
 
 ### 3) إعدادات المتجر (مرة واحدة) — لضمان «لا دفع بالبطاقة»
 - **Paramètres → Paiements**: **لا تفعّل** Shopify Payments ولا PayPal ولا أي بوابة بطاقات. فعّل فقط **Modes de paiement manuels → Paiement à la livraison (COD)**،
@@ -40,21 +46,19 @@ Produits ← Ajouter un produit:
 - **Paramètres → Checkout**: رقم الهاتف في عنوان الشحن «Obligatoire»، وطريقة اتصال الزبون «Numéro de téléphone ou e-mail».
 - **Paramètres → Général**: عملة المتجر `DZD`.
 
-### 4) المنتجات
-- في كل منتج: Option باسم **`Pointure`** (39 … 45) واختياريًا Option ثانية **`Couleur`**. الثيم يعتبر الخيارات التي اسمها pointure / taille / size خيار مقاس ويجبر الزبون على اختياره.
-- Tags اختيارية لشارات البطاقة: `limited` ← Limited Edition · `new` أو `nouveau` ← Nouveau. المنتج غير المتوفر يظهر Sold out تلقائيًا ويختفي من فورم الرئيسية.
-- أضف صورتين أو أكثر لكل منتج: الصورة الثانية تظهر عند مرور الماوس على البطاقة.
-- السعر القديم في «Prix comparé» يُظهر التخفيض.
+### 4) تخصيص الثيم (Personnaliser)
+- **Paramètres du thème**: اللوقو، favicon، صورة المشاركة، **رقم WhatsApp** والهاتف و Instagram/TikTok/Facebook (فارغة عمدًا — لم أنسخ أرقام/روابط Foorweb لأنها ليست لك)، سعر التوصيل (400/600)، التوصيل المجاني من مبلغ معيّن.
+- **الصفحة الرئيسية**: كل الأقسام قابلة للتعديل والترتيب. القوائم (Menu principal / Pied de page) من Navigation.
+- شارات البطاقة اختيارية عبر Tags: `limited` ← Limited Edition · `new` أو `nouveau` ← Nouveau (غير مفعّلة افتراضيًا).
 
-### 5) تخصيص الثيم (Personnaliser)
-- **Paramètres du thème**: اللوقو، favicon، صورة المشاركة، رقم WhatsApp، الهاتف، Instagram/TikTok/Facebook، سعر التوصيل (400/600)، التوصيل المجاني من مبلغ معيّن.
-- **الصفحة الرئيسية**: كل الأقسام قابلة للتعديل والترتيب. في الـ Hero اختر «Produit vedette»؛ وفي «Passer commande» اختر الـ collection التي تظهر موديلاتها في الفورم.
-- صور قسم Le drop الافتراضية أمثلة — بدّلها بصور YOUZ الحقيقية. نص FAQ ومدة التوصيل وسياسة الاستبدال (7 أيام) أمثلة — عدّلها حسب شروطك.
+## ملاحظات
+- **أسعار التوصيل**: طبّقت 400/600 لكل الولايات كما طلبت. في موقعك القديم بعض الولايات (الجنوب غالبًا) كانت أغلى (مثلاً 1000 DA للباب)؛ إن أردت تمييزها لا بد من تعديل بسيط في الثيم.
+- **العلامات التجارية**: أسماء المنتجات تحمل علامات (Nike, Adidas, New Balance, Hermès, ASICS, UGG). Shopify قد يوقف المتاجر التي تستعمل علامات مسجَّلة دون ترخيص؛ تأكد من حقك في استعمالها.
 
 ## ما تم اختباره / ما لم يُختبر
 - ✅ **Shopify Theme Check**: 0 أخطاء (تحذيرات RemoteAsset فقط بسبب خط Inter من Google Fonts).
-- ✅ عرض كل القوالب بمحرك Liquid ببيانات تشبه Shopify + اختبار الفورم في متصفح (39 فحصًا): التحقق، الموديلات المتعددة، Pointure+Couleur، 400/600 DA، Stop Desk، التوصيل المجاني، رابط الـ checkout الناتج، الجوال بدون scroll أفقي.
-- ⚠ **لم يُرفع إلى متجر Shopify حقيقي** من طرفي. بعد الرفع جرّب طلبًا تجريبيًا وتأكد في الـ checkout من: السطرين (المنتج + Frais de livraison)، تعبئة العنوان، وأن طريقة الدفع الوحيدة هي COD.
-- ⚠ الـ checkout يعبّأ مسبقًا بالاسم/العنوان/المدينة/البلد. حقل **الهاتف** غير مذكور رسميًا ضمن بارامترات cart permalink فقد لا يُعبَّأ، لكنه يصل دائمًا في `attributes` الطلب. وإن كان Shopify يطلب حقل «Province» للجزائر فسيختارها الزبون في الـ checkout (الولاية موجودة أيضًا في `address2` والـ attributes).
+- ✅ عرض كل القوالب بمحرك Liquid **ببياناتك الحقيقية** + اختبار الفورم في متصفح (ما يقارب 40 فحصًا): الموديلات، الألوان والمقاسات، تغيّر الصورة حسب اللون، 400/600 DA، Stop Desk، التوصيل المجاني، رابط الـ checkout الناتج، الجوال بدون scroll أفقي.
+- ✅ ملف CSV: 201 سطر، لا تكرار في المتغيّرات (SKU/ألوان/مقاسات)، ترتيب الصور سليم، روابط الصور الـ68 تعمل.
+- ⚠ **لم يُرفع/يُستورد في متجر Shopify حقيقي** من طرفي. بعد الاستيراد راجع منتجًا أو اثنين، ثم جرّب طلبًا تجريبيًا وتأكد في الـ checkout من: السطرين (المنتج + Frais de livraison)، تعبئة العنوان، وأن طريقة الدفع الوحيدة هي COD.
+- ⚠ الـ checkout يعبّأ مسبقًا بالاسم/العنوان/المدينة/البلد. حقل **الهاتف** غير مذكور رسميًا ضمن بارامترات cart permalink فقد لا يُعبَّأ، لكنه يصل دائمًا في `attributes` الطلب. وإن طلب Shopify حقل «Province» للجزائر فسيختارها الزبون (الولاية موجودة أيضًا في `address2` والـ attributes).
 - ⚠ الطلب لا يُنشأ إلا بعد أن يكمل الزبون الـ checkout (نقرة واحدة): ثيم بدون تطبيق/خادم لا يستطيع إنشاء طلب مباشرة.
-- الصور والأسعار في المعاينة أمثلة؛ المنتجات الحقيقية تُنشأ من لوحة Shopify.
