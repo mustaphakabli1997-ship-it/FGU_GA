@@ -1,0 +1,35 @@
+<section class="section">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} Boutique</p>
+        <h1 class="title-chrome section__title">Collections</h1>
+      </div>
+    </div>
+    <div class="grid">
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'frontpage' -%}
+          <article class="card" data-reveal>
+            <a class="card__media" href="{{ collection.url }}" aria-label="{{ collection.title | escape }}">
+              {%- if collection.featured_image != blank -%}
+                {{ collection.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', alt: collection.title }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'card__placeholder' }}
+              {%- endif -%}
+            </a>
+            <div class="card__body">
+              <h2 class="card__name"><a href="{{ collection.url }}">{{ collection.title | escape }}</a></h2>
+              <a class="btn btn--white btn--block" href="{{ collection.url }}">Voir</a>
+            </div>
+          </article>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Liste des collections"
+}
+{% endschema %}

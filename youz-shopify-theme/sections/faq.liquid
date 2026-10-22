@@ -1,0 +1,56 @@
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section__head section__head--center">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+    </div>
+    <div class="faq">
+      {%- for block in section.blocks -%}
+        <details {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question | escape }} {% render 'icon', name: 'chevron' %}</summary>
+          <div class="faq__answer">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "div",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Questions fréquentes" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "FAQ" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Comment passer commande ?" },
+        { "type": "richtext", "id": "answer", "label": "Réponse", "default": "<p>Ouvrez le modèle qui vous plaît, choisissez votre pointure, remplissez le formulaire puis validez.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Comment passer commande ?", "answer": "<p>Ouvrez le modèle qui vous plaît, choisissez votre pointure, remplissez le formulaire (nom, téléphone, wilaya, adresse) puis validez. Aucun paiement en ligne n'est demandé.</p>" } },
+        { "type": "question", "settings": { "question": "Comment se passe le paiement ?", "answer": "<p>Vous payez en espèces à la réception de votre colis, au livreur (livraison à domicile) ou au bureau du transporteur (Stop Desk).</p>" } },
+        { "type": "question", "settings": { "question": "Quels sont les délais de livraison ?", "answer": "<p>En général 24 à 72 h pour le Nord et 3 à 7 jours pour le Sud, après confirmation téléphonique de votre commande.</p>" } },
+        { "type": "question", "settings": { "question": "Domicile ou Stop Desk, que choisir ?", "answer": "<p>À domicile : le livreur vous appelle et vous apporte le colis. Stop Desk : vous récupérez le colis au bureau du transporteur de votre commune, généralement moins cher.</p>" } },
+        { "type": "question", "settings": { "question": "Comment choisir ma pointure ?", "answer": "<p>Nos pointures sont en EU (39 à 45). Si vous hésitez entre deux tailles, prenez la plus grande : nos modèles chunky taillent plutôt près du pied.</p>" } },
+        { "type": "question", "settings": { "question": "Puis-je échanger ma pointure ?", "answer": "<p>Oui, l'échange de pointure est possible sous 7 jours si la paire n'a pas été portée et est dans son emballage d'origine. Contactez-nous pour organiser l'échange.</p>" } },
+        { "type": "question", "settings": { "question": "Ma commande est-elle confirmée par téléphone ?", "answer": "<p>Oui. Après votre commande, notre équipe vous appelle pour confirmer les détails. Vérifiez bien votre numéro de téléphone dans le formulaire.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

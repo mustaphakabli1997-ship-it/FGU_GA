@@ -1,0 +1,288 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign delivery = all_products[settings.delivery_product_handle]
+  assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' '
+  assign images = product.media | where: 'media_type', 'image'
+  assign tags_down = product.tags | join: ',' | downcase
+-%}
+
+<div class="container">
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="{{ routes.root_url }}">Accueil</a><span aria-hidden="true">/</span>
+    <a href="{{ routes.all_products_collection_url }}">Boutique</a><span aria-hidden="true">/</span>
+    <span aria-current="page">{{ product.title | escape }}</span>
+  </nav>
+
+  <div class="pdp" id="YouzOrder">
+    <div class="gallery">
+      <div class="gallery__main">
+        {%- if product.available == false -%}
+          <span class="stamp">Épuisé</span>
+        {%- elsif tags_down contains 'limited' -%}
+          <span class="stamp">Limited Edition</span>
+        {%- elsif tags_down contains 'new' or tags_down contains 'nouveau' -%}
+          <span class="stamp stamp--solid">Nouveau</span>
+        {%- endif -%}
+        {%- if images.size > 0 -%}
+          {{
+            images.first
+            | image_url: width: 1000
+            | image_tag:
+              id: 'p-img',
+              widths: '400, 600, 800, 1000',
+              sizes: '(min-width: 900px) 50vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: images.first.alt | default: product.title
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'card__placeholder' }}
+        {%- endif -%}
+      </div>
+      {%- if images.size > 1 -%}
+        <div class="gallery__thumbs" id="p-thumbs">
+          {%- for media in images -%}
+            <button type="button" data-src="{{ media | image_url: width: 1000 }}" data-alt="{{ media.alt | default: product.title | escape }}" aria-label="Voir la photo {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+              {{ media | image_url: width: 240 | image_tag: loading: 'lazy', alt: '' }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pdp__info">
+      <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ product.vendor | default: shop.name | escape }}</p>
+      <h1>{{ product.title | escape }}</h1>
+
+      <div class="pdp__price">
+        <strong id="p-price">{% render 'price', amount: current_variant.price %}</strong>
+        <s id="p-old"{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{% render 'price', amount: current_variant.compare_at_price %}</s>
+        <span class="save" id="p-save" hidden></span>
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="pdp__short rte">{{ product.description }}</div>
+      {%- endif -%}
+
+      {%- if product.available == false -%}
+        <section class="order" id="commande">
+          <div class="order__in">
+            <div class="order__head">{% render 'icon', name: 'info' %}<h2>Modèle épuisé</h2></div>
+            <p class="order__sub">Ce modèle n'est plus disponible pour le moment. Découvrez le reste de la collection.</p>
+            <a class="btn btn--white btn--block" href="{{ routes.all_products_collection_url }}">Voir la collection</a>
+          </div>
+        </section>
+      {%- else -%}
+        <!-- ===================== FORMULAIRE COD ===================== -->
+        <section class="order" id="commande" aria-labelledby="order-title">
+          <div class="order__in">
+            <div class="order__head">
+              {% render 'icon', name: 'truck' %}
+              <h2 id="order-title">{{ section.settings.order_title | escape }}</h2>
+            </div>
+            <p class="order__sub">{{ section.settings.order_subtitle | escape }}</p>
+
+            <form id="order-form" novalidate>
+              {%- for option in product.options_with_values -%}
+                {%- liquid
+                  assign opt_name = option.name | downcase
+                  assign is_size = false
+                  if opt_name contains 'pointure' or opt_name contains 'taille' or opt_name contains 'size'
+                    assign is_size = true
+                  endif
+                  assign opt_idx = option.position | minus: 1
+                  assign selected_value = ''
+                  if product.selected_variant
+                    assign selected_value = product.selected_variant.options[opt_idx]
+                  endif
+                -%}
+                <fieldset class="fieldset" id="f-option-{{ option.position }}" data-option-name="{{ option.name | escape }}">
+                  <legend>{{ option.name | escape }}</legend>
+                  <div class="chips">
+                    {%- for value in option.values -%}
+                      {%- liquid
+                        assign is_checked = false
+                        if selected_value != ''
+                          if selected_value == value
+                            assign is_checked = true
+                          endif
+                        elsif is_size == false and forloop.first
+                          assign is_checked = true
+                        endif
+                      -%}
+                      <label class="chip">
+                        <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}"{% if is_checked %} checked{% endif %}>
+                        <span>{{ value | escape }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </div>
+                  <p class="err" role="alert"></p>
+                </fieldset>
+              {%- endfor -%}
+
+              <div class="fieldset">
+                <span class="label" id="qty-label">Quantité</span>
+                <div class="qty" role="group" aria-labelledby="qty-label">
+                  <button type="button" id="qty-minus" aria-label="Diminuer la quantité">{% render 'icon', name: 'minus' %}</button>
+                  <input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="10" value="1" aria-live="polite" aria-labelledby="qty-label">
+                  <button type="button" id="qty-plus" aria-label="Augmenter la quantité">{% render 'icon', name: 'plus' %}</button>
+                </div>
+              </div>
+
+              <div class="field" id="f-name">
+                <label class="label" for="name">Nom et prénom</label>
+                <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="Ex. Karim Benali" maxlength="80" required>
+                <p class="err" role="alert"></p>
+              </div>
+
+              <div class="field" id="f-phone">
+                <label class="label" for="phone">Téléphone <small>mobile</small></label>
+                <input class="input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 XX XX XX XX" maxlength="20" required>
+                <p class="err" role="alert"></p>
+              </div>
+
+              <div class="row2">
+                <div class="field" id="f-wilaya">
+                  <label class="label" for="wilaya">Wilaya</label>
+                  <select class="input" id="wilaya" name="wilaya" autocomplete="address-level1" required>
+                    <option value="">Choisir…</option>
+                  </select>
+                  <p class="err" role="alert"></p>
+                </div>
+                <div class="field" id="f-commune">
+                  <label class="label" for="commune">Commune</label>
+                  <input class="input" id="commune" name="commune" type="text" autocomplete="address-level2" placeholder="Votre commune" maxlength="60" required>
+                  <p class="err" role="alert"></p>
+                </div>
+              </div>
+
+              <fieldset class="fieldset" id="f-type">
+                <legend>Mode de livraison</legend>
+                <div class="opts">
+                  <label class="opt">
+                    <input type="radio" name="type" value="home" checked>
+                    <span><b>{% render 'icon', name: 'home' %} À domicile</b><small>Le livreur vous apporte le colis</small><em id="fee-home">Selon wilaya</em></span>
+                  </label>
+                  <label class="opt">
+                    <input type="radio" name="type" value="desk">
+                    <span><b>{% render 'icon', name: 'pin' %} Stop Desk</b><small>Retrait au bureau du transporteur</small><em id="fee-desk">Selon wilaya</em></span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="field" id="f-address">
+                <label class="label" for="address">Adresse complète</label>
+                <textarea class="input" id="address" name="address" autocomplete="street-address" placeholder="Rue, quartier, n° de bâtiment…" maxlength="200" rows="2"></textarea>
+                <p class="err" role="alert"></p>
+              </div>
+
+              <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+              <dl class="summary" aria-live="polite">
+                <div><dt id="sum-label">{{ product.title | escape }}</dt><dd id="sum-sub"></dd></div>
+                <div><dt>Livraison</dt><dd id="sum-fee">Choisissez votre wilaya</dd></div>
+                <div class="total"><dt>Total à payer</dt><dd id="sum-total"></dd></div>
+              </dl>
+
+              <button class="btn btn--white btn--lg btn--block" id="submit" type="submit">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="btn__label" id="submit-label">{{ section.settings.button_label | escape }}</span>
+              </button>
+              <p class="order__msg" id="order-msg" role="alert"></p>
+
+              {%- if wa_number != blank -%}
+                <div>
+                  <div class="or">ou</div>
+                  <a class="btn btn--lg btn--block" id="wa-order" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">
+                    {% render 'icon', name: 'whatsapp' %} Commander via WhatsApp
+                  </a>
+                </div>
+              {%- endif -%}
+
+              <div class="order__assure">
+                <span>{% render 'icon', name: 'shield' %} Paiement à la livraison</span>
+                <span>{% render 'icon', name: 'phone' %} Confirmation par téléphone</span>
+                <span>{% render 'icon', name: 'lock' %} Données protégées</span>
+              </div>
+            </form>
+          </div>
+        </section>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- if product.available and section.settings.show_sticky_bar -%}
+  <div class="sticky-cta" id="sticky">
+    <div class="sticky-cta__t"><b>{{ product.title | escape }}</b><span id="s-price">{% render 'price', amount: current_variant.price %}</span></div>
+    <a class="btn btn--white" href="#commande">Commander</a>
+  </div>
+{%- endif -%}
+
+{%- if product.available -%}
+  <script type="application/json" id="YouzProduct">
+    {
+      "id": {{ product.id }},
+      "title": {{ product.title | json }},
+      "options": {{ product.options | json }},
+      "variants": [
+        {%- for v in product.variants -%}
+          {
+            "id": {{ v.id }},
+            "title": {{ v.title | json }},
+            "price": {{ v.price | divided_by: 100.0 }},
+            "compare": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
+            "available": {{ v.available }},
+            "options": {{ v.options | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+  <script type="application/json" id="YouzConfig">
+    {
+      "currency": {{ settings.currency_suffix | default: 'DA' | json }},
+      "freeOver": {{ settings.free_delivery_over | default: 0 }},
+      "fees": {
+        "A": { "home": {{ settings.fee_a_home | default: 0 }}, "desk": {{ settings.fee_a_desk | default: 0 }} },
+        "B": { "home": {{ settings.fee_b_home | default: 0 }}, "desk": {{ settings.fee_b_desk | default: 0 }} },
+        "C": { "home": {{ settings.fee_c_home | default: 0 }}, "desk": {{ settings.fee_c_desk | default: 0 }} },
+        "D": { "home": {{ settings.fee_d_home | default: 0 }}, "desk": {{ settings.fee_d_desk | default: 0 }} }
+      },
+      "delivery": [
+        {%- for v in delivery.variants -%}
+          { "id": {{ v.id }}, "price": {{ v.price | divided_by: 100.0 }}, "available": {{ v.available }} }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "whatsapp": {{ wa_number | json }},
+      "shop": {{ shop.name | json }},
+      "routes": {
+        "root": {{ routes.root_url | json }},
+        "cartClear": {{ routes.cart_clear_url | append: '.js' | json }}
+      }
+    }
+  </script>
+  <script src="{{ 'youz-wilayas.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'youz-product.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Produit + formulaire COD",
+  "settings": [
+    { "type": "text", "id": "order_title", "label": "Titre du formulaire", "default": "Commandez maintenant" },
+    {
+      "type": "text",
+      "id": "order_subtitle",
+      "label": "Sous-titre du formulaire",
+      "default": "Remplissez le formulaire : vous payez en espèces à la livraison."
+    },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Confirmer la commande" },
+    { "type": "checkbox", "id": "show_sticky_bar", "label": "Barre « Commander » collante sur mobile", "default": true }
+  ]
+}
+{% endschema %}

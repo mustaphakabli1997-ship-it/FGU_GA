@@ -1,0 +1,17 @@
+<article class="section">
+  <div class="container container--narrow">
+    <h1 class="title-chrome section__title">{{ article.title | escape }}</h1>
+    <p class="post__meta">{{ article.published_at | date: '%d/%m/%Y' }}</p>
+    {%- if article.image != blank -%}
+      {{ article.image | image_url: width: 1000 | image_tag: loading: 'eager', alt: article.title }}
+    {%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+    <p><a class="btn" href="{{ blog.url }}">&larr; Retour</a></p>
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "Article"
+}
+{% endschema %}

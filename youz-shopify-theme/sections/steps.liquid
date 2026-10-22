@@ -1,0 +1,76 @@
+<section class="section" id="commander">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.intro != blank -%}
+        <p>{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+    </div>
+    <div class="steps">
+      {%- for block in section.blocks -%}
+        <div class="step" data-reveal {{ block.shopify_attributes }}>
+          {% render 'icon', name: block.settings.icon %}
+          <h3>{{ block.settings.title | escape }}</h3>
+          <p>{{ block.settings.text | escape }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comment commander",
+  "tag": "div",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Simple & rapide" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Comment commander" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Pas de compte, pas de carte bancaire : vous remplissez un formulaire et vous payez en cash à la réception."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "package", "label": "Colis" },
+            { "value": "pin", "label": "Position" },
+            { "value": "truck", "label": "Camion" },
+            { "value": "phone", "label": "Téléphone" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "check", "label": "Validation" }
+          ],
+          "default": "package"
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Choisissez votre paire" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Parcourez la collection, sélectionnez votre modèle et votre pointure." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comment commander",
+      "blocks": [
+        { "type": "step", "settings": { "icon": "package", "title": "Choisissez votre paire", "text": "Parcourez la collection, sélectionnez votre modèle et votre pointure." } },
+        { "type": "step", "settings": { "icon": "pin", "title": "Remplissez le formulaire", "text": "Nom, téléphone, wilaya et adresse : c'est tout. Le total s'affiche en direct." } },
+        { "type": "step", "settings": { "icon": "truck", "title": "Recevez & payez", "text": "Nous vous appelons pour confirmer, puis vous payez à la livraison." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,88 @@
+{%- liquid
+  assign fee_a_home = settings.fee_a_home | times: 100
+  assign fee_a_desk = settings.fee_a_desk | times: 100
+  assign fee_b_home = settings.fee_b_home | times: 100
+  assign fee_b_desk = settings.fee_b_desk | times: 100
+  assign fee_c_home = settings.fee_c_home | times: 100
+  assign fee_c_desk = settings.fee_c_desk | times: 100
+  assign fee_d_home = settings.fee_d_home | times: 100
+  assign fee_d_desk = settings.fee_d_desk | times: 100
+  assign free_over = settings.free_delivery_over | times: 100
+-%}
+<section class="section section--alt" id="livraison">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.intro != blank -%}
+        <p>{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="zones">
+      <div class="zone" data-reveal>
+        <h3>Alger &amp; environs</h3>
+        <dl>
+          <div><dt>À domicile</dt><dd>{% render 'price', amount: fee_a_home %}</dd></div>
+          <div><dt>Stop Desk</dt><dd>{% render 'price', amount: fee_a_desk %}</dd></div>
+        </dl>
+      </div>
+      <div class="zone" data-reveal>
+        <h3>Nord du pays</h3>
+        <dl>
+          <div><dt>À domicile</dt><dd>{% render 'price', amount: fee_b_home %}</dd></div>
+          <div><dt>Stop Desk</dt><dd>{% render 'price', amount: fee_b_desk %}</dd></div>
+        </dl>
+      </div>
+      <div class="zone" data-reveal>
+        <h3>Hauts-Plateaux &amp; Sud proche</h3>
+        <dl>
+          <div><dt>À domicile</dt><dd>{% render 'price', amount: fee_c_home %}</dd></div>
+          <div><dt>Stop Desk</dt><dd>{% render 'price', amount: fee_c_desk %}</dd></div>
+        </dl>
+      </div>
+      <div class="zone" data-reveal>
+        <h3>Grand Sud</h3>
+        <dl>
+          <div><dt>À domicile</dt><dd>{% render 'price', amount: fee_d_home %}</dd></div>
+          <div><dt>Stop Desk</dt><dd>{% render 'price', amount: fee_d_desk %}</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <p class="note">
+      {% render 'icon', name: 'info' %}
+      <span>Le tarif exact s'affiche dans le formulaire selon votre wilaya.
+        {%- if settings.free_delivery_over > 0 %} Livraison offerte dès {% render 'price', amount: free_over %} d'achat.{% endif -%}
+      </span>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Tarifs de livraison",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "58 wilayas" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Livraison" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Livraison à domicile ou retrait en Stop Desk (bureau du transporteur), partout en Algérie."
+    },
+    {
+      "type": "paragraph",
+      "content": "Les tarifs se modifient dans Paramètres du thème → Formulaire COD et livraison."
+    }
+  ],
+  "presets": [
+    { "name": "Tarifs de livraison" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,31 @@
+<section class="section">
+  <div class="container container--narrow">
+    <h1 class="title-chrome section__title">{{ blog.title | escape }}</h1>
+    {%- paginate blog.articles by 9 -%}
+      <ul class="posts">
+        {%- for article in blog.articles -%}
+          <li class="post">
+            <a href="{{ article.url }}"><strong>{{ article.title | escape }}</strong></a>
+            <small>{{ article.published_at | date: '%d/%m/%Y' }}</small>
+            <p>{{ article.excerpt_or_content | strip_html | truncate: 180 }}</p>
+          </li>
+        {%- else -%}
+          <li class="empty">Aucun article pour le moment.</li>
+        {%- endfor -%}
+      </ul>
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}<a class="btn btn--sm" href="{{ paginate.previous.url }}">Précédent</a>{%- endif -%}
+          <span class="pagination__info">Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+          {%- if paginate.next -%}<a class="btn btn--sm" href="{{ paginate.next.url }}">Suivant</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog"
+}
+{% endschema %}

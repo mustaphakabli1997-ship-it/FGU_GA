@@ -1,0 +1,122 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "YOUZ Streetwear",
+    "theme_author": "YOUZ",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA",
+    "theme_support_url": "https://github.com/mustaphakabli1997-ship-it/FGU_GA/issues"
+  },
+  {
+    "name": "Marque",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo (en-tête et pied de page)",
+        "info": "PNG transparent recommandé. Vide = logo YOUZ du thème."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "PNG 64×64 px. Vide = étoile YOUZ du thème."
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Image de partage (Facebook / WhatsApp)",
+        "info": "1200×630 px."
+      }
+    ]
+  },
+  {
+    "name": "Contact et réseaux",
+    "settings": [
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Numéro WhatsApp",
+        "info": "Format international sans « + » ni espaces, ex. 213550123456. Vide = boutons WhatsApp masqués."
+      },
+      {
+        "type": "text",
+        "id": "phone_display",
+        "label": "Téléphone affiché (pied de page)",
+        "info": "Ex. 0550 12 34 56. Vide = masqué."
+      },
+      {
+        "type": "url",
+        "id": "instagram_url",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "tiktok_url",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "facebook_url",
+        "label": "Facebook"
+      }
+    ]
+  },
+  {
+    "name": "Formulaire COD et livraison",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Le formulaire de commande (paiement à la livraison) calcule les frais selon la wilaya. Pour que ces frais soient facturés dans la commande Shopify, créez un produit « Frais de livraison » (voir le guide d'installation) et saisissez son handle ci-dessous."
+      },
+      {
+        "type": "text",
+        "id": "delivery_product_handle",
+        "label": "Handle du produit « Frais de livraison »",
+        "default": "frais-de-livraison",
+        "info": "Handle = fin de l'URL du produit. Si le produit est introuvable, le formulaire n'ajoute aucun frais de livraison."
+      },
+      {
+        "type": "text",
+        "id": "currency_suffix",
+        "label": "Symbole de la devise",
+        "default": "DA"
+      },
+      {
+        "type": "number",
+        "id": "free_delivery_over",
+        "label": "Livraison offerte à partir de (DA)",
+        "default": 0,
+        "info": "0 = désactivé."
+      },
+      {
+        "type": "header",
+        "content": "Zone A — Alger et environs"
+      },
+      { "type": "number", "id": "fee_a_home", "label": "À domicile", "default": 450 },
+      { "type": "number", "id": "fee_a_desk", "label": "Stop Desk", "default": 300 },
+      {
+        "type": "header",
+        "content": "Zone B — Nord du pays"
+      },
+      { "type": "number", "id": "fee_b_home", "label": "À domicile", "default": 600 },
+      { "type": "number", "id": "fee_b_desk", "label": "Stop Desk", "default": 400 },
+      {
+        "type": "header",
+        "content": "Zone C — Hauts-Plateaux et Sud proche"
+      },
+      { "type": "number", "id": "fee_c_home", "label": "À domicile", "default": 800 },
+      { "type": "number", "id": "fee_c_desk", "label": "Stop Desk", "default": 500 },
+      {
+        "type": "header",
+        "content": "Zone D — Grand Sud"
+      },
+      { "type": "number", "id": "fee_d_home", "label": "À domicile", "default": 1300 },
+      { "type": "number", "id": "fee_d_desk", "label": "Stop Desk", "default": 900 },
+      {
+        "type": "paragraph",
+        "content": "Tarifs indicatifs : alignez-les sur votre société de livraison. Chaque tarif doit exister comme variante (au même prix) du produit « Frais de livraison »."
+      }
+    ]
+  }
+]
