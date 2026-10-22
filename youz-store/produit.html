@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>YOUZ Streetwear — Commander</title>
+  <meta name="description" content="Commandez vos sneakers YOUZ Streetwear. Livraison dans les 58 wilayas, paiement à la livraison.">
+  <meta name="theme-color" content="#050506">
+  <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="YOUZ Streetwear">
+  <meta property="og:locale" content="fr_DZ">
+  <meta property="og:title" content="YOUZ Streetwear">
+  <meta property="og:description" content="Livraison 58 wilayas · Paiement à la livraison.">
+  <meta property="og:image" content="assets/brand/og-youz.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+
+<div class="marquee" id="marquee" aria-label="Informations"></div>
+
+<header class="site-header">
+  <div class="container site-header__in">
+    <button class="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+    <a class="brand" href="index.html" aria-label="YOUZ Streetwear — accueil">
+      <img src="assets/brand/youz-logo-sm.png" alt="YOUZ" width="103" height="40">
+    </a>
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      <a href="index.html#boutique" class="is-active">Boutique</a>
+      <a href="index.html#drops">Drops</a>
+      <a href="index.html#livraison">Livraison</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="header-actions">
+      <a class="icon-btn" data-wa="Bonjour YOUZ, j'ai une question." aria-label="Nous écrire sur WhatsApp" hidden>
+        <svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+      </a>
+      <a class="btn btn--white btn--sm" href="#commande">Commander</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container">
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="index.html">Accueil</a><span aria-hidden="true">/</span>
+    <a href="index.html#boutique">Boutique</a><span aria-hidden="true">/</span>
+    <span id="crumb" aria-current="page">Produit</span>
+  </nav>
+
+  <!-- ===================== PRODUIT ===================== -->
+  <div class="pdp" id="pdp" hidden>
+    <div class="gallery">
+      <div class="gallery__main">
+        <span class="stamp" id="p-badge" hidden></span>
+        <img id="p-img" alt="" width="675" height="734">
+      </div>
+      <div class="gallery__thumbs" id="p-thumbs"></div>
+    </div>
+
+    <div class="pdp__info">
+      <p class="eyebrow"><svg class="i i--fill" aria-hidden="true"><use href="#i-star"/></svg> YOUZ Streetwear</p>
+      <h1 id="p-name"></h1>
+      <div class="pdp__price">
+        <strong id="p-price"></strong>
+        <s id="p-old" hidden></s>
+        <span class="save" id="p-save" hidden></span>
+      </div>
+      <p class="pdp__short" id="p-short"></p>
+      <ul class="pdp__features" id="p-feat"></ul>
+
+      <!-- ===================== FORMULAIRE COD ===================== -->
+      <section class="order" id="commande" aria-labelledby="order-title">
+        <div class="order__in">
+          <div class="order__head">
+            <svg class="i" aria-hidden="true"><use href="#i-truck"/></svg>
+            <h2 id="order-title">Commandez maintenant</h2>
+          </div>
+          <p class="order__sub">Remplissez le formulaire : vous payez en espèces à la livraison.</p>
+
+          <form id="order-form" novalidate>
+            <fieldset class="fieldset" id="f-size">
+              <legend>Pointure <small>EU</small></legend>
+              <div class="chips" id="sizes"></div>
+              <p class="err" role="alert"></p>
+            </fieldset>
+
+            <fieldset class="fieldset" id="f-color" hidden>
+              <legend>Couleur</legend>
+              <div class="chips" id="colors"></div>
+            </fieldset>
+
+            <div class="fieldset">
+              <span class="label" id="qty-label">Quantité</span>
+              <div class="qty" role="group" aria-labelledby="qty-label">
+                <button type="button" id="qty-minus" aria-label="Diminuer la quantité"><svg class="i" aria-hidden="true"><use href="#i-minus"/></svg></button>
+                <input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="10" value="1" aria-live="polite">
+                <button type="button" id="qty-plus" aria-label="Augmenter la quantité"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></button>
+              </div>
+            </div>
+
+            <div class="field" id="f-name">
+              <label class="label" for="name">Nom et prénom</label>
+              <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="Ex. Karim Benali" maxlength="80" required>
+              <p class="err" role="alert"></p>
+            </div>
+
+            <div class="field" id="f-phone">
+              <label class="label" for="phone">Téléphone <small>mobile</small></label>
+              <input class="input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 XX XX XX XX" maxlength="20" required>
+              <p class="err" role="alert"></p>
+            </div>
+
+            <div class="row2">
+              <div class="field" id="f-wilaya">
+                <label class="label" for="wilaya">Wilaya</label>
+                <select class="input" id="wilaya" name="wilaya" autocomplete="address-level1" required>
+                  <option value="">Choisir…</option>
+                </select>
+                <p class="err" role="alert"></p>
+              </div>
+              <div class="field" id="f-commune">
+                <label class="label" for="commune">Commune</label>
+                <input class="input" id="commune" name="commune" type="text" autocomplete="address-level2" placeholder="Votre commune" maxlength="60" required>
+                <p class="err" role="alert"></p>
+              </div>
+            </div>
+
+            <fieldset class="fieldset" id="f-type">
+              <legend>Mode de livraison</legend>
+              <div class="opts">
+                <label class="opt">
+                  <input type="radio" name="type" value="home" checked>
+                  <span><b><svg class="i" aria-hidden="true"><use href="#i-home"/></svg> À domicile</b><small>Le livreur vous apporte le colis</small><em id="fee-home">Selon wilaya</em></span>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="type" value="desk">
+                  <span><b><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg> Stop Desk</b><small>Retrait au bureau du transporteur</small><em id="fee-desk">Selon wilaya</em></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="field" id="f-address">
+              <label class="label" for="address">Adresse complète</label>
+              <textarea class="input" id="address" name="address" autocomplete="street-address" placeholder="Rue, quartier, n° de bâtiment…" maxlength="200" rows="2"></textarea>
+              <p class="err" role="alert"></p>
+            </div>
+
+            <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <dl class="summary" aria-live="polite">
+              <div><dt id="sum-label">Produit</dt><dd id="sum-sub"></dd></div>
+              <div><dt>Livraison</dt><dd id="sum-fee">Choisissez votre wilaya</dd></div>
+              <div class="total"><dt>Total à payer</dt><dd id="sum-total"></dd></div>
+            </dl>
+
+            <button class="btn btn--white btn--lg btn--block" id="submit" type="submit">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn__label" id="submit-label">Confirmer la commande</span>
+            </button>
+            <p class="order__msg" id="order-msg" role="alert"></p>
+
+            <div data-wa-host>
+              <div class="or">ou</div>
+              <a class="btn btn--lg btn--block" id="wa-order" data-wa="Bonjour YOUZ" aria-label="Commander via WhatsApp">
+                <svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg> Commander via WhatsApp
+              </a>
+            </div>
+
+            <div class="order__assure">
+              <span><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg> Paiement à la livraison</span>
+              <span><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg> Confirmation par téléphone</span>
+              <span><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg> Données protégées</span>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="notfound" id="nf" hidden>
+    <h1 class="title-chrome">Modèle introuvable</h1>
+    <p style="color:var(--muted);margin-bottom:24px">Ce produit n'existe plus ou le lien est incorrect.</p>
+    <a class="btn btn--white" href="index.html#boutique">Voir la collection</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__bottom" style="margin-top:0;border-top:0;padding-top:0">
+      <span>© <span data-year>2026</span> YOUZ Streetwear. Tous droits réservés.</span>
+      <span><a href="index.html#livraison">Livraison</a> · <a href="index.html#faq">FAQ</a><span data-wa-host hidden> · <a data-wa="Bonjour YOUZ, j'ai une question.">WhatsApp</a></span></span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float on-pdp" data-wa="Bonjour YOUZ, j'ai une question." aria-label="Discuter sur WhatsApp" hidden>
+  <svg class="i" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+</a>
+
+<div class="sticky-cta" id="sticky">
+  <div class="sticky-cta__t"><b id="s-name"></b><span id="s-price"></span></div>
+  <a class="btn btn--white" href="#commande">Commander</a>
+</div>
+
+<!-- ===================== CONFIRMATION ===================== -->
+<dialog class="modal" id="done" aria-labelledby="done-title">
+  <div class="modal__in">
+    <button class="modal__x" type="button" id="done-x" aria-label="Fermer"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <div class="modal__ok"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></div>
+    <h2 id="done-title">Merci <span id="done-name"></span> !</h2>
+    <p>Votre commande est bien enregistrée.<br>Notre équipe vous appelle très bientôt pour la confirmer.</p>
+    <div class="modal__box" id="done-box"></div>
+    <p class="modal__demo" id="done-demo" hidden><b>Mode démo :</b> cette commande n'a été envoyée nulle part. Renseignez <code>orderEndpoint</code> dans <code>js/config.js</code> pour recevoir les vraies commandes.</p>
+    <div class="modal__actions">
+      <a class="btn btn--white btn--block" href="index.html#boutique">Continuer mes achats</a>
+      <a class="btn btn--block" id="done-wa" data-wa="Bonjour YOUZ" hidden>Confirmer sur WhatsApp</a>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/config.js"></script>
+<script src="js/wilayas.js"></script>
+<script src="js/products.js"></script>
+<script src="js/main.js"></script>
+<script src="js/product.js"></script>
+</body>
+</html>
