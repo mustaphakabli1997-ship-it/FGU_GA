@@ -1,0 +1,50 @@
+<section class="section">
+  <div class="container container--narrow">
+    <h1 class="title-chrome section__title">Panier</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <ul class="cart-list">
+          {%- for item in cart.items -%}
+            <li class="cart-item">
+              <a class="cart-item__img" href="{{ item.url }}">
+                {%- if item.image != blank -%}
+                  {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.product.title }}
+                {%- endif -%}
+              </a>
+              <div class="cart-item__info">
+                <a href="{{ item.url }}"><strong>{{ item.product.title | escape }}</strong></a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <small>{{ item.variant.title | escape }}</small>
+                {%- endunless -%}
+                <a class="cart-item__remove" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0">Retirer</a>
+              </div>
+              <div class="cart-item__qty">
+                <label class="sr-only" for="Quantity-{{ forloop.index }}">Quantité</label>
+                <input class="input input--sm" type="number" id="Quantity-{{ forloop.index }}" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric">
+              </div>
+              <div class="cart-item__price">{% render 'price', amount: item.final_line_price %}</div>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <div class="cart-total"><span>Total</span><strong>{% render 'price', amount: cart.total_price %}</strong></div>
+        <p class="note">{% render 'icon', name: 'info' %}<span>Paiement à la livraison. Les frais de livraison sont inclus dans les lignes ci-dessus.</span></p>
+
+        <div class="cart-actions">
+          <button class="btn" type="submit" name="update">Mettre à jour</button>
+          <button class="btn btn--white" type="submit" name="checkout">Passer la commande</button>
+        </div>
+      </form>
+    {%- else -%}
+      <p class="empty">Votre panier est vide.</p>
+      <p style="text-align:center"><a class="btn btn--white" href="{{ routes.all_products_collection_url }}">Voir la collection</a></p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Panier"
+}
+{% endschema %}

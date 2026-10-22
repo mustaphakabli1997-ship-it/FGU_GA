@@ -1,0 +1,169 @@
+{%- comment -%}
+  Formulaire de commande — PAIEMENT À LA LIVRAISON UNIQUEMENT (aucune carte bancaire).
+
+  Paramètres :
+    mode          : 'page' (fiche produit : produit fixe) ou 'home' (accueil : choix du modèle)
+    product       : produit courant (mode page)
+    collection    : collection source des modèles (mode home)
+    limit         : nombre max de modèles proposés (mode home)
+    title, subtitle, button_label : textes
+{%- endcomment -%}
+{%- liquid
+  assign delivery = all_products[settings.delivery_product_handle]
+  assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' '
+  assign shown = 0
+  assign first_item = true
+  assign fee_home_value = settings.fee_home | default: 0
+  assign fee_desk_value = settings.fee_desk | default: 0
+  assign fee_home_cents = fee_home_value | times: 100
+  assign fee_desk_cents = fee_desk_value | times: 100
+-%}
+
+<div class="order" id="commande" data-youz-order data-mode="{{ mode }}" aria-labelledby="order-title">
+  <div class="order__in">
+    <div class="order__head">
+      {% render 'icon', name: 'truck' %}
+      <h2 id="order-title">{{ title | escape }}</h2>
+    </div>
+    <p class="order__sub">{{ subtitle | escape }}</p>
+
+    <p class="paynote">
+      {% render 'icon', name: 'cash' %}
+      <span><strong>Paiement à la livraison uniquement.</strong> Aucun paiement par carte bancaire : vous payez en espèces à la réception de votre colis.</span>
+    </p>
+
+    <form id="order-form" novalidate>
+      {%- if mode == 'home' -%}
+        <fieldset class="fieldset" id="f-product">
+          <legend>Votre modèle</legend>
+          <div class="models" id="models"></div>
+          <p class="err" role="alert"></p>
+        </fieldset>
+      {%- endif -%}
+
+      <div id="options"></div>
+
+      <div class="fieldset">
+        <span class="label" id="qty-label">Quantité</span>
+        <div class="qty" role="group" aria-labelledby="qty-label">
+          <button type="button" id="qty-minus" aria-label="Diminuer la quantité">{% render 'icon', name: 'minus' %}</button>
+          <input id="qty" name="qty" type="number" inputmode="numeric" min="1" max="10" value="1" aria-live="polite" aria-labelledby="qty-label">
+          <button type="button" id="qty-plus" aria-label="Augmenter la quantité">{% render 'icon', name: 'plus' %}</button>
+        </div>
+      </div>
+
+      <div class="field" id="f-name">
+        <label class="label" for="name">Nom et prénom</label>
+        <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="Ex. Karim Benali" maxlength="80" required>
+        <p class="err" role="alert"></p>
+      </div>
+
+      <div class="field" id="f-phone">
+        <label class="label" for="phone">Téléphone <small>mobile</small></label>
+        <input class="input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 XX XX XX XX" maxlength="20" required>
+        <p class="err" role="alert"></p>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-wilaya">
+          <label class="label" for="wilaya">Wilaya</label>
+          <select class="input" id="wilaya" name="wilaya" autocomplete="address-level1" required>
+            <option value="">Choisir…</option>
+          </select>
+          <p class="err" role="alert"></p>
+        </div>
+        <div class="field" id="f-commune">
+          <label class="label" for="commune">Commune</label>
+          <input class="input" id="commune" name="commune" type="text" autocomplete="address-level2" placeholder="Votre commune" maxlength="60" required>
+          <p class="err" role="alert"></p>
+        </div>
+      </div>
+
+      <fieldset class="fieldset" id="f-type">
+        <legend>Mode de livraison</legend>
+        <div class="opts">
+          <label class="opt">
+            <input type="radio" name="type" value="home" checked>
+            <span><b>{% render 'icon', name: 'home' %} À domicile</b><small>Le livreur vous apporte le colis</small><em id="fee-home">{% render 'price', amount: fee_home_cents %}</em></span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="type" value="desk">
+            <span><b>{% render 'icon', name: 'pin' %} Stop Desk</b><small>Retrait au bureau du transporteur</small><em id="fee-desk">{% render 'price', amount: fee_desk_cents %}</em></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="field" id="f-address">
+        <label class="label" for="address">Adresse complète</label>
+        <textarea class="input" id="address" name="address" autocomplete="street-address" placeholder="Rue, quartier, n° de bâtiment…" maxlength="200" rows="2"></textarea>
+        <p class="err" role="alert"></p>
+      </div>
+
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <dl class="summary" aria-live="polite">
+        <div><dt id="sum-label"></dt><dd id="sum-sub"></dd></div>
+        <div><dt>Livraison</dt><dd id="sum-fee"></dd></div>
+        <div class="total"><dt>Total à payer à la livraison</dt><dd id="sum-total"></dd></div>
+      </dl>
+
+      <button class="btn btn--white btn--lg btn--block" id="submit" type="submit">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn__label" id="submit-label">{{ button_label | escape }}</span>
+      </button>
+      <p class="order__msg" id="order-msg" role="alert"></p>
+
+      {%- if wa_number != blank -%}
+        <div>
+          <div class="or">ou</div>
+          <a class="btn btn--lg btn--block" id="wa-order" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">
+            {% render 'icon', name: 'whatsapp' %} Commander via WhatsApp
+          </a>
+        </div>
+      {%- endif -%}
+
+      <div class="order__assure">
+        <span>{% render 'icon', name: 'cash' %} Paiement en espèces à la livraison</span>
+        <span>{% render 'icon', name: 'card-off' %} Pas de paiement par carte</span>
+        <span>{% render 'icon', name: 'phone' %} Confirmation par téléphone</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="application/json" id="YouzProducts">
+  [
+    {%- if mode == 'page' -%}
+      {% render 'order-product-json', p: product %}
+    {%- else -%}
+      {%- for p in collection.products -%}
+        {%- if p.available and p.handle != settings.delivery_product_handle and shown < limit -%}
+          {%- unless first_item -%},{%- endunless -%}
+          {% render 'order-product-json', p: p %}
+          {%- assign first_item = false -%}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  ]
+</script>
+<script type="application/json" id="YouzConfig">
+  {
+    "currency": {{ settings.currency_suffix | default: 'DA' | json }},
+    "freeOver": {{ settings.free_delivery_over | default: 0 }},
+    "fees": { "home": {{ fee_home_value }}, "desk": {{ fee_desk_value }} },
+    "delivery": [
+      {%- for v in delivery.variants -%}
+        { "id": {{ v.id }}, "price": {{ v.price | divided_by: 100.0 }}, "available": {{ v.available }} }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    "whatsapp": {{ wa_number | json }},
+    "shop": {{ shop.name | json }},
+    "routes": {
+      "root": {{ routes.root_url | json }},
+      "cartClear": {{ routes.cart_clear_url | append: '.js' | json }}
+    }
+  }
+</script>
+<script src="{{ 'youz-wilayas.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'youz-order.js' | asset_url }}" defer="defer"></script>

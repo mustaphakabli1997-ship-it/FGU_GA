@@ -1,0 +1,12 @@
+<section class="section">
+  <div class="container container--narrow">
+    <h1 class="title-chrome section__title">{{ page.title | escape }}</h1>
+    <div class="rte">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page"
+}
+{% endschema %}

@@ -1,0 +1,97 @@
+{%- assign menu_1 = linklists[section.settings.menu_1] -%}
+{%- assign menu_2 = linklists[section.settings.menu_2] -%}
+{%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' -%}
+{%- assign has_social = false -%}
+{%- if settings.instagram_url != blank or settings.facebook_url != blank or settings.tiktok_url != blank -%}
+  {%- assign has_social = true -%}
+{%- endif -%}
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        {%- if settings.logo != blank -%}
+          {{ settings.logo | image_url: width: 300 | image_tag: width: 150, alt: shop.name, loading: 'lazy' }}
+        {%- else -%}
+          <img src="{{ 'youz-logo-sm.png' | asset_url }}" alt="{{ shop.name | escape }}" width="150" height="58" loading="lazy">
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}
+          <p>{{ section.settings.tagline | escape }}</p>
+        {%- endif -%}
+        {% render 'payment-badges' %}
+        {%- if has_social -%}
+          <div class="socials">
+            {%- if settings.instagram_url != blank -%}
+              <a class="icon-btn" href="{{ settings.instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>
+            {%- endif -%}
+            {%- if settings.facebook_url != blank -%}
+              <a class="icon-btn" href="{{ settings.facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>
+            {%- endif -%}
+            {%- if settings.tiktok_url != blank -%}
+              <a class="icon-btn" href="{{ settings.tiktok_url }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">{% render 'icon', name: 'tiktok' %}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if menu_1.links.size > 0 -%}
+        <div>
+          <h4>{{ section.settings.menu_1_title | escape }}</h4>
+          <ul>
+            {%- for link in menu_1.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if menu_2.links.size > 0 -%}
+        <div>
+          <h4>{{ section.settings.menu_2_title | escape }}</h4>
+          <ul>
+            {%- for link in menu_2.links -%}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          {%- if wa_number != blank -%}
+            <li><a href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener">WhatsApp</a></li>
+          {%- endif -%}
+          {%- if settings.phone_display != blank -%}
+            <li><a href="tel:{{ settings.phone_display | remove: ' ' }}">{{ settings.phone_display | escape }}</a></li>
+          {%- endif -%}
+          <li><span class="footer__plain">Paiement à la livraison (espèces)</span></li>
+          <li><span class="footer__plain">Pas de paiement par carte</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | escape }}. Tous droits réservés.</span>
+      <span>Vos données servent uniquement au traitement de votre commande.</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Texte sous le logo",
+      "default": "Sneakers streetwear aux finitions chrome. Livrées dans les 58 wilayas d'Algérie."
+    },
+    { "type": "text", "id": "menu_1_title", "label": "Titre colonne 1", "default": "Boutique" },
+    { "type": "link_list", "id": "menu_1", "label": "Menu colonne 1", "default": "footer" },
+    { "type": "text", "id": "menu_2_title", "label": "Titre colonne 2", "default": "Infos" },
+    { "type": "link_list", "id": "menu_2", "label": "Menu colonne 2" }
+  ]
+}
+{% endschema %}

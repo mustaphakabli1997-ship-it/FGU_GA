@@ -1,0 +1,29 @@
+{%- if section.settings.text != blank -%}
+  {%- capture items -%}
+    {%- assign words = section.settings.text | split: '|' -%}
+    {%- for word in words -%}
+      <span class="statement__item">{{ word | strip | escape }}</span><span class="statement__star">{% render 'icon', name: 'star', class: 'i--fill' %}</span>
+    {%- endfor -%}
+  {%- endcapture -%}
+  <div class="statement" aria-hidden="true">
+    <div class="statement__track">{{ items }}{{ items }}{{ items }}{{ items }}</div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau géant",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Textes (séparés par |)",
+      "default": "YOUZ Streetwear | The Ultimate Drop | Limited Edition"
+    }
+  ],
+  "presets": [
+    { "name": "Bandeau géant" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,20 @@
+{%- comment -%}
+  Affiche un prix au format « 8 900 DA » quel que soit le format monétaire de la boutique.
+  Usage : {% render 'price', amount: product.price %}   (amount = prix Shopify en centimes)
+{%- endcomment -%}
+{%- liquid
+  assign whole = amount | divided_by: 100
+  assign millions = whole | divided_by: 1000000
+  assign remainder = whole | modulo: 1000000
+  assign thousands = remainder | divided_by: 1000
+  assign units = remainder | modulo: 1000
+  assign suffix = settings.currency_suffix | default: 'DA'
+-%}
+{%- if millions > 0 -%}
+  {{- millions }}&nbsp;{{ thousands | prepend: '000' | slice: -3, 3 }}&nbsp;{{ units | prepend: '000' | slice: -3, 3 -}}
+{%- elsif thousands > 0 -%}
+  {{- thousands }}&nbsp;{{ units | prepend: '000' | slice: -3, 3 -}}
+{%- else -%}
+  {{- units -}}
+{%- endif -%}
+&nbsp;{{ suffix | escape -}}

@@ -1,0 +1,51 @@
+{%- assign menu = linklists[section.settings.menu] -%}
+{%- assign wa_number = settings.whatsapp_number | remove: '+' | remove: ' ' -%}
+
+<header class="site-header">
+  <div class="container site-header__in">
+    <button class="burger" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+
+    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 240 | image_tag: height: 40, alt: shop.name, loading: 'eager' }}
+      {%- else -%}
+        <img src="{{ 'youz-logo-sm.png' | asset_url }}" alt="{{ shop.name | escape }}" width="103" height="40">
+      {%- endif -%}
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navigation principale">
+      {%- if menu.links.size > 0 -%}
+        {%- for link in menu.links -%}
+          <a href="{{ link.url }}"{% if link.active %} class="is-active" aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        <a href="{{ routes.all_products_collection_url }}">Boutique</a>
+      {%- endif -%}
+    </nav>
+
+    <div class="header-actions">
+      {%- if wa_number != blank -%}
+        <a class="icon-btn" href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">{% render 'icon', name: 'whatsapp' %}</a>
+      {%- endif -%}
+      {%- if request.page_type == 'product' -%}
+        <a class="btn btn--white btn--sm" href="#commande">Commander</a>
+      {%- else -%}
+        <a class="btn btn--white btn--sm" href="{{ routes.root_url }}#passer-commande">Commander</a>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "En-tête",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu principal",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

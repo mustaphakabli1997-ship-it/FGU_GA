@@ -1,0 +1,112 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign images = product.media | where: 'media_type', 'image'
+  assign tags_down = product.tags | join: ',' | downcase
+-%}
+
+<div class="container">
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="{{ routes.root_url }}">Accueil</a><span aria-hidden="true">/</span>
+    <a href="{{ routes.all_products_collection_url }}">Boutique</a><span aria-hidden="true">/</span>
+    <span aria-current="page">{{ product.title | escape }}</span>
+  </nav>
+
+  <div class="pdp" id="YouzOrder">
+    <div class="gallery">
+      <div class="gallery__main">
+        {%- if product.available == false -%}
+          <span class="stamp">Épuisé</span>
+        {%- elsif tags_down contains 'limited' -%}
+          <span class="stamp">Limited Edition</span>
+        {%- elsif tags_down contains 'new' or tags_down contains 'nouveau' -%}
+          <span class="stamp stamp--solid">Nouveau</span>
+        {%- endif -%}
+        {%- if images.size > 0 -%}
+          {{
+            images.first
+            | image_url: width: 1000
+            | image_tag:
+              id: 'p-img',
+              widths: '400, 600, 800, 1000',
+              sizes: '(min-width: 900px) 50vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: images.first.alt | default: product.title
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'card__placeholder' }}
+        {%- endif -%}
+      </div>
+      {%- if images.size > 1 -%}
+        <div class="gallery__thumbs" id="p-thumbs">
+          {%- for media in images -%}
+            <button type="button" data-src="{{ media | image_url: width: 1000 }}" data-alt="{{ media.alt | default: product.title | escape }}" aria-label="Voir la photo {{ forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+              {{ media | image_url: width: 240 | image_tag: loading: 'lazy', alt: '' }}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pdp__info">
+      <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ product.vendor | default: shop.name | escape }}</p>
+      <h1>{{ product.title | escape }}</h1>
+
+      <div class="pdp__price">
+        <strong id="p-price">{% render 'price', amount: current_variant.price %}</strong>
+        <s id="p-old"{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{% render 'price', amount: current_variant.compare_at_price %}</s>
+        <span class="save" id="p-save" hidden></span>
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="pdp__short rte">{{ product.description }}</div>
+      {%- endif -%}
+
+      {%- if product.available == false -%}
+        <section class="order" id="commande">
+          <div class="order__in">
+            <div class="order__head">{% render 'icon', name: 'info' %}<h2>Modèle épuisé</h2></div>
+            <p class="order__sub">Ce modèle n'est plus disponible pour le moment. Découvrez le reste de la collection.</p>
+            <a class="btn btn--white btn--block" href="{{ routes.all_products_collection_url }}">Voir la collection</a>
+          </div>
+        </section>
+      {%- else -%}
+        {% render 'order-form',
+          mode: 'page',
+          product: product,
+          title: section.settings.order_title,
+          subtitle: section.settings.order_subtitle,
+          button_label: section.settings.button_label
+        %}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- if product.available and section.settings.show_sticky_bar -%}
+  <div class="sticky-cta" id="sticky">
+    <div class="sticky-cta__t"><b>{{ product.title | escape }}</b><span id="s-price">{% render 'price', amount: current_variant.price %}</span></div>
+    <a class="btn btn--white" href="#commande">Commander</a>
+  </div>
+{%- endif -%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Produit + formulaire COD",
+  "settings": [
+    { "type": "text", "id": "order_title", "label": "Titre du formulaire", "default": "Commandez maintenant" },
+    {
+      "type": "text",
+      "id": "order_subtitle",
+      "label": "Sous-titre du formulaire",
+      "default": "Remplissez le formulaire : vous payez en espèces à la livraison."
+    },
+    { "type": "text", "id": "button_label", "label": "Texte du bouton", "default": "Confirmer la commande" },
+    { "type": "checkbox", "id": "show_sticky_bar", "label": "Barre « Commander » collante sur mobile", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,57 @@
+<section class="trust" aria-label="Nos engagements">
+  <div class="container trust__grid">
+    {%- for block in section.blocks -%}
+      <div class="trust__item" {{ block.shopify_attributes }}>
+        {% render 'icon', name: block.settings.icon %}
+        <div>
+          <strong>{{ block.settings.title | escape }}</strong>
+          <span>{{ block.settings.text | escape }}</span>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Barre d'engagements",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Engagement",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icône",
+          "options": [
+            { "value": "truck", "label": "Camion" },
+            { "value": "shield", "label": "Bouclier" },
+            { "value": "phone", "label": "Téléphone" },
+            { "value": "repeat", "label": "Échange" },
+            { "value": "package", "label": "Colis" },
+            { "value": "clock", "label": "Horloge" },
+            { "value": "pin", "label": "Position" },
+            { "value": "lock", "label": "Cadenas" }
+          ],
+          "default": "truck"
+        },
+        { "type": "text", "id": "title", "label": "Titre", "default": "Livraison 58 wilayas" },
+        { "type": "text", "id": "text", "label": "Texte", "default": "À domicile ou en Stop Desk" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Barre d'engagements",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "truck", "title": "Livraison 58 wilayas", "text": "À domicile ou en Stop Desk" } },
+        { "type": "item", "settings": { "icon": "shield", "title": "Paiement à la livraison", "text": "Espèces · pas de carte bancaire" } },
+        { "type": "item", "settings": { "icon": "phone", "title": "Confirmation rapide", "text": "Notre équipe vous appelle" } },
+        { "type": "item", "settings": { "icon": "repeat", "title": "Échange de pointure", "text": "Selon conditions" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,30 @@
+{%- comment -%}
+  Sérialise un produit en JSON pour le formulaire de commande (prix en unités, ex. 8900.0).
+  Usage : {% render 'order-product-json', p: product %}
+{%- endcomment -%}
+{%- assign thumb = '' -%}
+{%- if p.featured_image != blank -%}
+  {%- assign thumb = p.featured_image | image_url: width: 240 -%}
+{%- endif -%}
+{
+  "id": {{ p.id }},
+  "handle": {{ p.handle | json }},
+  "title": {{ p.title | json }},
+  "url": {{ p.url | json }},
+  "image": {{ thumb | json }},
+  "available": {{ p.available }},
+  "selected": {{ p.selected_variant.id | default: 0 }},
+  "options": {{ p.options | json }},
+  "variants": [
+    {%- for v in p.variants -%}
+      {
+        "id": {{ v.id }},
+        "title": {{ v.title | json }},
+        "price": {{ v.price | divided_by: 100.0 }},
+        "compare": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
+        "available": {{ v.available }},
+        "options": {{ v.options | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}

@@ -1,0 +1,68 @@
+{%- comment -%}
+  Carte produit de la grille.
+  Usage : {% render 'product-card', product: product %}
+  Badges automatiques via les tags du produit : « limited » → Limited Edition, « new » ou « nouveau » → Nouveau.
+{%- endcomment -%}
+{%- liquid
+  assign tags_down = product.tags | join: ',' | downcase
+  assign is_limited = false
+  assign is_new = false
+  if tags_down contains 'limited'
+    assign is_limited = true
+  endif
+  if tags_down contains 'new' or tags_down contains 'nouveau'
+    assign is_new = true
+  endif
+-%}
+<article class="card" data-reveal>
+  <a class="card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    {%- if product.available == false -%}
+      <div class="sold"><span>Sold<br>out</span></div>
+    {%- elsif is_limited -%}
+      <span class="stamp">Limited Edition</span>
+    {%- elsif is_new -%}
+      <span class="stamp stamp--solid">Nouveau</span>
+    {%- endif -%}
+    {%- if product.featured_image != blank -%}
+      {{
+        product.featured_image
+        | image_url: width: 640
+        | image_tag:
+          class: 'card__img',
+          widths: '240, 360, 480, 640',
+          sizes: '(min-width: 1080px) 300px, (min-width: 640px) 33vw, 50vw',
+          loading: 'lazy',
+          alt: product.featured_image.alt | default: product.title
+      }}
+      {%- assign card_images = product.media | where: 'media_type', 'image' -%}
+      {%- if card_images.size > 1 -%}
+        {{
+          card_images[1]
+          | image_url: width: 640
+          | image_tag:
+            class: 'card__img card__img--hover',
+            widths: '240, 360, 480, 640',
+            sizes: '(min-width: 1080px) 300px, (min-width: 640px) 33vw, 50vw',
+            loading: 'lazy',
+            alt: ''
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'card__placeholder' }}
+    {%- endif -%}
+  </a>
+  <div class="card__body">
+    <h3 class="card__name"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    <p class="price">
+      {% render 'price', amount: product.price %}
+      {%- if product.compare_at_price > product.price -%}
+        <s>{% render 'price', amount: product.compare_at_price %}</s>
+      {%- endif -%}
+    </p>
+    {%- if product.available -%}
+      <a class="btn btn--white btn--block" href="{{ product.url }}#commande">Commander</a>
+    {%- else -%}
+      <span class="btn btn--white btn--block" aria-disabled="true">Épuisé</span>
+    {%- endif -%}
+  </div>
+</article>

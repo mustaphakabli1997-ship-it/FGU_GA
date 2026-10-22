@@ -1,0 +1,89 @@
+<section class="section section--alt" id="paiement">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.intro != blank -%}
+        <p>{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="payinfo">
+      <article class="payinfo__card payinfo__card--yes" data-reveal>
+        <span class="payinfo__tag">Accepté</span>
+        <div class="payinfo__icon">{% render 'icon', name: 'cash' %}</div>
+        <h3>{{ section.settings.yes_title | escape }}</h3>
+        <p>{{ section.settings.yes_text | escape }}</p>
+        {%- if section.blocks.size > 0 -%}
+          <ul class="payinfo__list">
+            {%- for block in section.blocks -%}
+              <li {{ block.shopify_attributes }}>{% render 'icon', name: 'check' %} {{ block.settings.text | escape }}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </article>
+
+      <article class="payinfo__card payinfo__card--no" data-reveal>
+        <span class="payinfo__tag">Non disponible</span>
+        <div class="payinfo__icon">{% render 'icon', name: 'card-off' %}</div>
+        <h3>{{ section.settings.no_title | escape }}</h3>
+        <p>{{ section.settings.no_text | escape }}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Modes de paiement",
+  "tag": "div",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Zéro risque" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Modes de paiement" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Chez YOUZ, vous ne payez qu'une fois votre colis entre les mains."
+    },
+    { "type": "text", "id": "yes_title", "label": "Carte « accepté » — titre", "default": "Paiement à la livraison" },
+    {
+      "type": "textarea",
+      "id": "yes_text",
+      "label": "Carte « accepté » — texte",
+      "default": "Le seul mode de paiement : en espèces, à la réception de votre commande."
+    },
+    { "type": "text", "id": "no_title", "label": "Carte « refusé » — titre", "default": "Carte bancaire" },
+    {
+      "type": "textarea",
+      "id": "no_text",
+      "label": "Carte « refusé » — texte",
+      "default": "Aucun paiement par carte : pas de paiement en ligne, aucune donnée bancaire demandée."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "default": "Au livreur si vous choisissez la livraison à domicile" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Modes de paiement",
+      "blocks": [
+        { "type": "point", "settings": { "text": "Au livreur si vous choisissez la livraison à domicile" } },
+        { "type": "point", "settings": { "text": "Au bureau du transporteur si vous choisissez Stop Desk" } },
+        { "type": "point", "settings": { "text": "Le montant exact s'affiche avant de confirmer" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

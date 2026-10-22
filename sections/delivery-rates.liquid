@@ -1,0 +1,66 @@
+{%- liquid
+  assign fee_home_cents = settings.fee_home | default: 0 | times: 100
+  assign fee_desk_cents = settings.fee_desk | default: 0 | times: 100
+  assign free_over = settings.free_delivery_over | default: 0 | times: 100
+-%}
+<section class="section" id="livraison">
+  <div class="container">
+    <div class="section__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{% render 'icon', name: 'star', class: 'i--fill' %} {{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="title-chrome section__title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.intro != blank -%}
+        <p>{{ section.settings.intro | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="rates">
+      <article class="rate" data-reveal>
+        <div class="rate__icon">{% render 'icon', name: 'pin' %}</div>
+        <h3>Stop Desk</h3>
+        <p>Retrait au bureau du transporteur de votre commune.</p>
+        <strong class="rate__price">{% render 'price', amount: fee_desk_cents %}</strong>
+      </article>
+      <article class="rate" data-reveal>
+        <div class="rate__icon">{% render 'icon', name: 'home' %}</div>
+        <h3>À domicile</h3>
+        <p>Le livreur vous apporte le colis jusqu'à votre porte.</p>
+        <strong class="rate__price">{% render 'price', amount: fee_home_cents %}</strong>
+      </article>
+    </div>
+
+    <p class="note">
+      {% render 'icon', name: 'info' %}
+      <span>Tarif unique pour les 58 wilayas. Paiement en espèces à la livraison.
+        {%- if settings.free_delivery_over > 0 %} Livraison offerte dès {% render 'price', amount: free_over %} d'achat.{% endif -%}
+      </span>
+    </p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Tarifs de livraison",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "58 wilayas" },
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Livraison" },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Un tarif simple, le même partout en Algérie : à domicile ou en Stop Desk."
+    },
+    {
+      "type": "paragraph",
+      "content": "Les tarifs se modifient dans Paramètres du thème → Formulaire COD et livraison."
+    }
+  ],
+  "presets": [
+    { "name": "Tarifs de livraison" }
+  ]
+}
+{% endschema %}

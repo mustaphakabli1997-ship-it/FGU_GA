@@ -1,0 +1,27 @@
+<section class="container cta-wrap">
+  <div class="cta-band" data-reveal>
+    <h2 class="title-chrome">{{ section.settings.heading | escape }}</h2>
+    {%- if section.settings.text != blank -%}
+      <p>{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a class="btn btn--white btn--lg" href="{{ section.settings.button_link | default: '#passer-commande' }}">{{ section.settings.button_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bannière finale",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Ne ratez pas le drop" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Stock limité sur chaque modèle. Commandez maintenant, payez en espèces à la livraison." },
+    { "type": "text", "id": "button_label", "label": "Bouton — texte", "default": "Commander maintenant" },
+    { "type": "url", "id": "button_link", "label": "Bouton — lien" }
+  ],
+  "presets": [
+    { "name": "Bannière finale" }
+  ]
+}
+{% endschema %}
